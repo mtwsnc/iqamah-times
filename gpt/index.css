@@ -1,0 +1,65 @@
+/* Set the font family and size */
+body {
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+}
+
+/* Style the container for the time pickers */
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Style the individual time pickers */
+.time-picker {
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 0 5px #ccc;
+  background-color: #f9f9f9;
+  text-align: center;
+  min-width: 120px;
+}
+
+/* Style the time picker label */
+.time-picker label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* Style the time picker input */
+.time-picker input {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 80px;
+  text-align: center;
+}
+
+/* Style the submit button */
+button {
+  margin: 10px;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 0 5px #ccc;
+  background-color: #f9f9f9;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Style the success message */
+.success {
+  color: green;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* Style the error message */
+.error {
+  color: red;
+  font-weight: bold;
+  margin-top: 10px;
+}
