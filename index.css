@@ -1,65 +1,75 @@
-/* Set the font family and size */
+/* CSS */
 body {
+  background-color: #f5f5f5;
   font-family: Arial, sans-serif;
-  font-size: 16px;
+  margin: 0;
 }
 
-/* Style the container for the time pickers */
 .container {
+  max-width: 800px;
+  margin: 0 auto;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* Style the individual time pickers */
-.time-picker {
-  margin: 10px;
-  padding: 10px;
+table {
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 800px;
+  margin-top: 20px;
+  background-color: #ffffff;
+  border: 1px solid #dddddd;
+  border-radius: 4px;
+}
+
+table th, table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #dddddd;
+}
+
+table th {
+  background-color: #f2f2f2;
+}
+
+table td input[type="time"] {
+  width: 100%;
+  padding: 8px;
   border: 1px solid #ccc;
-  border-radius: 5px;
-  box-shadow: 0 0 5px #ccc;
-  background-color: #f9f9f9;
-  text-align: center;
-  min-width: 120px;
+  border-radius: 4px;
+  box-sizing: border-box;
 }
 
-/* Style the time picker label */
-.time-picker label {
-  display: block;
-  margin-bottom: 5px;
-}
-
-/* Style the time picker input */
-.time-picker input {
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  width: 80px;
-  text-align: center;
-}
-
-/* Style the submit button */
 button {
-  margin: 10px;
-  padding: 10px;
+  background-color: #4CAF50;
+  color: #ffffff;
   border: none;
-  border-radius: 5px;
-  box-shadow: 0 0 5px #ccc;
-  background-color: #f9f9f9;
+  padding: 12px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
   font-size: 16px;
+  margin-top: 20px;
   cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
 }
 
-/* Style the success message */
-.success {
-  color: green;
-  font-weight: bold;
-  margin-top: 10px;
+button:hover {
+  background-color: #3e8e41;
 }
 
-/* Style the error message */
-.error {
-  color: red;
-  font-weight: bold;
-  margin-top: 10px;
+@media screen and (max-width: 600px) {
+  table td, table th {
+    padding: 8px 10px;
+  }
+  
+  table td input[type="time"] {
+    padding: 4px;
+  }
+  
+  button {
+    padding: 10px 16px;
+  }
 }
