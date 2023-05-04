@@ -77,3 +77,13 @@ button:hover {
     padding: 10px 16px;
   }
 }
+
+.message {
+  padding: 12px;
+  margin-top: 20px;
+  border-radius: 4px;
+  text-align: center;
+  font-weight: bold;
+  color: #ffffff;
+}
+
