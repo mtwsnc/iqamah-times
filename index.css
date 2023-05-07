@@ -17,6 +17,8 @@ body {
   align-items: center;
 }
 
+
+
 table {
   border-collapse: collapse;
   width: 100%;
@@ -64,6 +66,33 @@ button:hover {
   background-color: #3e8e41;
 }
 
+button.loading {
+  position: relative;
+}
+button.loading:after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -10px;
+  margin-left: -10px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: #ffffff;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 @media screen and (max-width: 600px) {
   table td, table th {
     padding: 8px 10px;
@@ -78,12 +107,5 @@ button:hover {
   }
 }
 
-.message {
-  padding: 12px;
-  margin-top: 20px;
-  border-radius: 4px;
-  text-align: center;
-  font-weight: bold;
-  color: #ffffff;
-}
+
 

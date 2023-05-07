@@ -9,15 +9,15 @@ function convertTime24to12(time) {
   var hours = parseInt(parts[0]);
   var minutes = parts[1];
 
-  if(hours >= 12){
+  if (hours >= 12) {
     var newhours = parseInt(hours) - 12;
     var meridiem = "PM";
-  }else{
+  } else {
     var newhours = parseInt(hours);
     var meridiem = "AM";
   }
 
-  if(newhours == 0) newhours = "12";
+  if (newhours == 0) newhours = "12";
   var newtime = newhours + ":" + minutes + " " + meridiem;
 
   return newtime;
@@ -44,15 +44,17 @@ const convertTime12to24 = (time12h) => {
 // Function to fetch the data from the API
 async function fetchData() {
   try {
+    
     const response = await fetch(apiUrl);
     const data = await response.json();
     Object.keys(data).forEach((day) => {
       for (let i = 1; i <= 5; i++) {
         const time = data[day][i - 1];
-        let temp = convertTime12to24(time.length<8?"0"+time:time);
-        data[day][i-1] = temp;
+        let temp = convertTime12to24(time.length < 8 ? "0" + time : time);
+        data[day][i - 1] = temp;
       }
     });
+    
     return data;
   } catch (error) {
     console.error(error);
@@ -70,26 +72,35 @@ function displayData(data) {
   });
 }
 
-async function refreshPage(data){
+async function refreshPage(data) {
+  const button = document.querySelector("#refresh-button");
+  button.classList.add('loading');
   data = await fetchData();
   displayData(data);
+  button.classList.remove('loading');
 }
 
 // Function to get the updated data from the HTML table
 function getFormData() {
+  
+
   let formData = {};
   Object.keys(data).forEach((day) => {
     formData[day] = [];
     for (let i = 1; i <= 5; i++) {
-      const time = document.querySelector(`#${day.toLowerCase()}-${i}`).value ;
+      const time = document.querySelector(`#${day.toLowerCase()}-${i}`).value;
       formData[day].push(time);
     }
   });
+  
   return formData;
 }
 
-async function putData(formData){
+async function putData(formData, buttonStr) {
   try {
+    const button = document.querySelector(buttonStr);
+    button.classList.add('loading');
+
     const response = await fetch(apiUrl, {
       method: 'PUT',
       headers: {
@@ -97,52 +108,59 @@ async function putData(formData){
       },
       body: JSON.stringify(formData)
     });
+
     const data = await response;
+    button.classList.remove('loading');
     console.log(data);
     return data;
   } catch (error) {
     console.error(error);
   }
+  
 }
 
 // Function to update the data in the API
-async function updateData(formData) {
+async function updateData(formData, buttonStr) {
+
   Object.keys(formData).forEach((day) => {
     for (let i = 1; i <= 5; i++) {
       const time = formData[day][i - 1];
       let temp = convertTime24to12(time);
-      formData[day][i-1] = temp;
+      formData[day][i - 1] = temp;
     }
   });
   formData["__passcode__"] = document.getElementById("password-box").value;
-  return await putData(formData);
+  return await putData(formData, buttonStr);
 }
 
 // Function to handle the form submission
 async function handleSubmit(event) {
   event.preventDefault();
   const formData = getFormData();
-  const updatedData = await updateData(formData);
-  if (updatedData.status  == 200) {
+
+
+  const updatedData = await updateData(formData, "#save-button");
+  if (updatedData.status == 200) {
     document.getElementById('message').textContent = 'Data saved successfully.';
-  } else if (updatedData.status  == 400) {
-  document.getElementById('message').textContent = 'Incorrect Password.';
+  } else if (updatedData.status == 400) {
+    document.getElementById('message').textContent = 'Incorrect Password.';
   } else {
     document.getElementById('message').textContent = 'Failed to save data.';
   }
+
 }
 
 async function handleRestore(event) {
   event.preventDefault();
   const formData = {
-    "__passcode__":document.getElementById("password-box").value,
-    "__refresh__":true
+    "__passcode__": document.getElementById("password-box").value,
+    "__refresh__": true
   };
-  const updatedData = await putData(formData);
-  if (updatedData.status  == 200) {
+  const updatedData = await putData(formData, "#restore-button");
+  if (updatedData.status == 200) {
     document.getElementById('message').textContent = 'Successfully restored.';
-  } else if (updatedData.status  == 400) {
-  document.getElementById('message').textContent = 'Incorrect Password.';
+  } else if (updatedData.status == 400) {
+    document.getElementById('message').textContent = 'Incorrect Password.';
   } else {
     document.getElementById('message').textContent = 'Failed to restore.';
   }
