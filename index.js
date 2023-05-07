@@ -135,6 +135,8 @@ async function updateData(formData, buttonStr) {
 
 // Function to handle the form submission
 async function handleSubmit(event) {
+    
+  document.getElementById('message').textContent = '';
   event.preventDefault();
   const formData = getFormData();
 
@@ -152,6 +154,7 @@ async function handleSubmit(event) {
 
 async function handleRestore(event) {
   event.preventDefault();
+  document.getElementById('message').textContent = '';
   const formData = {
     "__passcode__": document.getElementById("password-box").value,
     "__refresh__": true
