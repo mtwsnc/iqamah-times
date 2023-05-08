@@ -81,7 +81,7 @@ button.loading:after {
   border-radius: 50%;
   border: 2px solid transparent;
   border-top-color: #ffffff;
-  animation: spin 0.8s linear infinite;
+  animation: spin 0.2s linear infinite;
 }
 
 @keyframes spin {
