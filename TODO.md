@@ -54,7 +54,7 @@
 - [x] Pull Iqamah times from the dataplicity API (Implemented in index.js to fetch times from API based on current day of week)
 - [x] Use the "sunrise" column from MD files for Shuruq times
 - [x] Ensure correct styling for all prayer cards (active and inactive states)
-- [ ] Fix mobile responsiveness issues
+- [x] Fix mobile responsiveness issues
 
 ## Additional UI Improvements
 - [ ] Add wavy border divider between the header section and prayer cards section

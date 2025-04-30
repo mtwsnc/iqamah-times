@@ -102,17 +102,36 @@
     .prayer-card.active .adhan-time {
       border-top: 1px solid rgba(255, 255, 255, 0.2);
     }
+
+    /* Mobile responsive adjustments */
+    @media (max-width: 640px) {
+      .prayer-time {
+        font-size: 1.5rem !important;
+      }
+
+      .countdown-container {
+        flex-direction: column;
+      }
+
+      .countdown-labels {
+        margin-top: 0.5rem;
+      }
+
+      .countdown-digit {
+        font-size: 3rem !important;
+      }
+    }
   </style>
 </head>
 
 <body class="min-h-screen">
   <!-- Header with Date -->
   <header class="pt-6 pb-2 px-4 text-white">
-    <div class="container mx-auto flex justify-between items-center">
-      <div class="text-lg font-light">
+    <div class="container mx-auto flex flex-col sm:flex-row justify-between items-center">
+      <div class="text-lg font-light mb-2 sm:mb-0 text-center sm:text-left">
         <span id="gregorian-date">Monday, May 15, 2023</span>
       </div>
-      <div class="text-lg font-light text-right">
+      <div class="text-lg font-light text-center sm:text-right">
         <span id="hijri-date">Thu 17/11</span>
       </div>
     </div>
@@ -130,17 +149,17 @@
     <!-- Next Prayer Countdown -->
     <div class="text-center text-white mb-10">
       <p class="text-xl font-light" id="countdown-label">The prayer of <span id="next-prayer-name">FAJR</span> is in</p>
-      <div class="flex justify-center gap-2 my-2">
-        <div class="text-7xl font-bold countdown-digit" id="countdown-hours">00</div>
-        <div class="text-7xl font-bold">:</div>
-        <div class="text-7xl font-bold countdown-digit" id="countdown-minutes">05</div>
-        <div class="text-7xl font-bold">:</div>
-        <div class="text-7xl font-bold countdown-digit" id="countdown-seconds">47</div>
+      <div class="countdown-container flex justify-center gap-2 my-2">
+        <div class="text-5xl sm:text-7xl font-bold countdown-digit" id="countdown-hours">00</div>
+        <div class="text-5xl sm:text-7xl font-bold">:</div>
+        <div class="text-5xl sm:text-7xl font-bold countdown-digit" id="countdown-minutes">05</div>
+        <div class="text-5xl sm:text-7xl font-bold">:</div>
+        <div class="text-5xl sm:text-7xl font-bold countdown-digit" id="countdown-seconds">47</div>
       </div>
-      <div class="flex justify-center gap-2 text-sm font-light">
-        <div class="w-20 text-center">Hours</div>
-        <div class="w-20 text-center">Minutes</div>
-        <div class="w-20 text-center">Seconds</div>
+      <div class="countdown-labels flex justify-center gap-2 text-sm font-light">
+        <div class="w-16 sm:w-20 text-center">Hours</div>
+        <div class="w-16 sm:w-20 text-center">Minutes</div>
+        <div class="w-16 sm:w-20 text-center">Seconds</div>
       </div>
     </div>
 
@@ -149,13 +168,13 @@
 
     <!-- Prayer Times Cards -->
     <div class="max-w-4xl mx-auto">
-      <div class="grid grid-cols-3 gap-4 mb-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
         <!-- Fajr -->
         <div class="prayer-card p-4 text-center" id="fajr-card">
           <div class="prayer-header text-masjid-accent font-bold">
             FAJR
           </div>
-          <div class="prayer-time text-5xl font-bold text-masjid-dark" id="fajr-iqamah">4:49 AM</div>
+          <div class="prayer-time text-4xl sm:text-5xl font-bold text-masjid-dark" id="fajr-iqamah">4:49 AM</div>
           <div class="adhan-time text-xs font-medium text-gray-600">COMES IN AT: <span id="fajr-time">4:49 AM</span>
           </div>
         </div>
@@ -165,7 +184,7 @@
           <div class="prayer-header text-masjid-accent font-bold">
             SHURUQ
           </div>
-          <div class="prayer-time text-5xl font-bold text-masjid-dark" id="sunrise-time">6:10 AM</div>
+          <div class="prayer-time text-4xl sm:text-5xl font-bold text-masjid-dark" id="sunrise-time">6:10 AM</div>
           <div class="adhan-time text-xs font-medium text-gray-600">&nbsp;</div>
         </div>
 
@@ -174,19 +193,19 @@
           <div class="prayer-header text-masjid-accent font-bold">
             DHUHR
           </div>
-          <div class="prayer-time text-5xl font-bold text-masjid-dark" id="dhuhr-iqamah">1:12 PM</div>
+          <div class="prayer-time text-4xl sm:text-5xl font-bold text-masjid-dark" id="dhuhr-iqamah">1:12 PM</div>
           <div class="adhan-time text-xs font-medium text-gray-600">COMES IN AT: <span id="dhuhr-time">1:12 PM</span>
           </div>
         </div>
       </div>
 
-      <div class="grid grid-cols-3 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         <!-- Asr -->
         <div class="prayer-card p-4 text-center" id="asr-card">
           <div class="prayer-header text-masjid-accent font-bold">
             ASR
           </div>
-          <div class="prayer-time text-5xl font-bold text-masjid-dark" id="asr-iqamah">5:00 PM</div>
+          <div class="prayer-time text-4xl sm:text-5xl font-bold text-masjid-dark" id="asr-iqamah">5:00 PM</div>
           <div class="adhan-time text-xs font-medium text-gray-600">COMES IN AT: <span id="asr-time">5:00 PM</span>
           </div>
         </div>
@@ -196,7 +215,7 @@
           <div class="prayer-header text-masjid-accent font-bold">
             MAGHRIB
           </div>
-          <div class="prayer-time text-5xl font-bold text-masjid-dark" id="maghrib-iqamah">8:14 PM</div>
+          <div class="prayer-time text-4xl sm:text-5xl font-bold text-masjid-dark" id="maghrib-iqamah">8:14 PM</div>
           <div class="adhan-time text-xs font-medium text-gray-600">COMES IN AT: <span id="maghrib-time">8:14 PM</span>
           </div>
         </div>
@@ -206,7 +225,7 @@
           <div class="prayer-header text-masjid-accent font-bold">
             ISHA
           </div>
-          <div class="prayer-time text-5xl font-bold text-masjid-dark" id="isha-iqamah">9:36 PM</div>
+          <div class="prayer-time text-4xl sm:text-5xl font-bold text-masjid-dark" id="isha-iqamah">9:36 PM</div>
           <div class="adhan-time text-xs font-medium text-gray-600">COMES IN AT: <span id="isha-time">9:36 PM</span>
           </div>
         </div>
@@ -238,7 +257,7 @@
   <!-- Footer -->
   <footer class="bg-opacity-20 bg-black text-white py-4 mt-10">
     <div class="container mx-auto px-4">
-      <div class="flex justify-center items-center space-x-6">
+      <div class="flex flex-col sm:flex-row justify-center items-center space-y-3 sm:space-y-0 sm:space-x-6">
         <img src="mtws-logo.png" alt="MTWS Logo" class="h-6 w-auto">
         <a href="https://mtws.one" target="_blank" class="text-gray-300 hover:text-white">mtws.one</a>
         <a href="https://mtws.org" target="_blank" class="text-gray-300 hover:text-white">mtws.org</a>
