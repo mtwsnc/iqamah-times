@@ -5,12 +5,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MTWS Iqāmah Times</title>
-  <script src="https://cdn.jsdelivr.net/npm/tailwindcss/dist/lib.min.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss/index.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script>
     // Tailwind configuration
-    tailwind = window.tailwind || {};
     tailwind.config = {
       theme: {
         extend: {
@@ -55,6 +53,7 @@
       overflow: hidden;
       padding: 1rem;
       /* Consistent padding for all cards */
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
 
     .prayer-card.active {

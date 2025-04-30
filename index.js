@@ -188,10 +188,20 @@ function showAdminNotice(message) {
         noticeElement = document.createElement('div');
         noticeElement.id = 'admin-notice';
         noticeElement.className = 'bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 fixed top-0 left-0 right-0 z-50';
+        noticeElement.style.zIndex = '9999'; // Ensure it's on top
+        noticeElement.style.padding = '1rem';
+        noticeElement.style.backgroundColor = '#FEE2E2';
+        noticeElement.style.borderLeftWidth = '4px';
+        noticeElement.style.borderLeftColor = '#EF4444';
+        noticeElement.style.color = '#B91C1C';
 
         const closeButton = document.createElement('button');
         closeButton.innerHTML = '&times;';
         closeButton.className = 'float-right font-bold text-xl';
+        closeButton.style.float = 'right';
+        closeButton.style.fontSize = '1.5rem';
+        closeButton.style.fontWeight = 'bold';
+        closeButton.style.marginLeft = '1rem';
         closeButton.onclick = function () {
             noticeElement.style.display = 'none';
         };
