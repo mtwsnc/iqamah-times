@@ -183,6 +183,7 @@
       /* Remove the column layout for countdown */
       .countdown-container {
         flex-direction: row;
+        gap: 0.5rem !important;
       }
 
       .countdown-labels {
@@ -192,11 +193,138 @@
       .countdown-digit {
         font-size: 3rem !important;
       }
+
+      /* Improved touch targets for mobile */
+      button,
+      a {
+        padding: 0.75rem 1rem;
+        min-width: 44px;
+        /* Minimum recommended touch target size */
+        min-height: 44px;
+      }
+
+      /* Better spacing for mobile views */
+      .prayer-card {
+        margin-bottom: 0.75rem;
+        padding: 0.75rem;
+      }
+
+      /* Smaller header text on mobile */
+      h1 {
+        font-size: 1.2rem !important;
+      }
+
+      h2 {
+        font-size: 1.8rem !important;
+      }
+
+      /* Adjust padding for mobile */
+      .container {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+      }
+
+      /* Make download buttons stack on very small screens */
+      @media (max-width: 400px) {
+        .download-buttons {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .download-buttons a,
+        .download-buttons button {
+          margin: 0.25rem 0;
+          width: 100%;
+        }
+      }
+    }
+
+    /* Android App Download Banner */
+    .app-banner {
+      display: none;
+      /* Hidden by default */
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background-color: #3A5C18;
+      color: white;
+      padding: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+      font-size: 14px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .app-banner-content {
+      display: flex;
+      align-items: center;
+      flex-grow: 1;
+    }
+
+    .app-banner-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      margin-right: 12px;
+      background-color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .app-banner-text {
+      flex-grow: 1;
+    }
+
+    .app-banner-title {
+      font-weight: bold;
+      margin-bottom: 2px;
+    }
+
+    .app-banner-close {
+      padding: 8px;
+      cursor: pointer;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .app-banner-download {
+      background-color: white;
+      color: #3A5C18;
+      padding: 6px 12px;
+      border-radius: 4px;
+      margin-left: 12px;
+      font-weight: 500;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    body.has-banner {
+      padding-top: 60px;
+      /* Add padding when banner is visible */
     }
   </style>
 </head>
 
 <body>
+  <!-- Android App Banner -->
+  <div id="app-banner" class="app-banner">
+    <div class="app-banner-content">
+      <div class="app-banner-icon">
+        <i data-lucide="mosque" class="w-5 h-5 text-masjid-accent"></i>
+      </div>
+      <div class="app-banner-text">
+        <div class="app-banner-title">MTWS Iqāmah Times</div>
+        <div>Get real-time prayer times on your Android device</div>
+      </div>
+    </div>
+    <a href="MTWS%20Iqaamah%20Times.apk" class="app-banner-download">Download</a>
+    <div class="app-banner-close" id="close-banner">
+      <i data-lucide="x" class="w-4 h-4"></i>
+    </div>
+  </div>
+
   <div class="page-content">
     <!-- Header with Date -->
     <header class="pt-6 pb-2 px-4 text-white">
@@ -325,9 +453,9 @@
       </div>
 
       <!-- Mobile App Download Link -->
-      <div class="mt-8 text-center">
+      <div class="mt-8 text-center download-buttons flex flex-wrap justify-center gap-2">
         <a href="MTWS%20Iqaamah%20Times.apk"
-          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-masjid-accent hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-masjid-accent mr-2">
+          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-masjid-accent hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-masjid-accent">
           <span class="mr-2">
             <i data-lucide="download" class="w-4 h-4"></i>
           </span>
@@ -362,6 +490,35 @@
       if (typeof lucide !== 'undefined') {
         lucide.createIcons();
       }
+
+      // Android detection and banner
+      function showAppBanner() {
+        // Check if running on Android
+        const isAndroid = /Android/i.test(navigator.userAgent);
+
+        // Check if banner was previously dismissed
+        const bannerDismissed = localStorage.getItem('app_banner_dismissed');
+
+        if (isAndroid && !bannerDismissed) {
+          const banner = document.getElementById('app-banner');
+          const body = document.body;
+
+          if (banner) {
+            banner.style.display = 'flex';
+            body.classList.add('has-banner');
+
+            // Add close functionality
+            document.getElementById('close-banner').addEventListener('click', function () {
+              banner.style.display = 'none';
+              body.classList.remove('has-banner');
+              localStorage.setItem('app_banner_dismissed', 'true');
+            });
+          }
+        }
+      }
+
+      // Show banner after a short delay
+      setTimeout(showAppBanner, 1000);
     });
 
     // Function to redirect to fullscreen page
