@@ -93,6 +93,9 @@ const JUNE_PRAYER_TIMES = [
 // For testing - use a specific date
 const TEST_DATE = new Date(2023, 4, 15); // May 15, 2023
 
+// Get the current date
+const CURRENT_DATE = new Date();
+
 // Function to get day's prayer times based on date
 function getPrayerTimesForDate(date) {
     const month = date.getMonth() + 1; // JavaScript months are 0-indexed
@@ -119,9 +122,16 @@ function getPrayerTimesForDate(date) {
 }
 
 // Function to format time to 12-hour format
-function formatTo12Hour(time24h) {
+function formatTo12Hour(time24h, prayerName) {
     const [hours, minutes] = time24h.split(':').map(Number);
-    const period = hours >= 12 ? 'PM' : 'AM';
+
+    // Determine if prayer should be PM based on name or time
+    let isPM = hours >= 12;
+    if (prayerName && ['dhuhr', 'asr', 'maghrib', 'isha'].includes(prayerName.toLowerCase())) {
+        isPM = true;
+    }
+
+    const period = isPM ? 'PM' : 'AM';
     const hours12 = hours % 12 || 12; // Convert 0 to 12
 
     return `${hours12}:${minutes.toString().padStart(2, '0')} ${period}`;
@@ -137,7 +147,7 @@ function calculateIqamahTime(prayerTime) {
 // Function to update the UI with current prayer times
 function updatePrayerTimesUI(prayerData) {
     // Format dates for display
-    const gregorianDate = TEST_DATE.toLocaleDateString('en-US', {
+    const gregorianDate = CURRENT_DATE.toLocaleDateString('en-US', {
         weekday: 'long',
         year: 'numeric',
         month: 'long',
@@ -149,27 +159,27 @@ function updatePrayerTimesUI(prayerData) {
 
     // Update prayer times
     // Fajr
-    document.getElementById('fajr-time').textContent = formatTo12Hour(prayerData.fajr);
-    document.getElementById('fajr-iqamah').textContent = formatTo12Hour(prayerData.fajr);
+    document.getElementById('fajr-time').textContent = formatTo12Hour(prayerData.fajr, 'fajr');
+    document.getElementById('fajr-iqamah').textContent = formatTo12Hour(prayerData.fajr, 'fajr');
 
     // Sunrise
-    document.getElementById('sunrise-time').textContent = formatTo12Hour(prayerData.sunrise);
+    document.getElementById('sunrise-time').textContent = formatTo12Hour(prayerData.sunrise, 'sunrise');
 
     // Dhuhr
-    document.getElementById('dhuhr-time').textContent = formatTo12Hour(prayerData.dhuhr);
-    document.getElementById('dhuhr-iqamah').textContent = formatTo12Hour(prayerData.dhuhr);
+    document.getElementById('dhuhr-time').textContent = formatTo12Hour(prayerData.dhuhr, 'dhuhr');
+    document.getElementById('dhuhr-iqamah').textContent = formatTo12Hour(prayerData.dhuhr, 'dhuhr');
 
     // Asr
-    document.getElementById('asr-time').textContent = formatTo12Hour(prayerData.asr);
-    document.getElementById('asr-iqamah').textContent = formatTo12Hour(prayerData.asr);
+    document.getElementById('asr-time').textContent = formatTo12Hour(prayerData.asr, 'asr');
+    document.getElementById('asr-iqamah').textContent = formatTo12Hour(prayerData.asr, 'asr');
 
     // Maghrib
-    document.getElementById('maghrib-time').textContent = formatTo12Hour(prayerData.maghrib);
-    document.getElementById('maghrib-iqamah').textContent = formatTo12Hour(prayerData.maghrib);
+    document.getElementById('maghrib-time').textContent = formatTo12Hour(prayerData.maghrib, 'maghrib');
+    document.getElementById('maghrib-iqamah').textContent = formatTo12Hour(prayerData.maghrib, 'maghrib');
 
     // Isha
-    document.getElementById('isha-time').textContent = formatTo12Hour(prayerData.isha);
-    document.getElementById('isha-iqamah').textContent = formatTo12Hour(prayerData.isha);
+    document.getElementById('isha-time').textContent = formatTo12Hour(prayerData.isha, 'isha');
+    document.getElementById('isha-iqamah').textContent = formatTo12Hour(prayerData.isha, 'isha');
 
     // For Jumuah, we'll use defaults
     document.getElementById('jumuah-time').textContent = "1:00 PM";
@@ -181,16 +191,15 @@ function updatePrayerTimesUI(prayerData) {
 
 // Function to determine the next prayer and update UI
 function updateNextPrayer(prayerData) {
-    const now = TEST_DATE; // Use test date for demonstration
-    now.setHours(19, 30); // Set to 7:30 PM for demonstration
+    const now = new Date(); // Use current date and time
 
     // Convert 24h times to Date objects for comparison
     const prayerTimes = [
-        { name: 'FAJR', time: createTimeDate(now, prayerData.fajr) },
-        { name: 'DHUHR', time: createTimeDate(now, prayerData.dhuhr) },
-        { name: 'ASR', time: createTimeDate(now, prayerData.asr) },
-        { name: 'MAGHRIB', time: createTimeDate(now, prayerData.maghrib) },
-        { name: 'ISHA', time: createTimeDate(now, prayerData.isha) }
+        { name: 'FAJR', time: createTimeDate(now, prayerData.fajr, 'fajr') },
+        { name: 'DHUHR', time: createTimeDate(now, prayerData.dhuhr, 'dhuhr') },
+        { name: 'ASR', time: createTimeDate(now, prayerData.asr, 'asr') },
+        { name: 'MAGHRIB', time: createTimeDate(now, prayerData.maghrib, 'maghrib') },
+        { name: 'ISHA', time: createTimeDate(now, prayerData.isha, 'isha') }
     ];
 
     // Find the next prayer
@@ -228,10 +237,19 @@ function updateNextPrayer(prayerData) {
 }
 
 // Helper function to create a Date object from a 24h time string
-function createTimeDate(baseDate, timeStr) {
+function createTimeDate(baseDate, timeStr, prayerName) {
     const [hours, minutes] = timeStr.split(':').map(Number);
     const date = new Date(baseDate);
-    date.setHours(hours, minutes, 0, 0);
+
+    // If prayer times are afternoon prayers but in 12-hour format (e.g., "1:13" for 13:13)
+    // we need to add 12 hours for proper conversion
+    let adjustedHours = hours;
+    if (hours < 12 && ['dhuhr', 'asr', 'maghrib', 'isha'].includes(prayerName?.toLowerCase())) {
+        // This is an afternoon prayer that should be PM
+        adjustedHours += 12;
+    }
+
+    date.setHours(adjustedHours, minutes, 0, 0);
     return date;
 }
 
@@ -248,49 +266,37 @@ function resetPrayerCardStyles() {
 }
 
 // Function to start countdown to the next prayer
-function startCountdown(timeDiffMs) {
-    // For demonstration, we'll use a fixed countdown
-    const hours = document.getElementById('countdown-hours');
-    const minutes = document.getElementById('countdown-minutes');
-    const seconds = document.getElementById('countdown-seconds');
+function startCountdown(milliseconds) {
+    // Set initial countdown values
+    updateCountdownDisplay(milliseconds);
 
-    // Set initial values (for demo)
-    hours.textContent = '00';
-    minutes.textContent = '05';
-    seconds.textContent = '50';
+    // Clear any existing interval
+    if (window.countdownInterval) {
+        clearInterval(window.countdownInterval);
+    }
 
-    // Start a countdown from the initial values
-    let h = parseInt(hours.textContent);
-    let m = parseInt(minutes.textContent);
-    let s = parseInt(seconds.textContent);
-
-    const countdownInterval = setInterval(() => {
-        // Decrease seconds
-        s--;
-
-        // Adjust minutes and hours as needed
-        if (s < 0) {
-            s = 59;
-            m--;
-
-            if (m < 0) {
-                m = 59;
-                h--;
-
-                if (h < 0) {
-                    // Reset countdown when it reaches zero
-                    clearInterval(countdownInterval);
-                    setTimeout(() => location.reload(), 1000); // Reload after 1 second
-                    return;
-                }
-            }
+    // Start the countdown
+    window.countdownInterval = setInterval(() => {
+        milliseconds -= 1000;
+        if (milliseconds <= 0) {
+            clearInterval(window.countdownInterval);
+            // Refresh the page to get the new next prayer
+            window.location.reload();
+            return;
         }
-
-        // Update the display
-        hours.textContent = h.toString().padStart(2, '0');
-        minutes.textContent = m.toString().padStart(2, '0');
-        seconds.textContent = s.toString().padStart(2, '0');
+        updateCountdownDisplay(milliseconds);
     }, 1000);
+}
+
+// Helper function to update the countdown display
+function updateCountdownDisplay(milliseconds) {
+    const hours = Math.floor(milliseconds / 3600000);
+    const minutes = Math.floor((milliseconds % 3600000) / 60000);
+    const seconds = Math.floor((milliseconds % 60000) / 1000);
+
+    document.getElementById('countdown-hours').textContent = hours.toString().padStart(2, '0');
+    document.getElementById('countdown-minutes').textContent = minutes.toString().padStart(2, '0');
+    document.getElementById('countdown-seconds').textContent = seconds.toString().padStart(2, '0');
 }
 
 // Initialize the application when the DOM is fully loaded
@@ -301,6 +307,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Get prayer times for the current date and update UI
-    const prayerData = getPrayerTimesForDate(TEST_DATE);
+    const prayerData = getPrayerTimesForDate(CURRENT_DATE);
     updatePrayerTimesUI(prayerData);
 }); 
