@@ -327,12 +327,20 @@
       <!-- Mobile App Download Link -->
       <div class="mt-8 text-center">
         <a href="MTWS%20Iqaamah%20Times.apk"
-          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-masjid-accent hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-masjid-accent">
+          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-masjid-accent hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-masjid-accent mr-2">
           <span class="mr-2">
             <i data-lucide="download" class="w-4 h-4"></i>
           </span>
           Download the Android App
         </a>
+
+        <button id="fullscreen-btn" onclick="redirectToFullscreen()"
+          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-masjid-dark hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-masjid-dark">
+          <span class="mr-2">
+            <i data-lucide="maximize" class="w-4 h-4"></i>
+          </span>
+          Enter Fullscreen Mode
+        </button>
       </div>
     </main>
   </div>
@@ -355,6 +363,11 @@
         lucide.createIcons();
       }
     });
+
+    // Function to redirect to fullscreen page
+    function redirectToFullscreen() {
+      window.location.href = 'fullscreen.html';
+    }
   </script>
   <script src="index.js"></script>
 
