@@ -53,8 +53,8 @@
 - [x] Pull Adhan prayer times from the MD table files (may.md and june.md)
 - [x] Pull Iqamah times from the dataplicity API (Implemented in index.js to fetch times from API based on current day of week)
 - [x] Use the "sunrise" column from MD files for Shuruq times
-- [ ] Ensure correct styling for all prayer cards (active and inactive states)
-- [ ] Fix mobile responsiveness issues 
+- [x] Ensure correct styling for all prayer cards (active and inactive states)
+- [ ] Fix mobile responsiveness issues
 
 ## Additional UI Improvements
 - [ ] Add wavy border divider between the header section and prayer cards section
