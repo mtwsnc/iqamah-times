@@ -40,8 +40,31 @@
     }
 
     .prayer-card.active {
-      background-color: #558422;
-      color: white;
+      background-color: rgba(255, 255, 255, 0.95);
+      border: 3px solid #3A5C18;
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+      transform: scale(1.03);
+    }
+
+    .prayer-card.active .text-masjid-accent {
+      color: #3A5C18;
+      font-weight: 700;
+    }
+
+    .prayer-card.active .text-masjid-dark,
+    .prayer-card.active #fajr-iqamah,
+    .prayer-card.active #sunrise-time,
+    .prayer-card.active #dhuhr-iqamah,
+    .prayer-card.active #asr-iqamah,
+    .prayer-card.active #maghrib-iqamah,
+    .prayer-card.active #isha-iqamah {
+      color: #558422;
+      font-weight: 800;
+    }
+
+    .prayer-card.active .text-xs {
+      color: #558422;
+      font-weight: 500;
     }
 
     .countdown-digit {
