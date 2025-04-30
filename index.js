@@ -338,18 +338,40 @@ function updateNextPrayer(prayerData) {
 
 // Helper function to create a Date object from a 24h time string
 function createTimeDate(baseDate, timeStr, prayerName) {
-    const [hours, minutes] = timeStr.split(':').map(Number);
-    const date = new Date(baseDate);
-
-    // If prayer times are afternoon prayers but in 12-hour format (e.g., "1:13" for 13:13)
-    // we need to add 12 hours for proper conversion
-    let adjustedHours = hours;
-    if (hours < 12 && ['dhuhr', 'asr', 'maghrib', 'isha'].includes(prayerName?.toLowerCase())) {
-        // This is an afternoon prayer that should be PM
-        adjustedHours += 12;
+    // Ensure we're working with a string
+    if (!timeStr || typeof timeStr !== 'string') {
+        console.error("Invalid time string for", prayerName, ":", timeStr);
+        return new Date(baseDate); // Return current date as fallback
     }
 
-    date.setHours(adjustedHours, minutes, 0, 0);
+    // Handle both formats: "5:45" and "5:45 AM/PM"
+    let hours, minutes, isPM = false;
+
+    if (timeStr.includes(' ')) {
+        // Format: "5:45 AM/PM"
+        const [timeOnly, period] = timeStr.split(' ');
+        [hours, minutes] = timeOnly.split(':').map(Number);
+        isPM = period.toUpperCase() === 'PM';
+    } else {
+        // Format: "5:45" (24-hour)
+        [hours, minutes] = timeStr.split(':').map(Number);
+
+        // For prayers that are typically in the afternoon/evening
+        if (hours < 12 && ['dhuhr', 'asr', 'maghrib', 'isha'].includes(prayerName?.toLowerCase())) {
+            isPM = true;
+        }
+    }
+
+    // Adjust hours for PM times
+    if (isPM && hours < 12) {
+        hours += 12;
+    } else if (!isPM && hours === 12) {
+        // 12 AM should be 0 hours
+        hours = 0;
+    }
+
+    const date = new Date(baseDate);
+    date.setHours(hours, minutes, 0, 0);
     return date;
 }
 
@@ -358,21 +380,17 @@ function createIqamahTimeDate(baseDate, prayerName) {
     // If we have API Iqamah times, use those
     if (iqamahTimes && iqamahTimes[prayerName.toLowerCase()]) {
         const iqamahTimeStr = iqamahTimes[prayerName.toLowerCase()];
-        const [timeStr, period] = iqamahTimeStr.split(' ');
-        const [hours, minutes] = timeStr.split(':').map(Number);
 
-        const date = new Date(baseDate);
-        let adjustedHours = hours;
-
-        // Convert from 12-hour to 24-hour format
-        if (period === 'PM' && hours !== 12) {
-            adjustedHours += 12;
-        } else if (period === 'AM' && hours === 12) {
-            adjustedHours = 0;
+        // Check if we have a valid time string
+        if (!iqamahTimeStr || typeof iqamahTimeStr !== 'string') {
+            console.error("Invalid Iqamah time for", prayerName, ":", iqamahTimeStr);
+            // Fallback to using the Adhan time
+            const prayerData = getPrayerTimesForDate(baseDate);
+            return createTimeDate(baseDate, prayerData[prayerName.toLowerCase()], prayerName.toLowerCase());
         }
 
-        date.setHours(adjustedHours, minutes, 0, 0);
-        return date;
+        // Handle time string with AM/PM format
+        return createTimeDate(baseDate, iqamahTimeStr, prayerName);
     }
 
     // Fallback to using the Adhan time if no Iqamah time is available
@@ -394,6 +412,15 @@ function resetPrayerCardStyles() {
 
 // Function to start countdown to the next prayer or Iqamah
 function startCountdown(milliseconds, isIqamahCountdown) {
+    // Safety check for negative milliseconds
+    if (milliseconds < 0) {
+        console.error("Negative milliseconds in countdown:", milliseconds);
+        milliseconds = 0;
+        // Force refresh after a short delay
+        setTimeout(() => window.location.reload(), 3000);
+        return;
+    }
+
     // Set initial countdown values
     updateCountdownDisplay(milliseconds);
 
@@ -417,6 +444,9 @@ function startCountdown(milliseconds, isIqamahCountdown) {
 
 // Helper function to update the countdown display
 function updateCountdownDisplay(milliseconds) {
+    // Safety check for negative milliseconds
+    if (milliseconds < 0) milliseconds = 0;
+
     const hours = Math.floor(milliseconds / 3600000);
     const minutes = Math.floor((milliseconds % 3600000) / 60000);
     const seconds = Math.floor((milliseconds % 60000) / 1000);
@@ -430,12 +460,26 @@ function updateCountdownDisplay(milliseconds) {
     if (secondsElement) secondsElement.textContent = seconds.toString().padStart(2, '0');
 }
 
+// Initialize countdown with zeros in case of errors
+function initializeCountdown() {
+    const hoursElement = document.getElementById('countdown-hours');
+    const minutesElement = document.getElementById('countdown-minutes');
+    const secondsElement = document.getElementById('countdown-seconds');
+
+    if (hoursElement) hoursElement.textContent = '00';
+    if (minutesElement) minutesElement.textContent = '00';
+    if (secondsElement) secondsElement.textContent = '00';
+}
+
 // Initialize the application when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', async function () {
     // Initialize Lucide icons if available
     if (typeof lucide !== 'undefined') {
         lucide.createIcons();
     }
+
+    // Initialize countdown display with zeros in case of errors
+    initializeCountdown();
 
     try {
         // Get prayer times for the current date
@@ -446,7 +490,16 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         // Update UI with prayer times and Iqamah times
         updatePrayerTimesUI(prayerData);
+
+        // Make sure the countdown starts properly by calling updateNextPrayer explicitly
+        if (prayerData) {
+            updateNextPrayer(prayerData);
+        }
     } catch (error) {
         console.error('Error initializing prayer times:', error);
+
+        // Fallback in case of error - use sample data
+        updatePrayerTimesUI(MAY_PRAYER_TIMES[0]);
+        updateNextPrayer(MAY_PRAYER_TIMES[0]);
     }
 }); 

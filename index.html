@@ -491,7 +491,7 @@
         lucide.createIcons();
       }
 
-      // Android detection and banner
+      // Android detection and banner - with increased delay
       function showAppBanner() {
         // Check if running on Android
         const isAndroid = /Android/i.test(navigator.userAgent);
@@ -517,8 +517,8 @@
         }
       }
 
-      // Show banner after a short delay
-      setTimeout(showAppBanner, 1000);
+      // Show banner after a 7 second delay
+      setTimeout(showAppBanner, 7000);
     });
 
     // Function to redirect to fullscreen page
