@@ -324,16 +324,32 @@
     </footer>
 
     <script>
-        // Initialize Lucide icons
+        // Initialize Lucide icons and handle fullscreen mode
         document.addEventListener('DOMContentLoaded', function () {
             if (typeof lucide !== 'undefined') {
                 lucide.createIcons();
             }
 
-            // Auto-enter fullscreen mode
-            document.documentElement.requestFullscreen().catch(e => {
-                console.log("Fullscreen request failed: ", e);
-            });
+            // Function to request fullscreen mode
+            function requestFullscreenMode() {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(e => {
+                        console.log("Fullscreen request failed: ", e);
+                        // If fullscreen request fails, redirect back to index.html
+                        window.location.href = 'index.html';
+                    });
+                }
+            }
+
+            // Try to enter fullscreen mode immediately 
+            requestFullscreenMode();
+
+            // If after a short delay we're still not in fullscreen, redirect back
+            setTimeout(function () {
+                if (!document.fullscreenElement) {
+                    window.location.href = 'index.html';
+                }
+            }, 1000);
         });
 
         // Listen for exit from fullscreen mode
