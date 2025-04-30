@@ -7,15 +7,14 @@
   <title>MTWS Iqāmah Times</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="https://cdn.jsdelivr.net/npm/hijri-converter@1.1.1/hijri-converter.min.js"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            'masjid-green': '#558422',
+            'masjid-green': '#72B02D',
             'masjid-light': '#f5f5f5',
-            'masjid-accent': '#72B02D',
+            'masjid-accent': '#558422',
             'masjid-dark': '#3A5C18',
           }
         }
@@ -26,38 +25,46 @@
   <style>
     body {
       font-family: 'Inter', sans-serif;
+      background-color: #72B02D;
     }
 
     .prayer-card {
-      transition: all 0.3s ease;
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 0.5rem;
+      transition: transform 0.2s;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
     .prayer-card:hover {
       transform: translateY(-5px);
     }
 
-    .wavy-divider {
-      height: 15px;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z' fill='white' opacity='1'%3E%3C/path%3E%3C/svg%3E");
-      background-size: cover;
+    .prayer-card.active {
+      background-color: #558422;
+      color: white;
     }
 
     .countdown-digit {
       font-variant-numeric: tabular-nums;
     }
+
+    .horizontal-line {
+      height: 2px;
+      background-color: rgba(255, 255, 255, 0.6);
+      margin: 2rem 0;
+    }
   </style>
-  <link rel="stylesheet" type="text/css" href="./index.css" />
 </head>
 
-<body class="bg-masjid-green min-h-screen">
+<body class="min-h-screen">
   <!-- Header with Date -->
-  <header class="pt-4 pb-2 px-4 text-white">
+  <header class="pt-6 pb-2 px-4 text-white">
     <div class="container mx-auto flex justify-between items-center">
-      <div class="text-lg">
-        <span id="gregorian-date">Loading date...</span>
+      <div class="text-lg font-light">
+        <span id="gregorian-date">Tuesday, April 29, 2025</span>
       </div>
-      <div class="text-lg text-right" dir="rtl">
-        <span id="hijri-date">Loading date...</span>
+      <div class="text-lg font-light text-right" dir="rtl">
+        <span id="hijri-date">الثلاثاء 1 ذو القعدة 1446</span>
       </div>
     </div>
   </header>
@@ -65,106 +72,100 @@
   <!-- Main content -->
   <main class="container mx-auto px-4 pb-8">
     <!-- Masjid Info -->
-    <div class="text-center text-white mb-4">
-      <h1 class="text-xl mb-1">Prayer times</h1>
+    <div class="text-center text-white mb-6">
+      <h1 class="text-xl mb-1 font-light">Prayer times</h1>
       <h2 class="text-3xl font-bold mb-1">Masjid Tawheed Was-Sunnah</h2>
       <p class="text-sm opacity-90">3714 South Alston Avenue, Durham, NC, USA</p>
     </div>
 
     <!-- Next Prayer Countdown -->
-    <div class="text-center text-white mb-6">
-      <p class="text-xl">The prayer of <span id="next-prayer-name">ISHA</span> is in</p>
+    <div class="text-center text-white mb-10">
+      <p class="text-xl font-light">The prayer of <span id="next-prayer-name">ISHA</span> is in</p>
       <div class="flex justify-center gap-2 my-2">
         <div class="text-7xl font-bold countdown-digit" id="countdown-hours">00</div>
         <div class="text-7xl font-bold">:</div>
-        <div class="text-7xl font-bold countdown-digit" id="countdown-minutes">00</div>
+        <div class="text-7xl font-bold countdown-digit" id="countdown-minutes">05</div>
         <div class="text-7xl font-bold">:</div>
-        <div class="text-7xl font-bold countdown-digit" id="countdown-seconds">00</div>
+        <div class="text-7xl font-bold countdown-digit" id="countdown-seconds">50</div>
       </div>
-      <div class="flex justify-center gap-2 text-sm">
+      <div class="flex justify-center gap-2 text-sm font-light">
         <div class="w-20 text-center">Hours</div>
         <div class="w-20 text-center">Minutes</div>
         <div class="w-20 text-center">Seconds</div>
       </div>
     </div>
 
-    <!-- Wavy Divider -->
-    <div class="wavy-divider w-full"></div>
+    <!-- Horizontal Line -->
+    <div class="horizontal-line"></div>
 
     <!-- Prayer Times Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-      <!-- Fajr -->
-      <div class="prayer-card bg-white rounded-lg shadow-lg overflow-hidden" id="fajr-card">
-        <div class="bg-masjid-light p-3 text-center text-masjid-accent font-bold">
-          FAJR
+    <div class="max-w-4xl mx-auto">
+      <div class="grid grid-cols-3 gap-4 mb-4">
+        <!-- Fajr -->
+        <div class="prayer-card p-4 text-center" id="fajr-card">
+          <div class="text-masjid-accent font-bold mb-2">
+            FAJR
+          </div>
+          <div class="text-4xl font-bold text-masjid-dark" id="fajr-time">5:45 AM</div>
+          <div class="mt-1 text-sm text-gray-600" id="fajr-iqamah">IQAMAH 5:45 AM</div>
         </div>
-        <div class="p-6 text-center">
-          <div class="text-5xl font-bold text-masjid-dark" id="fajr-time"></div>
-          <div class="mt-2 text-sm text-gray-600" id="fajr-iqamah"></div>
+
+        <!-- Sunrise -->
+        <div class="prayer-card p-4 text-center" id="sunrise-card">
+          <div class="text-masjid-accent font-bold mb-2">
+            SHURUQ
+          </div>
+          <div class="text-4xl font-bold text-masjid-dark" id="sunrise-time">6:25 AM</div>
+          <div class="mt-1 text-sm text-gray-600">&nbsp;</div>
+        </div>
+
+        <!-- Dhuhr -->
+        <div class="prayer-card p-4 text-center" id="dhuhr-card">
+          <div class="text-masjid-accent font-bold mb-2">
+            DHUHR
+          </div>
+          <div class="text-4xl font-bold text-masjid-dark" id="dhuhr-time">1:45 PM</div>
+          <div class="mt-1 text-sm text-gray-600" id="dhuhr-iqamah">IQAMAH 1:45 PM</div>
         </div>
       </div>
 
-      <!-- Sunrise -->
-      <div class="prayer-card bg-white rounded-lg shadow-lg overflow-hidden" id="sunrise-card">
-        <div class="bg-masjid-light p-3 text-center text-masjid-accent font-bold">
-          SHURUQ
+      <div class="grid grid-cols-3 gap-4">
+        <!-- Asr -->
+        <div class="prayer-card p-4 text-center" id="asr-card">
+          <div class="text-masjid-accent font-bold mb-2">
+            ASR
+          </div>
+          <div class="text-4xl font-bold text-masjid-dark" id="asr-time">5:15 PM</div>
+          <div class="mt-1 text-sm text-gray-600" id="asr-iqamah">IQAMAH 5:15 PM</div>
         </div>
-        <div class="p-6 text-center">
-          <div class="text-5xl font-bold text-masjid-dark" id="sunrise-time"></div>
-          <div class="mt-2 text-sm text-gray-600">&nbsp;</div>
-        </div>
-      </div>
 
-      <!-- Dhuhr -->
-      <div class="prayer-card bg-white rounded-lg shadow-lg overflow-hidden" id="dhuhr-card">
-        <div class="bg-masjid-light p-3 text-center text-masjid-accent font-bold">
-          DHUHR
+        <!-- Maghrib -->
+        <div class="prayer-card p-4 text-center" id="maghrib-card">
+          <div class="text-masjid-accent font-bold mb-2">
+            MAGHRIB
+          </div>
+          <div class="text-4xl font-bold text-masjid-dark" id="maghrib-time">8:10 PM</div>
+          <div class="mt-1 text-sm text-gray-600" id="maghrib-iqamah">IQAMAH 8:10 PM</div>
         </div>
-        <div class="p-6 text-center">
-          <div class="text-5xl font-bold text-masjid-dark" id="dhuhr-time"></div>
-          <div class="mt-2 text-sm text-gray-600" id="dhuhr-iqamah"></div>
-        </div>
-      </div>
 
-      <!-- Asr -->
-      <div class="prayer-card bg-white rounded-lg shadow-lg overflow-hidden" id="asr-card">
-        <div class="bg-masjid-light p-3 text-center text-masjid-accent font-bold">
-          ASR
-        </div>
-        <div class="p-6 text-center">
-          <div class="text-5xl font-bold text-masjid-dark" id="asr-time"></div>
-          <div class="mt-2 text-sm text-gray-600" id="asr-iqamah"></div>
-        </div>
-      </div>
-
-      <!-- Maghrib -->
-      <div class="prayer-card bg-white rounded-lg shadow-lg overflow-hidden" id="maghrib-card">
-        <div class="bg-masjid-light p-3 text-center text-masjid-accent font-bold">
-          MAGHRIB
-        </div>
-        <div class="p-6 text-center">
-          <div class="text-5xl font-bold text-masjid-dark" id="maghrib-time"></div>
-          <div class="mt-2 text-sm text-gray-600" id="maghrib-iqamah"></div>
-        </div>
-      </div>
-
-      <!-- Isha -->
-      <div class="prayer-card bg-white rounded-lg shadow-lg overflow-hidden" id="isha-card">
-        <div class="bg-masjid-light p-3 text-center text-masjid-accent font-bold">
-          ISHA
-        </div>
-        <div class="p-6 text-center">
-          <div class="text-5xl font-bold text-masjid-dark" id="isha-time"></div>
-          <div class="mt-2 text-sm text-gray-600" id="isha-iqamah"></div>
+        <!-- Isha -->
+        <div class="prayer-card p-4 text-center active" id="isha-card">
+          <div class="text-white font-bold mb-2">
+            ISHA
+          </div>
+          <div class="text-4xl font-bold text-white" id="isha-time">9:35 PM</div>
+          <div class="mt-1 text-sm text-white opacity-80" id="isha-iqamah">IQAMAH 9:35 PM</div>
         </div>
       </div>
     </div>
 
     <!-- Jumuah -->
-    <div class="mt-6 bg-white rounded-lg shadow-lg p-4 flex justify-between items-center">
-      <div class="text-xl font-bold text-masjid-accent">JUMUAH</div>
-      <div class="text-xl font-bold" id="jumuah-time"></div>
-      <div class="text-xl" id="jumuah-iqamah"></div>
+    <div class="max-w-4xl mx-auto mt-4">
+      <div class="prayer-card p-4 flex justify-between items-center">
+        <div class="text-xl font-bold text-masjid-accent">JUMUAH</div>
+        <div class="text-xl font-bold" id="jumuah-time">1:00 PM</div>
+        <div class="text-xl" id="jumuah-iqamah">IQAMAH 1:30 PM</div>
+      </div>
     </div>
 
     <!-- Mobile App Download Link -->
@@ -180,17 +181,12 @@
   </main>
 
   <!-- Footer -->
-  <footer class="bg-opacity-30 bg-black text-white py-6 mt-10">
+  <footer class="bg-opacity-20 bg-black text-white py-4 mt-10">
     <div class="container mx-auto px-4">
-      <div class="flex flex-col md:flex-row justify-between items-center">
-        <div class="mb-4 md:mb-0">
-          <img src="mtws-logo.png" alt="MTWS Logo" class="h-8 w-auto mb-2">
-          <p class="text-sm">Masjid Tawheed Was-Sunnah</p>
-        </div>
-        <div class="flex space-x-4">
-          <a href="https://mtws.one" target="_blank" class="text-gray-300 hover:text-white">mtws.one</a>
-          <a href="https://mtws.org" target="_blank" class="text-gray-300 hover:text-white">mtws.org</a>
-        </div>
+      <div class="flex justify-center items-center space-x-6">
+        <img src="mtws-logo.png" alt="MTWS Logo" class="h-6 w-auto">
+        <a href="https://mtws.one" target="_blank" class="text-gray-300 hover:text-white">mtws.one</a>
+        <a href="https://mtws.org" target="_blank" class="text-gray-300 hover:text-white">mtws.org</a>
       </div>
     </div>
   </footer>
