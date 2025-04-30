@@ -330,32 +330,30 @@
                 lucide.createIcons();
             }
 
-            // Function to request fullscreen mode
-            function requestFullscreenMode() {
-                if (!document.fullscreenElement) {
+            // Attempt to enter fullscreen mode after a short delay
+            setTimeout(function () {
+                try {
                     document.documentElement.requestFullscreen().catch(e => {
                         console.log("Fullscreen request failed: ", e);
-                        // If fullscreen request fails, redirect back to index.html
-                        window.location.href = 'index.html';
+                        // No redirect, just continue in non-fullscreen mode
                     });
+                } catch (error) {
+                    console.log("Error requesting fullscreen:", error);
                 }
-            }
-
-            // Try to enter fullscreen mode immediately 
-            requestFullscreenMode();
-
-            // If after a short delay we're still not in fullscreen, redirect back
-            setTimeout(function () {
-                if (!document.fullscreenElement) {
-                    window.location.href = 'index.html';
-                }
-            }, 1000);
+            }, 500); // Short delay for better efficiency
         });
 
-        // Listen for exit from fullscreen mode
+        // Always listen for ESC key (whether in fullscreen or not)
         document.addEventListener('fullscreenchange', function () {
             if (!document.fullscreenElement) {
-                // User has exited fullscreen mode (ESC key)
+                // Redirect when ESC is pressed (exiting fullscreen)
+                window.location.href = 'index.html';
+            }
+        });
+
+        // Also add a manual ESC key handler for browsers that might not trigger the fullscreenchange event
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
                 window.location.href = 'index.html';
             }
         });
