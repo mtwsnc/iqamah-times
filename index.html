@@ -23,9 +23,26 @@
   </script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <style>
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+    }
+
     body {
       font-family: 'Inter', sans-serif;
       background-color: #72B02D;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .page-content {
+      flex: 1 0 auto;
+    }
+
+    .footer {
+      flex-shrink: 0;
     }
 
     .prayer-card {
@@ -179,146 +196,149 @@
   </style>
 </head>
 
-<body class="min-h-screen">
-  <!-- Header with Date -->
-  <header class="pt-6 pb-2 px-4 text-white">
-    <div class="container mx-auto flex flex-col sm:flex-row justify-between items-center">
-      <div class="text-lg font-light mb-2 sm:mb-0 text-center sm:text-left">
-        <span id="gregorian-date">Monday, May 15, 2023</span>
+<body>
+  <div class="page-content">
+    <!-- Header with Date -->
+    <header class="pt-6 pb-2 px-4 text-white">
+      <div class="container mx-auto flex flex-col sm:flex-row justify-between items-center">
+        <div class="text-lg font-light mb-2 sm:mb-0 text-center sm:text-left">
+          <span id="gregorian-date">Monday, May 15, 2023</span>
+        </div>
+        <div class="text-lg font-light text-center sm:text-right">
+          <span id="hijri-date" class="hidden">Thu 17/11</span>
+          <span id="hijri-date-arabic" class="hijri-date-arabic">الأربعاء 2 ذو القعدة 1446</span>
+        </div>
       </div>
-      <div class="text-lg font-light text-center sm:text-right">
-        <span id="hijri-date" class="hidden">Thu 17/11</span>
-        <span id="hijri-date-arabic" class="hijri-date-arabic">الأربعاء 2 ذو القعدة 1446</span>
-      </div>
-    </div>
-  </header>
+    </header>
 
-  <!-- Main content -->
-  <main class="container mx-auto px-4 pb-8">
-    <!-- Masjid Info -->
-    <div class="text-center text-white mb-6">
-      <h1 class="text-xl mb-1 font-light">Prayer times</h1>
-      <div class="flex items-center justify-center">
-        <h2 class="text-3xl font-bold mb-1">Masjid Tawheed Was-Sunnah</h2>
-        <!-- Verification badge icon with custom tooltip -->
-        <div class="ml-2 tooltip">
-          <span class="text-white bg-masjid-accent rounded-full p-1 flex items-center justify-center">
-            <i data-lucide="check" class="w-4 h-4"></i>
+    <!-- Main content -->
+    <main class="container mx-auto px-4 pb-8">
+      <!-- Masjid Info -->
+      <div class="text-center text-white mb-6">
+        <h1 class="text-xl mb-1 font-light">Prayer times</h1>
+        <div class="flex items-center justify-center">
+          <h2 class="text-3xl font-bold mb-1">Masjid Tawheed Was-Sunnah</h2>
+          <!-- Verification badge icon with custom tooltip -->
+          <div class="ml-2 tooltip">
+            <span class="text-white bg-masjid-accent rounded-full p-1 flex items-center justify-center">
+              <i data-lucide="check" class="w-4 h-4"></i>
+            </span>
+            <span class="tooltip-text">Official Prayer Times Source</span>
+          </div>
+        </div>
+        <p class="text-sm opacity-90">3714 South Alston Avenue, Durham, NC, USA</p>
+      </div>
+
+      <!-- Next Prayer Countdown -->
+      <div class="text-center text-white mb-10">
+        <p class="text-xl font-light" id="countdown-label">The prayer of <span id="next-prayer-name">FAJR</span> is in
+        </p>
+        <div class="countdown-container flex justify-center gap-2 my-2">
+          <div class="text-5xl sm:text-7xl font-bold countdown-digit" id="countdown-hours">00</div>
+          <div class="text-5xl sm:text-7xl font-bold">:</div>
+          <div class="text-5xl sm:text-7xl font-bold countdown-digit" id="countdown-minutes">05</div>
+          <div class="text-5xl sm:text-7xl font-bold">:</div>
+          <div class="text-5xl sm:text-7xl font-bold countdown-digit" id="countdown-seconds">47</div>
+        </div>
+        <div class="countdown-labels flex justify-center gap-2 text-sm font-light">
+          <div class="w-16 sm:w-20 text-center">Hours</div>
+          <div class="w-16 sm:w-20 text-center">Minutes</div>
+          <div class="w-16 sm:w-20 text-center">Seconds</div>
+        </div>
+      </div>
+
+      <!-- Wavy Divider -->
+      <div class="wavy-divider">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
+          <path fill="#FFFFFF" fill-opacity="0.3"
+            d="M0,224L48,208C96,192,192,160,288,160C384,160,480,192,576,197.3C672,203,768,181,864,186.7C960,192,1056,224,1152,224C1248,224,1344,192,1392,176L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z">
+          </path>
+        </svg>
+      </div>
+
+      <!-- Prayer Times Cards - 2x3 Grid Layout -->
+      <div class="max-w-4xl mx-auto">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+          <!-- Fajr -->
+          <div class="prayer-card flex flex-col h-full" id="fajr-card">
+            <div class="prayer-name text-lg">
+              FAJR
+            </div>
+            <div class="prayer-time" id="fajr-iqamah">4:49 AM</div>
+            <div class="adhan-time">COMES IN AT: <span id="fajr-time">4:49 AM</span></div>
+          </div>
+
+          <!-- Sunrise -->
+          <div class="prayer-card flex flex-col h-full" id="sunrise-card">
+            <div class="prayer-name text-lg">
+              SHURUQ
+            </div>
+            <div class="prayer-time" id="sunrise-time">6:10 AM</div>
+            <div class="adhan-time">&nbsp;</div>
+          </div>
+
+          <!-- Dhuhr -->
+          <div class="prayer-card flex flex-col h-full" id="dhuhr-card">
+            <div class="prayer-name text-lg">
+              DHUHR
+            </div>
+            <div class="prayer-time" id="dhuhr-iqamah">1:12 PM</div>
+            <div class="adhan-time">COMES IN AT: <span id="dhuhr-time">1:12 PM</span></div>
+          </div>
+
+          <!-- Asr -->
+          <div class="prayer-card flex flex-col h-full" id="asr-card">
+            <div class="prayer-name text-lg">
+              ASR
+            </div>
+            <div class="prayer-time" id="asr-iqamah">5:00 PM</div>
+            <div class="adhan-time">COMES IN AT: <span id="asr-time">5:00 PM</span></div>
+          </div>
+
+          <!-- Maghrib -->
+          <div class="prayer-card flex flex-col h-full" id="maghrib-card">
+            <div class="prayer-name text-lg">
+              MAGHRIB
+            </div>
+            <div class="prayer-time" id="maghrib-iqamah">8:14 PM</div>
+            <div class="adhan-time">COMES IN AT: <span id="maghrib-time">8:14 PM</span></div>
+          </div>
+
+          <!-- Isha -->
+          <div class="prayer-card flex flex-col h-full" id="isha-card">
+            <div class="prayer-name text-lg">
+              ISHA
+            </div>
+            <div class="prayer-time" id="isha-iqamah">9:36 PM</div>
+            <div class="adhan-time">COMES IN AT: <span id="isha-time">9:36 PM</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Jumuah - Full width -->
+      <div class="max-w-4xl mx-auto mt-4">
+        <div class="prayer-card flex flex-col w-full" id="jumuah-card">
+          <div class="prayer-name text-lg">JUMUAH</div>
+          <div class="prayer-time" id="jumuah-iqamah">1:30 PM</div>
+          <div class="adhan-time">COMES IN AT: <span id="jumuah-time">1:00 PM</span></div>
+        </div>
+      </div>
+
+      <!-- Mobile App Download Link -->
+      <div class="mt-8 text-center">
+        <a href="https://drive.google.com/file/d/1HqCLH1b7XIMuiZvGAFNiUqa_LrXHE6Nv/view?usp=drive_link"
+          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-masjid-accent hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-masjid-accent">
+          <span class="mr-2">
+            <i data-lucide="download" class="w-4 h-4"></i>
           </span>
-          <span class="tooltip-text">Official Prayer Times Source</span>
-        </div>
+          Download the Android App
+        </a>
       </div>
-      <p class="text-sm opacity-90">3714 South Alston Avenue, Durham, NC, USA</p>
-    </div>
-
-    <!-- Next Prayer Countdown -->
-    <div class="text-center text-white mb-10">
-      <p class="text-xl font-light" id="countdown-label">The prayer of <span id="next-prayer-name">FAJR</span> is in</p>
-      <div class="countdown-container flex justify-center gap-2 my-2">
-        <div class="text-5xl sm:text-7xl font-bold countdown-digit" id="countdown-hours">00</div>
-        <div class="text-5xl sm:text-7xl font-bold">:</div>
-        <div class="text-5xl sm:text-7xl font-bold countdown-digit" id="countdown-minutes">05</div>
-        <div class="text-5xl sm:text-7xl font-bold">:</div>
-        <div class="text-5xl sm:text-7xl font-bold countdown-digit" id="countdown-seconds">47</div>
-      </div>
-      <div class="countdown-labels flex justify-center gap-2 text-sm font-light">
-        <div class="w-16 sm:w-20 text-center">Hours</div>
-        <div class="w-16 sm:w-20 text-center">Minutes</div>
-        <div class="w-16 sm:w-20 text-center">Seconds</div>
-      </div>
-    </div>
-
-    <!-- Wavy Divider -->
-    <div class="wavy-divider">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
-        <path fill="#FFFFFF" fill-opacity="0.3"
-          d="M0,224L48,208C96,192,192,160,288,160C384,160,480,192,576,197.3C672,203,768,181,864,186.7C960,192,1056,224,1152,224C1248,224,1344,192,1392,176L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z">
-        </path>
-      </svg>
-    </div>
-
-    <!-- Prayer Times Cards - 2x3 Grid Layout -->
-    <div class="max-w-4xl mx-auto">
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-        <!-- Fajr -->
-        <div class="prayer-card flex flex-col h-full" id="fajr-card">
-          <div class="prayer-name text-lg">
-            FAJR
-          </div>
-          <div class="prayer-time" id="fajr-iqamah">4:49 AM</div>
-          <div class="adhan-time">COMES IN AT: <span id="fajr-time">4:49 AM</span></div>
-        </div>
-
-        <!-- Sunrise -->
-        <div class="prayer-card flex flex-col h-full" id="sunrise-card">
-          <div class="prayer-name text-lg">
-            SHURUQ
-          </div>
-          <div class="prayer-time" id="sunrise-time">6:10 AM</div>
-          <div class="adhan-time">&nbsp;</div>
-        </div>
-
-        <!-- Dhuhr -->
-        <div class="prayer-card flex flex-col h-full" id="dhuhr-card">
-          <div class="prayer-name text-lg">
-            DHUHR
-          </div>
-          <div class="prayer-time" id="dhuhr-iqamah">1:12 PM</div>
-          <div class="adhan-time">COMES IN AT: <span id="dhuhr-time">1:12 PM</span></div>
-        </div>
-
-        <!-- Asr -->
-        <div class="prayer-card flex flex-col h-full" id="asr-card">
-          <div class="prayer-name text-lg">
-            ASR
-          </div>
-          <div class="prayer-time" id="asr-iqamah">5:00 PM</div>
-          <div class="adhan-time">COMES IN AT: <span id="asr-time">5:00 PM</span></div>
-        </div>
-
-        <!-- Maghrib -->
-        <div class="prayer-card flex flex-col h-full" id="maghrib-card">
-          <div class="prayer-name text-lg">
-            MAGHRIB
-          </div>
-          <div class="prayer-time" id="maghrib-iqamah">8:14 PM</div>
-          <div class="adhan-time">COMES IN AT: <span id="maghrib-time">8:14 PM</span></div>
-        </div>
-
-        <!-- Isha -->
-        <div class="prayer-card flex flex-col h-full" id="isha-card">
-          <div class="prayer-name text-lg">
-            ISHA
-          </div>
-          <div class="prayer-time" id="isha-iqamah">9:36 PM</div>
-          <div class="adhan-time">COMES IN AT: <span id="isha-time">9:36 PM</span></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Jumuah - Full width -->
-    <div class="max-w-4xl mx-auto mt-4">
-      <div class="prayer-card flex flex-col w-full" id="jumuah-card">
-        <div class="prayer-name text-lg">JUMUAH</div>
-        <div class="prayer-time" id="jumuah-iqamah">1:30 PM</div>
-        <div class="adhan-time">COMES IN AT: <span id="jumuah-time">1:00 PM</span></div>
-      </div>
-    </div>
-
-    <!-- Mobile App Download Link -->
-    <div class="mt-8 text-center">
-      <a href="https://drive.google.com/file/d/1HqCLH1b7XIMuiZvGAFNiUqa_LrXHE6Nv/view?usp=drive_link"
-        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-masjid-accent hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-masjid-accent">
-        <span class="mr-2">
-          <i data-lucide="download" class="w-4 h-4"></i>
-        </span>
-        Download the Android App
-      </a>
-    </div>
-  </main>
+    </main>
+  </div>
 
   <!-- Footer -->
-  <footer class="bg-opacity-20 bg-black text-white py-4 mt-10">
+  <footer class="footer bg-opacity-20 bg-black text-white py-4 mt-6">
     <div class="container mx-auto px-4">
       <div class="flex flex-col sm:flex-row justify-center items-center space-y-3 sm:space-y-0 sm:space-x-6">
         <img src="mtws-logo.png" alt="MTWS Logo" class="h-6 w-auto">
