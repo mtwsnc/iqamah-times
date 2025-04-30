@@ -16,6 +16,18 @@
 - [x] Change the title to "MTWS Iqāmah Times"
 - [x] Remove admin access and restore buttons
 
+## New Design Tasks (Based on Reference Design)
+- [ ] Implement green color scheme with modern UI
+- [ ] Add both Gregorian and Hijri date display
+- [ ] Create card-based layout for each prayer time
+- [ ] Highlight current/next prayer time in a different color
+- [ ] Display countdown timer until next prayer
+- [ ] Show Iqamah times below prayer times
+- [ ] Add special styling for Jumuah (Friday) prayer
+- [ ] Implement large, clean typography for time displays
+- [ ] Add masjid address information
+- [ ] Create responsive design that works on digital signage and mobile
+
 ## Features
 - [x] Integrate Lucide icons for better visual elements
 - [x] Add proper header with MTWS branding
@@ -27,4 +39,8 @@
 - [x] Optimize backend API requests
 - [x] Implement proper error handling with user-friendly messages
 - [x] Ensure cross-browser compatibility
-- [x] Archive original files to the "/old" directory 
+- [x] Archive original files to the "/old" directory
+- [ ] Add functionality to calculate and display next prayer time
+- [ ] Create countdown timer functionality with JavaScript
+- [ ] Detect current prayer based on time and highlight it
+- [ ] Implement Hijri date conversion 
