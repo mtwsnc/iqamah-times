@@ -135,7 +135,7 @@
         <span id="gregorian-date">Monday, May 15, 2023</span>
       </div>
       <div class="text-lg font-light text-center sm:text-right">
-        <span id="hijri-date-english" class="hidden">Thu 17/11</span>
+        <span id="hijri-date" class="hidden">Thu 17/11</span>
         <span id="hijri-date-arabic" class="hijri-date-arabic">الأربعاء 2 ذو القعدة 1446</span>
       </div>
     </div>
@@ -302,11 +302,10 @@
       const today = new Date();
       today.setDate(today.getDate() - 1);
 
-      // Get current Hijri date from the UI (as a fallback)
-      const hijriElement = document.getElementById('hijri-date-english');
-      let hijriDay = 2; // Default value from example: الأربعاء 2 ذو القعدة 1446
+      // Default values from example: الأربعاء 2 ذو القعدة 1446
+      let hijriDay = 2;
       let hijriMonth = 10; // Dhu al-Qi'dah (ذو القعدة) is the 11th month (index 10)
-      let hijriYear = 1446; // Default year from example
+      let hijriYear = 1446;
 
       // Get weekday
       const dayOfWeek = today.getDay(); // 0-6 (Sunday-Saturday)
@@ -316,12 +315,16 @@
       const arabicDate = `${arabicDayName} ${hijriDay} ${arabicMonths[hijriMonth]} ${hijriYear}`;
 
       // Update the display
-      document.getElementById('hijri-date-arabic').textContent = arabicDate;
+      const hijriDateArabic = document.getElementById('hijri-date-arabic');
+      if (hijriDateArabic) {
+        hijriDateArabic.textContent = arabicDate;
+      }
     }
 
-    // Run once the DOM is loaded
-    document.addEventListener('DOMContentLoaded', function () {
-      getArabicHijriDate();
+    // Run after main JS is loaded to not interfere with core functionality
+    window.addEventListener('load', function () {
+      // Wait a short delay to ensure main script has initialized
+      setTimeout(getArabicHijriDate, 500);
     });
   </script>
 </body>

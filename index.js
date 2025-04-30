@@ -202,7 +202,12 @@ function updatePrayerTimesUI(prayerData) {
     });
 
     document.getElementById('gregorian-date').textContent = gregorianDate;
-    document.getElementById('hijri-date').textContent = `${prayerData.weekday} ${prayerData.hijri}`;
+
+    // Update the hidden Hijri date for compatibility
+    const hijriDateElement = document.getElementById('hijri-date');
+    if (hijriDateElement) {
+        hijriDateElement.textContent = `${prayerData.weekday} ${prayerData.hijri}`;
+    }
 
     // Update prayer times with proper format handling
 
@@ -300,14 +305,19 @@ function updateNextPrayer(prayerData) {
     }
 
     // Update the UI with next prayer info
-    document.getElementById('next-prayer-name').textContent = nextPrayer.name;
+    const nextPrayerNameElement = document.getElementById('next-prayer-name');
+    if (nextPrayerNameElement) {
+        nextPrayerNameElement.textContent = nextPrayer.name;
+    }
 
     // Update countdown label based on whether we're counting down to Adhan or Iqamah
     const countdownLabel = document.getElementById('countdown-label');
-    if (isIqamahCountdown) {
-        countdownLabel.textContent = 'IQAMAH at MTWS IN:';
-    } else {
-        countdownLabel.textContent = 'The prayer of ' + nextPrayer.name + ' is in';
+    if (countdownLabel) {
+        if (isIqamahCountdown) {
+            countdownLabel.textContent = 'IQAMAH at MTWS IN:';
+        } else {
+            countdownLabel.textContent = 'The prayer of ' + nextPrayer.name + ' is in';
+        }
     }
 
     // Reset all prayer card styles
@@ -411,9 +421,13 @@ function updateCountdownDisplay(milliseconds) {
     const minutes = Math.floor((milliseconds % 3600000) / 60000);
     const seconds = Math.floor((milliseconds % 60000) / 1000);
 
-    document.getElementById('countdown-hours').textContent = hours.toString().padStart(2, '0');
-    document.getElementById('countdown-minutes').textContent = minutes.toString().padStart(2, '0');
-    document.getElementById('countdown-seconds').textContent = seconds.toString().padStart(2, '0');
+    const hoursElement = document.getElementById('countdown-hours');
+    const minutesElement = document.getElementById('countdown-minutes');
+    const secondsElement = document.getElementById('countdown-seconds');
+
+    if (hoursElement) hoursElement.textContent = hours.toString().padStart(2, '0');
+    if (minutesElement) minutesElement.textContent = minutes.toString().padStart(2, '0');
+    if (secondsElement) secondsElement.textContent = seconds.toString().padStart(2, '0');
 }
 
 // Initialize the application when the DOM is fully loaded
@@ -423,12 +437,16 @@ document.addEventListener('DOMContentLoaded', async function () {
         lucide.createIcons();
     }
 
-    // Get prayer times for the current date
-    const prayerData = getPrayerTimesForDate(CURRENT_DATE);
+    try {
+        // Get prayer times for the current date
+        const prayerData = getPrayerTimesForDate(CURRENT_DATE);
 
-    // Fetch Iqamah times from API
-    iqamahTimes = await fetchIqamahTimes();
+        // Fetch Iqamah times from API
+        iqamahTimes = await fetchIqamahTimes();
 
-    // Update UI with prayer times and Iqamah times
-    updatePrayerTimesUI(prayerData);
+        // Update UI with prayer times and Iqamah times
+        updatePrayerTimesUI(prayerData);
+    } catch (error) {
+        console.error('Error initializing prayer times:', error);
+    }
 }); 
