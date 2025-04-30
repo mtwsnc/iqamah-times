@@ -52,7 +52,7 @@
 - [x] Convert all times from 24-hour to 12-hour format with AM/PM
 - [x] Pull Adhan prayer times from the MD table files (may.md and june.md)
 - [ ] Pull Iqamah times from the dataplicity API
-- [ ] Use the "sunrise" column from MD files for Shuruq times
+- [x] Use the "sunrise" column from MD files for Shuruq times
 - [ ] Ensure correct styling for all prayer cards (active and inactive states)
 - [ ] Fix mobile responsiveness issues 
 
