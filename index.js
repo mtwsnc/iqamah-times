@@ -22,6 +22,21 @@ const SAMPLE_PRAYER_TIMES = {
     jumuah: { time: '1:00 PM', iqamah: '1:30 PM' }
 };
 
+// Debug mode flag
+let isDebugMode = false;
+
+// Admin mode flag
+let isAdminMode = false;
+
+// For testing - use a specific date
+const TEST_DATE = new Date(2023, 4, 15); // May 15, 2023
+
+// Get the current date
+const CURRENT_DATE = new Date();
+
+// Store Iqamah times fetched from API
+let iqamahTimes = null;
+
 // May and June prayer times from markdown files
 const MAY_PRAYER_TIMES = [
     { day: 1, hijri: "3/11", weekday: "Thu", fajr: "5:06", sunrise: "6:23", dhuhr: "1:13", asr: "4:59", maghrib: "8:03", isha: "9:21" },
@@ -90,14 +105,215 @@ const JUNE_PRAYER_TIMES = [
     { day: 30, hijri: "4/1", weekday: "Mon", fajr: "4:35", sunrise: "6:01", dhuhr: "1:20", asr: "5:09", maghrib: "8:37", isha: "10:04" }
 ];
 
-// For testing - use a specific date
-const TEST_DATE = new Date(2023, 4, 15); // May 15, 2023
+// Debug hooks for testing
+const debugHooks = {
+    // Set custom date for testing
+    setDate: function (year, month, day, hours = 0, minutes = 0) {
+        const customDate = new Date(year, month - 1, day, hours, minutes);
+        window.TESTING_DATE = customDate;
+        console.log(`Debug: Set custom date to ${customDate.toLocaleString()}`);
+        refreshWithCustomDate();
+        return customDate;
+    },
 
-// Get the current date
-const CURRENT_DATE = new Date();
+    // Set time to 5 minutes before a specific prayer
+    setTimeBeforePrayer: function (prayerName, minutesBefore = 5) {
+        const prayerData = getPrayerTimesForDate(window.TESTING_DATE || CURRENT_DATE);
+        const lowerPrayerName = prayerName.toLowerCase();
 
-// Store Iqamah times fetched from API
-let iqamahTimes = null;
+        if (!prayerData[lowerPrayerName]) {
+            console.error(`Debug: Invalid prayer name: ${prayerName}`);
+            return;
+        }
+
+        const prayerDate = createTimeDate(window.TESTING_DATE || CURRENT_DATE, prayerData[lowerPrayerName], lowerPrayerName);
+        prayerDate.setMinutes(prayerDate.getMinutes() - minutesBefore);
+        window.TESTING_DATE = prayerDate;
+        console.log(`Debug: Set time to ${minutesBefore} minutes before ${prayerName}: ${prayerDate.toLocaleString()}`);
+        refreshWithCustomDate();
+        return prayerDate;
+    },
+
+    // Set custom prayer times for testing
+    setPrayerTimes: function (customTimes) {
+        window.CUSTOM_PRAYER_TIMES = customTimes;
+        console.log('Debug: Set custom prayer times:', customTimes);
+        refreshWithCustomDate();
+        return customTimes;
+    },
+
+    // Reset debug mode (return to normal operation)
+    reset: function () {
+        window.TESTING_DATE = null;
+        window.CUSTOM_PRAYER_TIMES = null;
+        console.log('Debug: Reset to normal operation');
+        window.location.reload();
+    },
+
+    // Test countdown with custom minutes
+    testCountdown: function (minutes) {
+        const milliseconds = minutes * 60 * 1000;
+        console.log(`Debug: Testing countdown with ${minutes} minutes`);
+        startCountdown(milliseconds, false);
+        return milliseconds;
+    },
+
+    // Force highlight a specific prayer card
+    highlightPrayer: function (prayerName) {
+        resetPrayerCardStyles();
+        const prayerCard = document.getElementById(`${prayerName.toLowerCase()}-card`);
+        if (prayerCard) {
+            prayerCard.classList.add('active');
+            console.log(`Debug: Highlighted prayer card: ${prayerName}`);
+        } else {
+            console.error(`Debug: Prayer card not found: ${prayerName}`);
+        }
+    }
+};
+
+// Admin documentation HTML
+const adminDocsHTML = `
+<div id="admin-documentation" class="bg-white text-black p-6 my-4 rounded-lg shadow-lg max-w-4xl mx-auto">
+    <h2 class="text-2xl font-bold text-masjid-accent mb-4">Admin Documentation</h2>
+    
+    <div class="mb-6">
+        <h3 class="text-xl font-semibold mb-2">Updating Prayer Times</h3>
+        <p class="mb-2">Prayer times are retrieved from two sources:</p>
+        <ul class="list-disc pl-6 mb-4">
+            <li class="mb-1"><strong>Adhan times:</strong> Stored in month-specific markdown files (may.md, june.md)</li>
+            <li class="mb-1"><strong>Iqamah times:</strong> Retrieved from the API at <code class="bg-gray-100 px-1 rounded">${apiUrl}</code></li>
+        </ul>
+        <p class="mb-2"><strong>To update Adhan times:</strong></p>
+        <ol class="list-decimal pl-6 mb-4">
+            <li class="mb-1">Edit the markdown files (may.md, june.md, etc.) with the correct prayer times</li>
+            <li class="mb-1">Follow the same format as existing entries (day, hijri, weekday, times)</li>
+            <li class="mb-1">Create new month files as needed following the same structure</li>
+        </ol>
+        <p class="mb-2"><strong>To update Iqamah times:</strong></p>
+        <ol class="list-decimal pl-6">
+            <li class="mb-1">Access the API server and update the Iqamah times data</li>
+            <li class="mb-1">The API returns times based on the day of the week</li>
+            <li class="mb-1">The format should be an array of times: [Fajr, Dhuhr, Asr, Maghrib, Isha]</li>
+        </ol>
+    </div>
+    
+    <div class="mb-6">
+        <h3 class="text-xl font-semibold mb-2">How the System Works</h3>
+        <p class="mb-2">The application follows this workflow:</p>
+        <ol class="list-decimal pl-6">
+            <li class="mb-1">Loads prayer times from month files based on current date</li>
+            <li class="mb-1">Fetches Iqamah times from the API</li>
+            <li class="mb-1">Calculates which prayer is next</li>
+            <li class="mb-1">Displays countdown to the next prayer time</li>
+            <li class="mb-1">Highlights the card for the next prayer</li>
+            <li class="mb-1">Automatically refreshes when the next prayer time is reached</li>
+        </ol>
+    </div>
+    
+    <div class="mb-6">
+        <h3 class="text-xl font-semibold mb-2">Fullscreen Mode</h3>
+        <p class="mb-2">To use fullscreen mode:</p>
+        <ol class="list-decimal pl-6">
+            <li class="mb-1">Click the "Enter Fullscreen Mode" button at the bottom of the page</li>
+            <li class="mb-1">Or navigate directly to <code class="bg-gray-100 px-1 rounded">fullscreen.html</code></li>
+            <li class="mb-1">Press F11 in most browsers to enable browser fullscreen</li>
+            <li class="mb-1">Ideal for displaying on mosque screens or digital signage</li>
+        </ol>
+    </div>
+    
+    <div class="mb-6">
+        <h3 class="text-xl font-semibold mb-2">Debug Hooks (Console)</h3>
+        <p class="mb-2">Use these JavaScript console commands for testing:</p>
+        <div class="bg-gray-100 p-3 rounded font-mono text-sm mb-4">
+            <div><span class="text-blue-600">window</span>.debug.setDate(<span class="text-green-600">2023, 5, 15</span>); <span class="text-gray-500">// Set custom date (year, month, day)</span></div>
+            <div><span class="text-blue-600">window</span>.debug.setTimeBeforePrayer(<span class="text-green-600">'asr', 5</span>); <span class="text-gray-500">// Set time 5 min before Asr</span></div>
+            <div><span class="text-blue-600">window</span>.debug.testCountdown(<span class="text-green-600">10</span>); <span class="text-gray-500">// Test countdown with 10 minutes</span></div>
+            <div><span class="text-blue-600">window</span>.debug.highlightPrayer(<span class="text-green-600">'maghrib'</span>); <span class="text-gray-500">// Highlight Maghrib prayer card</span></div>
+            <div><span class="text-blue-600">window</span>.debug.reset(); <span class="text-gray-500">// Reset to normal operation</span></div>
+        </div>
+    </div>
+    
+    <button onclick="hideAdminDocs()" class="bg-masjid-accent text-white py-2 px-4 rounded hover:bg-opacity-90 focus:outline-none">
+        Close Documentation
+    </button>
+</div>
+`;
+
+// Check for URL parameters to enable debug/admin mode
+function checkUrlParams() {
+    const urlParams = new URLSearchParams(window.location.search);
+
+    // Check for debug mode
+    if (urlParams.has('debug')) {
+        isDebugMode = true;
+        console.log('Debug mode enabled');
+    }
+
+    // Check for admin mode
+    if (urlParams.has('admin') && urlParams.get('admin') === 'true') {
+        const street = urlParams.get('street');
+        if (street && street.toLowerCase().includes('south-alston')) {
+            isAdminMode = true;
+            console.log('Admin mode enabled');
+            setTimeout(showAdminDocs, 500); // Show admin docs after a short delay
+        }
+    }
+}
+
+// Show admin documentation 
+function showAdminDocs() {
+    // Create container for admin docs if it doesn't exist
+    let adminDocsContainer = document.getElementById('admin-documentation-container');
+    if (!adminDocsContainer) {
+        adminDocsContainer = document.createElement('div');
+        adminDocsContainer.id = 'admin-documentation-container';
+
+        // Find a good place to insert the docs (after the prayer cards)
+        const container = document.querySelector('.max-w-4xl.mx-auto');
+        if (container) {
+            container.parentNode.insertBefore(adminDocsContainer, container.nextSibling);
+        } else {
+            document.querySelector('main').appendChild(adminDocsContainer);
+        }
+    }
+
+    // Insert admin documentation
+    adminDocsContainer.innerHTML = adminDocsHTML;
+
+    // Show admin notice
+    showAdminNotice('Admin mode enabled. Documentation is displayed below.');
+}
+
+// Hide admin documentation
+function hideAdminDocs() {
+    const adminDocsContainer = document.getElementById('admin-documentation-container');
+    if (adminDocsContainer) {
+        adminDocsContainer.innerHTML = '';
+    }
+}
+
+// Refresh the UI with a custom date
+function refreshWithCustomDate() {
+    try {
+        const date = window.TESTING_DATE || CURRENT_DATE;
+        let prayerData;
+
+        if (window.CUSTOM_PRAYER_TIMES) {
+            prayerData = window.CUSTOM_PRAYER_TIMES;
+        } else {
+            prayerData = getPrayerTimesForDate(date);
+        }
+
+        updatePrayerTimesUI(prayerData);
+        updateNextPrayer(prayerData);
+
+        if (isDebugMode) {
+            showAdminNotice(`DEBUG MODE: Using date ${date.toLocaleString()}`);
+        }
+    } catch (error) {
+        console.error('Error refreshing with custom date:', error);
+    }
+}
 
 // Function to fetch Iqamah times from the API
 async function fetchIqamahTimes() {
@@ -288,12 +504,25 @@ function updatePrayerTimesUI(prayerData) {
     }
 
     // Format dates for display
-    const gregorianDate = CURRENT_DATE.toLocaleDateString('en-US', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
+    let gregorianDate;
+
+    if (window.TESTING_DATE) {
+        // If in debug mode with a test date, use that
+        gregorianDate = window.TESTING_DATE.toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    } else {
+        // Otherwise use the current date
+        gregorianDate = CURRENT_DATE.toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    }
 
     // Safely set element text content
     const setTextContent = (id, text) => {
@@ -366,7 +595,7 @@ function updateNextPrayer(prayerData) {
     }
 
     try {
-        const now = new Date(); // Use current date and time
+        const now = window.TESTING_DATE || new Date(); // Use test date if available
 
         // Convert 24h times to Date objects for comparison
         const prayerTimes = [
@@ -592,6 +821,9 @@ function initializeCountdown() {
 
 // Initialize the application when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', async function () {
+    // First check URL parameters for debug/admin mode
+    checkUrlParams();
+
     // Initialize Lucide icons if available
     if (typeof lucide !== 'undefined') {
         lucide.createIcons();
@@ -605,9 +837,13 @@ document.addEventListener('DOMContentLoaded', async function () {
         showAdminNotice(message);
     };
 
+    // Expose debug hooks to window for console access
+    window.debug = debugHooks;
+
     try {
-        // Get prayer times for the current date
-        const prayerData = getPrayerTimesForDate(CURRENT_DATE);
+        // Get prayer times for the current or test date
+        const dateToUse = window.TESTING_DATE || CURRENT_DATE;
+        const prayerData = getPrayerTimesForDate(dateToUse);
 
         // Fetch Iqamah times from API
         iqamahTimes = await fetchIqamahTimes();
@@ -618,6 +854,11 @@ document.addEventListener('DOMContentLoaded', async function () {
         // Make sure the countdown starts properly by calling updateNextPrayer explicitly
         if (prayerData) {
             updateNextPrayer(prayerData);
+        }
+
+        // If in debug mode, show a notice
+        if (isDebugMode) {
+            showAdminNotice('Debug mode enabled. Use window.debug functions in console for testing.');
         }
     } catch (error) {
         console.error('Error initializing prayer times:', error);

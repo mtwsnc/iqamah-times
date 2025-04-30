@@ -79,3 +79,9 @@
 - [x] Update the Jumuah card to show both prayer time and Iqamah time in the same format
 - [x] Keep the current card-based grid layout but ensure consistent spacing
 - [x] Maintain highlight for current/next prayer 
+
+## Development Tools and Debugging
+- [x] Add debug hooks for main functions in JS for testing purposes
+- [x] Implement admin documentation mode activated via URL parameters
+- [x] Create documentation on how to update adhan times and system functionality
+- [x] Add instructions for fullscreen mode in admin documentation 
