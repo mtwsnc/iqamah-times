@@ -61,10 +61,10 @@
   <header class="pt-6 pb-2 px-4 text-white">
     <div class="container mx-auto flex justify-between items-center">
       <div class="text-lg font-light">
-        <span id="gregorian-date">Tuesday, April 29, 2025</span>
+        <span id="gregorian-date">Monday, May 15, 2023</span>
       </div>
-      <div class="text-lg font-light text-right" dir="rtl">
-        <span id="hijri-date">الثلاثاء 1 ذو القعدة 1446</span>
+      <div class="text-lg font-light text-right">
+        <span id="hijri-date">Thu 17/11</span>
       </div>
     </div>
   </header>
@@ -80,13 +80,13 @@
 
     <!-- Next Prayer Countdown -->
     <div class="text-center text-white mb-10">
-      <p class="text-xl font-light">The prayer of <span id="next-prayer-name">ISHA</span> is in</p>
+      <p class="text-xl font-light">The prayer of <span id="next-prayer-name">FAJR</span> is in</p>
       <div class="flex justify-center gap-2 my-2">
         <div class="text-7xl font-bold countdown-digit" id="countdown-hours">00</div>
         <div class="text-7xl font-bold">:</div>
         <div class="text-7xl font-bold countdown-digit" id="countdown-minutes">05</div>
         <div class="text-7xl font-bold">:</div>
-        <div class="text-7xl font-bold countdown-digit" id="countdown-seconds">50</div>
+        <div class="text-7xl font-bold countdown-digit" id="countdown-seconds">47</div>
       </div>
       <div class="flex justify-center gap-2 text-sm font-light">
         <div class="w-20 text-center">Hours</div>
@@ -106,8 +106,8 @@
           <div class="text-masjid-accent font-bold mb-2">
             FAJR
           </div>
-          <div class="text-4xl font-bold text-masjid-dark" id="fajr-time">5:45 AM</div>
-          <div class="mt-1 text-sm text-gray-600" id="fajr-iqamah">IQAMAH 5:45 AM</div>
+          <div class="mt-1 text-5xl font-bold text-masjid-dark" id="fajr-iqamah">4:49 AM</div>
+          <div class="text-xs font-medium text-gray-600 mt-2">COMES IN AT: <span id="fajr-time">4:49 AM</span></div>
         </div>
 
         <!-- Sunrise -->
@@ -115,8 +115,8 @@
           <div class="text-masjid-accent font-bold mb-2">
             SHURUQ
           </div>
-          <div class="text-4xl font-bold text-masjid-dark" id="sunrise-time">6:25 AM</div>
-          <div class="mt-1 text-sm text-gray-600">&nbsp;</div>
+          <div class="text-5xl font-bold text-masjid-dark" id="sunrise-time">6:10 AM</div>
+          <div class="mt-1 text-xs text-gray-600">&nbsp;</div>
         </div>
 
         <!-- Dhuhr -->
@@ -124,8 +124,8 @@
           <div class="text-masjid-accent font-bold mb-2">
             DHUHR
           </div>
-          <div class="text-4xl font-bold text-masjid-dark" id="dhuhr-time">1:45 PM</div>
-          <div class="mt-1 text-sm text-gray-600" id="dhuhr-iqamah">IQAMAH 1:45 PM</div>
+          <div class="mt-1 text-5xl font-bold text-masjid-dark" id="dhuhr-iqamah">1:12 PM</div>
+          <div class="text-xs font-medium text-gray-600 mt-2">COMES IN AT: <span id="dhuhr-time">1:12 PM</span></div>
         </div>
       </div>
 
@@ -135,8 +135,8 @@
           <div class="text-masjid-accent font-bold mb-2">
             ASR
           </div>
-          <div class="text-4xl font-bold text-masjid-dark" id="asr-time">5:15 PM</div>
-          <div class="mt-1 text-sm text-gray-600" id="asr-iqamah">IQAMAH 5:15 PM</div>
+          <div class="mt-1 text-5xl font-bold text-masjid-dark" id="asr-iqamah">5:00 PM</div>
+          <div class="text-xs font-medium text-gray-600 mt-2">COMES IN AT: <span id="asr-time">5:00 PM</span></div>
         </div>
 
         <!-- Maghrib -->
@@ -144,27 +144,27 @@
           <div class="text-masjid-accent font-bold mb-2">
             MAGHRIB
           </div>
-          <div class="text-4xl font-bold text-masjid-dark" id="maghrib-time">8:10 PM</div>
-          <div class="mt-1 text-sm text-gray-600" id="maghrib-iqamah">IQAMAH 8:10 PM</div>
+          <div class="mt-1 text-5xl font-bold text-masjid-dark" id="maghrib-iqamah">8:14 PM</div>
+          <div class="text-xs font-medium text-gray-600 mt-2">COMES IN AT: <span id="maghrib-time">8:14 PM</span></div>
         </div>
 
         <!-- Isha -->
-        <div class="prayer-card p-4 text-center active" id="isha-card">
-          <div class="text-white font-bold mb-2">
+        <div class="prayer-card p-4 text-center" id="isha-card">
+          <div class="text-masjid-accent font-bold mb-2">
             ISHA
           </div>
-          <div class="text-4xl font-bold text-white" id="isha-time">9:35 PM</div>
-          <div class="mt-1 text-sm text-white opacity-80" id="isha-iqamah">IQAMAH 9:35 PM</div>
+          <div class="mt-1 text-5xl font-bold text-masjid-dark" id="isha-iqamah">9:36 PM</div>
+          <div class="text-xs font-medium text-gray-600 mt-2">COMES IN AT: <span id="isha-time">9:36 PM</span></div>
         </div>
       </div>
     </div>
 
     <!-- Jumuah -->
     <div class="max-w-4xl mx-auto mt-4">
-      <div class="prayer-card p-4 flex justify-between items-center">
-        <div class="text-xl font-bold text-masjid-accent">JUMUAH</div>
-        <div class="text-xl font-bold" id="jumuah-time">1:00 PM</div>
-        <div class="text-xl" id="jumuah-iqamah">IQAMAH 1:30 PM</div>
+      <div class="prayer-card p-4 flex flex-col items-center">
+        <div class="text-xl font-bold text-masjid-accent mb-2">JUMUAH</div>
+        <div class="text-4xl font-bold text-masjid-dark" id="jumuah-iqamah">1:30 PM</div>
+        <div class="text-xs font-medium text-gray-600 mt-2">COMES IN AT: <span id="jumuah-time">1:00 PM</span></div>
       </div>
     </div>
 
