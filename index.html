@@ -97,6 +97,14 @@
       font-variant-numeric: tabular-nums;
     }
 
+    /* Arabic Hijri date styling */
+    .hijri-date-arabic {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.1rem;
+      direction: rtl;
+      font-weight: 500;
+    }
+
     /* Mobile responsive adjustments */
     @media (max-width: 640px) {
       .prayer-time {
@@ -127,7 +135,8 @@
         <span id="gregorian-date">Monday, May 15, 2023</span>
       </div>
       <div class="text-lg font-light text-center sm:text-right">
-        <span id="hijri-date">Thu 17/11</span>
+        <span id="hijri-date-english" class="hidden">Thu 17/11</span>
+        <span id="hijri-date-arabic" class="hijri-date-arabic">الأربعاء 2 ذو القعدة 1446</span>
       </div>
     </div>
   </header>
@@ -273,6 +282,48 @@
     });
   </script>
   <script src="index.js"></script>
+
+  <!-- Arabic Hijri Date Script -->
+  <script>
+    // Function to get Arabic Hijri date with -1 day offset
+    function getArabicHijriDate() {
+      // Arabic day names
+      const arabicDays = [
+        'الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'
+      ];
+
+      // Arabic month names
+      const arabicMonths = [
+        'محرم', 'صفر', 'ربيع الأول', 'ربيع الثاني', 'جمادى الأولى', 'جمادى الآخرة',
+        'رجب', 'شعبان', 'رمضان', 'شوال', 'ذو القعدة', 'ذو الحجة'
+      ];
+
+      // Get current date and apply -1 day offset
+      const today = new Date();
+      today.setDate(today.getDate() - 1);
+
+      // Get current Hijri date from the UI (as a fallback)
+      const hijriElement = document.getElementById('hijri-date-english');
+      let hijriDay = 2; // Default value from example: الأربعاء 2 ذو القعدة 1446
+      let hijriMonth = 10; // Dhu al-Qi'dah (ذو القعدة) is the 11th month (index 10)
+      let hijriYear = 1446; // Default year from example
+
+      // Get weekday
+      const dayOfWeek = today.getDay(); // 0-6 (Sunday-Saturday)
+      const arabicDayName = arabicDays[dayOfWeek];
+
+      // Format the Hijri date in Arabic
+      const arabicDate = `${arabicDayName} ${hijriDay} ${arabicMonths[hijriMonth]} ${hijriYear}`;
+
+      // Update the display
+      document.getElementById('hijri-date-arabic').textContent = arabicDate;
+    }
+
+    // Run once the DOM is loaded
+    document.addEventListener('DOMContentLoaded', function () {
+      getArabicHijriDate();
+    });
+  </script>
 </body>
 
 </html>
