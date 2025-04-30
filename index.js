@@ -255,31 +255,60 @@ function updateNextPrayer(prayerData) {
 
     // Convert 24h times to Date objects for comparison
     const prayerTimes = [
-        { name: 'FAJR', time: createTimeDate(now, prayerData.fajr, 'fajr') },
-        { name: 'DHUHR', time: createTimeDate(now, prayerData.dhuhr, 'dhuhr') },
-        { name: 'ASR', time: createTimeDate(now, prayerData.asr, 'asr') },
-        { name: 'MAGHRIB', time: createTimeDate(now, prayerData.maghrib, 'maghrib') },
-        { name: 'ISHA', time: createTimeDate(now, prayerData.isha, 'isha') }
+        { name: 'FAJR', time: createTimeDate(now, prayerData.fajr, 'fajr'), iqamahTime: createIqamahTimeDate(now, 'fajr') },
+        { name: 'DHUHR', time: createTimeDate(now, prayerData.dhuhr, 'dhuhr'), iqamahTime: createIqamahTimeDate(now, 'dhuhr') },
+        { name: 'ASR', time: createTimeDate(now, prayerData.asr, 'asr'), iqamahTime: createIqamahTimeDate(now, 'asr') },
+        { name: 'MAGHRIB', time: createTimeDate(now, prayerData.maghrib, 'maghrib'), iqamahTime: createIqamahTimeDate(now, 'maghrib') },
+        { name: 'ISHA', time: createTimeDate(now, prayerData.isha, 'isha'), iqamahTime: createIqamahTimeDate(now, 'isha') }
     ];
 
-    // Find the next prayer
+    // Variables to track next events
     let nextPrayer = null;
+    let isIqamahCountdown = false;
+
+    // First check if we're between Adhan and Iqamah for any prayer
     for (const prayer of prayerTimes) {
-        if (prayer.time > now) {
+        if (prayer.time <= now && prayer.iqamahTime > now) {
             nextPrayer = prayer;
+            isIqamahCountdown = true;
             break;
+        }
+    }
+
+    // If not between Adhan and Iqamah, find the next Adhan time
+    if (!nextPrayer) {
+        for (const prayer of prayerTimes) {
+            if (prayer.time > now) {
+                nextPrayer = prayer;
+                isIqamahCountdown = false;
+                break;
+            }
         }
     }
 
     // If no next prayer found, it means all prayers for today have passed
     // So the next prayer is Fajr tomorrow
     if (!nextPrayer) {
-        nextPrayer = { name: 'FAJR', time: prayerTimes[0].time };
+        nextPrayer = {
+            name: 'FAJR',
+            time: prayerTimes[0].time,
+            iqamahTime: prayerTimes[0].iqamahTime
+        };
         nextPrayer.time.setDate(nextPrayer.time.getDate() + 1);
+        nextPrayer.iqamahTime.setDate(nextPrayer.iqamahTime.getDate() + 1);
+        isIqamahCountdown = false;
     }
 
     // Update the UI with next prayer info
     document.getElementById('next-prayer-name').textContent = nextPrayer.name;
+
+    // Update countdown label based on whether we're counting down to Adhan or Iqamah
+    const countdownLabel = document.getElementById('countdown-label');
+    if (isIqamahCountdown) {
+        countdownLabel.textContent = 'IQAMAH at MTWS IN:';
+    } else {
+        countdownLabel.textContent = 'The prayer of ' + nextPrayer.name + ' is in';
+    }
 
     // Reset all prayer card styles
     resetPrayerCardStyles();
@@ -291,9 +320,10 @@ function updateNextPrayer(prayerData) {
         nextPrayerCard.classList.add('active');
     }
 
-    // Calculate time until next prayer and start countdown
-    const timeDiff = nextPrayer.time - now;
-    startCountdown(timeDiff);
+    // Calculate time until next event (either Adhan or Iqamah)
+    const targetTime = isIqamahCountdown ? nextPrayer.iqamahTime : nextPrayer.time;
+    const timeDiff = targetTime - now;
+    startCountdown(timeDiff, isIqamahCountdown);
 }
 
 // Helper function to create a Date object from a 24h time string
@@ -313,6 +343,33 @@ function createTimeDate(baseDate, timeStr, prayerName) {
     return date;
 }
 
+// Helper function to create a Date object for Iqamah time
+function createIqamahTimeDate(baseDate, prayerName) {
+    // If we have API Iqamah times, use those
+    if (iqamahTimes && iqamahTimes[prayerName.toLowerCase()]) {
+        const iqamahTimeStr = iqamahTimes[prayerName.toLowerCase()];
+        const [timeStr, period] = iqamahTimeStr.split(' ');
+        const [hours, minutes] = timeStr.split(':').map(Number);
+
+        const date = new Date(baseDate);
+        let adjustedHours = hours;
+
+        // Convert from 12-hour to 24-hour format
+        if (period === 'PM' && hours !== 12) {
+            adjustedHours += 12;
+        } else if (period === 'AM' && hours === 12) {
+            adjustedHours = 0;
+        }
+
+        date.setHours(adjustedHours, minutes, 0, 0);
+        return date;
+    }
+
+    // Fallback to using the Adhan time if no Iqamah time is available
+    const prayerData = getPrayerTimesForDate(baseDate);
+    return createTimeDate(baseDate, prayerData[prayerName.toLowerCase()], prayerName.toLowerCase());
+}
+
 // Function to reset all prayer card styles
 function resetPrayerCardStyles() {
     const prayers = ['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha'];
@@ -325,8 +382,8 @@ function resetPrayerCardStyles() {
     }
 }
 
-// Function to start countdown to the next prayer
-function startCountdown(milliseconds) {
+// Function to start countdown to the next prayer or Iqamah
+function startCountdown(milliseconds, isIqamahCountdown) {
     // Set initial countdown values
     updateCountdownDisplay(milliseconds);
 
@@ -340,7 +397,7 @@ function startCountdown(milliseconds) {
         milliseconds -= 1000;
         if (milliseconds <= 0) {
             clearInterval(window.countdownInterval);
-            // Refresh the page to get the new next prayer
+            // Refresh the page to get the new next prayer/iqamah
             window.location.reload();
             return;
         }
