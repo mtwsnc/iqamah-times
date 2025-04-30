@@ -152,24 +152,18 @@ function getPrayerTimesForDate(date) {
     const monthData = month === 5 ? MAY_PRAYER_TIMES : month === 6 ? JUNE_PRAYER_TIMES : null;
 
     if (!monthData) {
-        console.warn(`Prayer data for month ${month} is not available, using default prayer times`);
+        console.warn(`Prayer data for month ${month} is not available`);
 
-        // Default to current month if possible, otherwise May
+        // Show admin notice on the page
+        showAdminNotice(`Prayer times for month ${getMonthName(month)} are not available. Please upload the data for the next month.`);
+
+        // Use the current month if it's May or June, otherwise use May as a last resort
         const currentMonth = new Date().getMonth() + 1;
-        let fallbackMonth;
+        const fallbackData = (currentMonth === 5 || currentMonth === 6) ?
+            (currentMonth === 5 ? MAY_PRAYER_TIMES[0] : JUNE_PRAYER_TIMES[0]) :
+            MAY_PRAYER_TIMES[0];
 
-        if (currentMonth === 5 || currentMonth === 6) {
-            fallbackMonth = currentMonth === 5 ? MAY_PRAYER_TIMES : JUNE_PRAYER_TIMES;
-        } else {
-            // Use May or June based on which is closer to current month
-            const diffToMay = Math.abs(currentMonth - 5);
-            const diffToJune = Math.abs(currentMonth - 6);
-            fallbackMonth = diffToMay <= diffToJune ? MAY_PRAYER_TIMES : JUNE_PRAYER_TIMES;
-        }
-
-        // Use the 15th day of the month as a reasonable default
-        const middleDay = fallbackMonth.find(entry => entry.day === 15) || fallbackMonth[0];
-        return middleDay;
+        return fallbackData;
     }
 
     // Find the day in the month data
@@ -178,12 +172,64 @@ function getPrayerTimesForDate(date) {
     if (!dayData) {
         console.warn(`No data for day ${day} in month ${month}, using a default day`);
 
-        // Default to the 15th day or first available day
-        const middleDay = monthData.find(entry => entry.day === 15) || monthData[0];
-        return middleDay;
+        // Default to the first available day
+        return monthData[0];
     }
 
     return dayData;
+}
+
+// Helper function to show an admin notice on the page
+function showAdminNotice(message) {
+    // Create the notice if it doesn't exist yet
+    let noticeElement = document.getElementById('admin-notice');
+
+    if (!noticeElement) {
+        noticeElement = document.createElement('div');
+        noticeElement.id = 'admin-notice';
+        noticeElement.className = 'bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 fixed top-0 left-0 right-0 z-50';
+
+        const closeButton = document.createElement('button');
+        closeButton.innerHTML = '&times;';
+        closeButton.className = 'float-right font-bold text-xl';
+        closeButton.onclick = function () {
+            noticeElement.style.display = 'none';
+        };
+
+        noticeElement.appendChild(closeButton);
+
+        // Find a good place to insert the notice
+        const container = document.querySelector('.page-content');
+        if (container) {
+            container.insertBefore(noticeElement, container.firstChild);
+        } else {
+            document.body.insertBefore(noticeElement, document.body.firstChild);
+        }
+    }
+
+    // Add message text
+    const messageSpan = document.createElement('span');
+    messageSpan.textContent = message;
+
+    // Clear any existing message content
+    while (noticeElement.childNodes.length > 1) {
+        if (noticeElement.lastChild !== noticeElement.firstChild) {
+            noticeElement.removeChild(noticeElement.lastChild);
+        }
+    }
+
+    noticeElement.appendChild(messageSpan);
+    noticeElement.style.display = 'block';
+}
+
+// Helper function to get month name
+function getMonthName(monthNumber) {
+    const monthNames = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+
+    return monthNames[monthNumber - 1] || `Month ${monthNumber}`;
 }
 
 // Function to format time to 12-hour format
