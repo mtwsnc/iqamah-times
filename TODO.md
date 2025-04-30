@@ -17,7 +17,7 @@
 - [x] Remove admin access and restore buttons
 
 ## New Design Tasks (Based on Reference Design)
-- [x] Implement green color scheme with modern UI (#102516)
+- [x] Implement green color scheme with modern UI (Updated to use #558422, a darker variant of #72B02D)
 - [ ] Add both Gregorian and Hijri date display
 - [x] Create card-based layout for each prayer time
 - [x] Highlight current/next prayer time in a different color
