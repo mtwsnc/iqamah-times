@@ -96,6 +96,53 @@ const TEST_DATE = new Date(2023, 4, 15); // May 15, 2023
 // Get the current date
 const CURRENT_DATE = new Date();
 
+// Store Iqamah times fetched from API
+let iqamahTimes = null;
+
+// Function to fetch Iqamah times from the API
+async function fetchIqamahTimes() {
+    try {
+        const response = await fetch(apiUrl);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Fetched Iqamah times:', data);
+
+        // Get current day of week
+        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const currentDay = days[CURRENT_DATE.getDay()];
+
+        // Extract times for current day
+        const todayTimes = data[currentDay];
+
+        if (!todayTimes || !Array.isArray(todayTimes) || todayTimes.length < 5) {
+            console.error('Invalid data format for today\'s Iqamah times');
+            return null;
+        }
+
+        // Convert API response to our format
+        // The API returns an array of times in order: Fajr, Dhuhr, Asr, Maghrib, Isha
+        const iqamahData = {
+            fajr: todayTimes[0],
+            dhuhr: todayTimes[1],
+            asr: todayTimes[2],
+            maghrib: todayTimes[3],
+            isha: todayTimes[4],
+            // For Jumuah, we'll keep using default
+            jumuah: '1:30 PM'
+        };
+
+        return iqamahData;
+    } catch (error) {
+        console.error('Error fetching Iqamah times:', error);
+        // Return null on error to indicate we should use fallback times
+        return null;
+    }
+}
+
 // Function to get day's prayer times based on date
 function getPrayerTimesForDate(date) {
     const month = date.getMonth() + 1; // JavaScript months are 0-indexed
@@ -157,33 +204,46 @@ function updatePrayerTimesUI(prayerData) {
     document.getElementById('gregorian-date').textContent = gregorianDate;
     document.getElementById('hijri-date').textContent = `${prayerData.weekday} ${prayerData.hijri}`;
 
-    // Update prayer times
+    // Update prayer times with proper format handling
+
     // Fajr
     document.getElementById('fajr-time').textContent = formatTo12Hour(prayerData.fajr, 'fajr');
-    document.getElementById('fajr-iqamah').textContent = formatTo12Hour(prayerData.fajr, 'fajr');
+    document.getElementById('fajr-iqamah').textContent = iqamahTimes && iqamahTimes.fajr
+        ? iqamahTimes.fajr  // API already returns in 12h format with AM/PM
+        : formatTo12Hour(prayerData.fajr, 'fajr');
 
     // Sunrise
     document.getElementById('sunrise-time').textContent = formatTo12Hour(prayerData.sunrise, 'sunrise');
 
     // Dhuhr
     document.getElementById('dhuhr-time').textContent = formatTo12Hour(prayerData.dhuhr, 'dhuhr');
-    document.getElementById('dhuhr-iqamah').textContent = formatTo12Hour(prayerData.dhuhr, 'dhuhr');
+    document.getElementById('dhuhr-iqamah').textContent = iqamahTimes && iqamahTimes.dhuhr
+        ? iqamahTimes.dhuhr
+        : formatTo12Hour(prayerData.dhuhr, 'dhuhr');
 
     // Asr
     document.getElementById('asr-time').textContent = formatTo12Hour(prayerData.asr, 'asr');
-    document.getElementById('asr-iqamah').textContent = formatTo12Hour(prayerData.asr, 'asr');
+    document.getElementById('asr-iqamah').textContent = iqamahTimes && iqamahTimes.asr
+        ? iqamahTimes.asr
+        : formatTo12Hour(prayerData.asr, 'asr');
 
     // Maghrib
     document.getElementById('maghrib-time').textContent = formatTo12Hour(prayerData.maghrib, 'maghrib');
-    document.getElementById('maghrib-iqamah').textContent = formatTo12Hour(prayerData.maghrib, 'maghrib');
+    document.getElementById('maghrib-iqamah').textContent = iqamahTimes && iqamahTimes.maghrib
+        ? iqamahTimes.maghrib
+        : formatTo12Hour(prayerData.maghrib, 'maghrib');
 
     // Isha
     document.getElementById('isha-time').textContent = formatTo12Hour(prayerData.isha, 'isha');
-    document.getElementById('isha-iqamah').textContent = formatTo12Hour(prayerData.isha, 'isha');
+    document.getElementById('isha-iqamah').textContent = iqamahTimes && iqamahTimes.isha
+        ? iqamahTimes.isha
+        : formatTo12Hour(prayerData.isha, 'isha');
 
-    // For Jumuah, we'll use defaults
+    // For Jumuah, use API data if available, otherwise use defaults
     document.getElementById('jumuah-time').textContent = "1:00 PM";
-    document.getElementById('jumuah-iqamah').textContent = "1:30 PM";
+    document.getElementById('jumuah-iqamah').textContent = iqamahTimes && iqamahTimes.jumuah
+        ? iqamahTimes.jumuah
+        : "1:30 PM";
 
     // Determine which prayer is next and update UI
     updateNextPrayer(prayerData);
@@ -300,13 +360,18 @@ function updateCountdownDisplay(milliseconds) {
 }
 
 // Initialize the application when the DOM is fully loaded
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async function () {
     // Initialize Lucide icons if available
     if (typeof lucide !== 'undefined') {
         lucide.createIcons();
     }
 
-    // Get prayer times for the current date and update UI
+    // Get prayer times for the current date
     const prayerData = getPrayerTimesForDate(CURRENT_DATE);
+
+    // Fetch Iqamah times from API
+    iqamahTimes = await fetchIqamahTimes();
+
+    // Update UI with prayer times and Iqamah times
     updatePrayerTimesUI(prayerData);
 }); 
