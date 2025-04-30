@@ -1,97 +1,159 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-  <title>Iqaamah Time Picker</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MTWS Iqāmah Times</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" type="text/css" href="./index.css" />
 </head>
 
-<body>
-  <h1>Iqaamah Time Picker</h1>
-  <table id="time-table">
-    <thead>
-      <tr>
-        <th></th>
-        <th>Fajr</th>
-        <th>Thuhr</th>
-        <th>Asr</th>
-        <th>Magrib</th>
-        <th>Ishaa</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <th>Monday</th>
-        <td><input type="time" id="monday-1"></td>
-        <td><input type="time" id="monday-2"></td>
-        <td><input type="time" id="monday-3"></td>
-        <td><input type="time" id="monday-4"></td>
-        <td><input type="time" id="monday-5"></td>
-      </tr>
-      <tr>
-        <th>Tuesday</th>
-        <td><input type="time" id="tuesday-1"></td>
-        <td><input type="time" id="tuesday-2"></td>
-        <td><input type="time" id="tuesday-3"></td>
-        <td><input type="time" id="tuesday-4"></td>
-        <td><input type="time" id="tuesday-5"></td>
-      </tr>
-      <tr>
-        <th>Wednesday</th>
-        <td><input type="time" id="wednesday-1"></td>
-        <td><input type="time" id="wednesday-2"></td>
-        <td><input type="time" id="wednesday-3"></td>
-        <td><input type="time" id="wednesday-4"></td>
-        <td><input type="time" id="wednesday-5"></td>
-      </tr>
-      <tr>
-        <th>Thursday</th>
-        <td><input type="time" id="thursday-1"></td>
-        <td><input type="time" id="thursday-2"></td>
-        <td><input type="time" id="thursday-3"></td>
-        <td><input type="time" id="thursday-4"></td>
-        <td><input type="time" id="thursday-5"></td>
-      </tr>
-      <tr>
-        <th>Friday</th>
-        <td><input type="time" id="friday-1"></td>
-        <td><input type="time" id="friday-2"></td>
-        <td><input type="time" id="friday-3"></td>
-        <td><input type="time" id="friday-4"></td>
-        <td><input type="time" id="friday-5"></td>
-      </tr>
-      <tr>
-        <th>Saturday</th>
-        <td><input type="time" id="saturday-1"></td>
-        <td><input type="time" id="saturday-2"></td>
-        <td><input type="time" id="saturday-3"></td>
-        <td><input type="time" id="saturday-4"></td>
-        <td><input type="time" id="saturday-5"></td>
-      </tr>
-      <tr>
-        <th>Sunday</th>
-        <td><input type="time" id="sunday-1"></td>
-        <td><input type="time" id="sunday-2"></td>
-        <td><input type="time" id="sunday-3"></td>
-        <td><input type="time" id="sunday-4"></td>
-        <td><input type="time" id="sunday-5"></td>
-      </tr>
-    </tbody>
-  </table>
-  <button id="save-button">
-    Save
-  </button>
-  <button id="refresh-button">Refresh</button>
-  <button id="restore-button">Restore</button>
-  <label for="html"></label><br>
-  <label for="html">Password: </label><br>
-  <input type="password" name="Password" id="password-box">
-  <div id="message"></div>
+<body class="bg-gray-50 min-h-screen font-sans">
+  <!-- Header with MTWS logo -->
+  <header class="bg-white shadow-sm py-4">
+    <div class="container mx-auto px-4 flex items-center justify-between">
+      <div class="flex items-center space-x-2">
+        <img src="mtws-logo.png" alt="MTWS Logo" class="h-12 w-auto">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900">Iqāmah Times</h1>
+          <p class="text-sm text-gray-600">Masjid Tawheed Was-Sunnah</p>
+        </div>
+      </div>
+      <div>
+        <a href="https://mtws.one" target="_blank" class="text-blue-600 hover:text-blue-800 mr-4">mtws.one</a>
+        <a href="https://mtws.org" target="_blank" class="text-blue-600 hover:text-blue-800">mtws.org</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <main class="container mx-auto px-4 py-8">
+    <div class="bg-white shadow rounded-lg overflow-hidden max-w-4xl mx-auto">
+      <!-- Prayer Times Display Table -->
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Day
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Fajr</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Dhuhr</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Asr
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Maghrib</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Isha</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <!-- Monday -->
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Monday</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="monday-1-display"></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="monday-2-display"></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="monday-3-display"></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="monday-4-display"></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="monday-5-display"></td>
+            </tr>
+            <!-- Tuesday -->
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Tuesday</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="tuesday-1-display"></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="tuesday-2-display"></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="tuesday-3-display"></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="tuesday-4-display"></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="tuesday-5-display"></td>
+            </tr>
+            <!-- Wednesday -->
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Wednesday</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="wednesday-1-display"></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="wednesday-2-display"></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="wednesday-3-display"></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="wednesday-4-display"></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="wednesday-5-display"></td>
+            </tr>
+            <!-- Thursday -->
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Thursday</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="thursday-1-display"></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="thursday-2-display"></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="thursday-3-display"></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="thursday-4-display"></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="thursday-5-display"></td>
+            </tr>
+            <!-- Friday -->
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Friday</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="friday-1-display"></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="friday-2-display"></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="friday-3-display"></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="friday-4-display"></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="friday-5-display"></td>
+            </tr>
+            <!-- Saturday -->
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Saturday</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="saturday-1-display"></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="saturday-2-display"></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="saturday-3-display"></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="saturday-4-display"></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="saturday-5-display"></td>
+            </tr>
+            <!-- Sunday -->
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Sunday</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="sunday-1-display"></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="sunday-2-display"></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="sunday-3-display"></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="sunday-4-display"></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="sunday-5-display"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Mobile App Download Link -->
+    <div class="mt-8 text-center">
+      <a href="https://drive.google.com/file/d/1HqCLH1b7XIMuiZvGAFNiUqa_LrXHE6Nv/view?usp=drive_link"
+        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+        <span class="mr-2">
+          <i data-lucide="download" class="w-4 h-4"></i>
+        </span>
+        Download the Android App
+      </a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-6 mt-10">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="mb-4 md:mb-0">
+          <img src="mtws-logo.png" alt="MTWS Logo" class="h-8 w-auto mb-2">
+          <p class="text-sm">Masjid Tawheed Was-Sunnah</p>
+        </div>
+        <div class="flex space-x-4">
+          <a href="https://mtws.one" target="_blank" class="text-gray-300 hover:text-white">mtws.one</a>
+          <a href="https://mtws.org" target="_blank" class="text-gray-300 hover:text-white">mtws.org</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Initialize Lucide icons
+    document.addEventListener('DOMContentLoaded', function () {
+      lucide.createIcons();
+    });
+  </script>
   <script src="index.js"></script>
-  <!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
-  
-  <p></p>
-  <a href="https://drive.google.com/file/d/1HqCLH1b7XIMuiZvGAFNiUqa_LrXHE6Nv/view?usp=drive_link">Download the Android App APK!</a>
-  <link rel="stylesheet" type="text/css" href="./index.css" />
 </body>
 
 </html>
