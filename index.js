@@ -181,7 +181,21 @@ function getPrayerTimesForDate(date) {
 
 // Helper function to show an admin notice on the page
 function showAdminNotice(message) {
-    // Create the notice if it doesn't exist yet
+    // Check if the static notice exists
+    const staticNotice = document.getElementById('static-admin-notice');
+
+    // If there's a static notice, update its message instead of creating a new one
+    if (staticNotice) {
+        // Find the span in the static notice
+        const span = staticNotice.querySelector('span');
+        if (span) {
+            span.innerHTML = `<strong>ADMIN NOTICE:</strong> ${message}`;
+            staticNotice.style.display = 'block';
+            return;
+        }
+    }
+
+    // If no static notice, create a dynamic one
     let noticeElement = document.getElementById('admin-notice');
 
     if (!noticeElement) {
@@ -219,7 +233,7 @@ function showAdminNotice(message) {
 
     // Add message text
     const messageSpan = document.createElement('span');
-    messageSpan.textContent = message;
+    messageSpan.innerHTML = `<strong>ADMIN NOTICE:</strong> ${message}`;
 
     // Clear any existing message content
     while (noticeElement.childNodes.length > 1) {
@@ -585,6 +599,11 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // Initialize countdown display with zeros in case of errors
     initializeCountdown();
+
+    // Expose admin notice function to window for console access
+    window.setAdminNotice = function (message) {
+        showAdminNotice(message);
+    };
 
     try {
         // Get prayer times for the current date
