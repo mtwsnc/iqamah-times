@@ -152,17 +152,35 @@ function getPrayerTimesForDate(date) {
     const monthData = month === 5 ? MAY_PRAYER_TIMES : month === 6 ? JUNE_PRAYER_TIMES : null;
 
     if (!monthData) {
-        console.error('Only May and June data is available');
-        // Default to first day of May if month not available
-        return MAY_PRAYER_TIMES[0];
+        console.warn(`Prayer data for month ${month} is not available, using default prayer times`);
+
+        // Default to current month if possible, otherwise May
+        const currentMonth = new Date().getMonth() + 1;
+        let fallbackMonth;
+
+        if (currentMonth === 5 || currentMonth === 6) {
+            fallbackMonth = currentMonth === 5 ? MAY_PRAYER_TIMES : JUNE_PRAYER_TIMES;
+        } else {
+            // Use May or June based on which is closer to current month
+            const diffToMay = Math.abs(currentMonth - 5);
+            const diffToJune = Math.abs(currentMonth - 6);
+            fallbackMonth = diffToMay <= diffToJune ? MAY_PRAYER_TIMES : JUNE_PRAYER_TIMES;
+        }
+
+        // Use the 15th day of the month as a reasonable default
+        const middleDay = fallbackMonth.find(entry => entry.day === 15) || fallbackMonth[0];
+        return middleDay;
     }
 
     // Find the day in the month data
     const dayData = monthData.find(entry => entry.day === day);
 
     if (!dayData) {
-        console.error(`No data for day ${day} in month ${month}`);
-        return monthData[0]; // Default to first day if day not found
+        console.warn(`No data for day ${day} in month ${month}, using a default day`);
+
+        // Default to the 15th day or first available day
+        const middleDay = monthData.find(entry => entry.day === 15) || monthData[0];
+        return middleDay;
     }
 
     return dayData;
@@ -193,6 +211,12 @@ function calculateIqamahTime(prayerTime) {
 
 // Function to update the UI with current prayer times
 function updatePrayerTimesUI(prayerData) {
+    // Safety check - ensure we have a valid prayerData object
+    if (!prayerData) {
+        console.error('Invalid prayer data provided to updatePrayerTimesUI');
+        return;
+    }
+
     // Format dates for display
     const gregorianDate = CURRENT_DATE.toLocaleDateString('en-US', {
         weekday: 'long',
@@ -201,54 +225,63 @@ function updatePrayerTimesUI(prayerData) {
         day: 'numeric'
     });
 
-    document.getElementById('gregorian-date').textContent = gregorianDate;
+    // Safely set element text content
+    const setTextContent = (id, text) => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.textContent = text;
+        } else {
+            console.warn(`Element with ID "${id}" not found`);
+        }
+    };
+
+    // Update date displays
+    setTextContent('gregorian-date', gregorianDate);
 
     // Update the hidden Hijri date for compatibility
-    const hijriDateElement = document.getElementById('hijri-date');
-    if (hijriDateElement) {
-        hijriDateElement.textContent = `${prayerData.weekday} ${prayerData.hijri}`;
-    }
+    setTextContent('hijri-date', `${prayerData.weekday} ${prayerData.hijri}`);
 
     // Update prayer times with proper format handling
+    try {
+        // Fajr
+        setTextContent('fajr-time', formatTo12Hour(prayerData.fajr, 'fajr'));
+        setTextContent('fajr-iqamah', iqamahTimes && iqamahTimes.fajr
+            ? iqamahTimes.fajr  // API already returns in 12h format with AM/PM
+            : formatTo12Hour(prayerData.fajr, 'fajr'));
 
-    // Fajr
-    document.getElementById('fajr-time').textContent = formatTo12Hour(prayerData.fajr, 'fajr');
-    document.getElementById('fajr-iqamah').textContent = iqamahTimes && iqamahTimes.fajr
-        ? iqamahTimes.fajr  // API already returns in 12h format with AM/PM
-        : formatTo12Hour(prayerData.fajr, 'fajr');
+        // Sunrise
+        setTextContent('sunrise-time', formatTo12Hour(prayerData.sunrise, 'sunrise'));
 
-    // Sunrise
-    document.getElementById('sunrise-time').textContent = formatTo12Hour(prayerData.sunrise, 'sunrise');
+        // Dhuhr
+        setTextContent('dhuhr-time', formatTo12Hour(prayerData.dhuhr, 'dhuhr'));
+        setTextContent('dhuhr-iqamah', iqamahTimes && iqamahTimes.dhuhr
+            ? iqamahTimes.dhuhr
+            : formatTo12Hour(prayerData.dhuhr, 'dhuhr'));
 
-    // Dhuhr
-    document.getElementById('dhuhr-time').textContent = formatTo12Hour(prayerData.dhuhr, 'dhuhr');
-    document.getElementById('dhuhr-iqamah').textContent = iqamahTimes && iqamahTimes.dhuhr
-        ? iqamahTimes.dhuhr
-        : formatTo12Hour(prayerData.dhuhr, 'dhuhr');
+        // Asr
+        setTextContent('asr-time', formatTo12Hour(prayerData.asr, 'asr'));
+        setTextContent('asr-iqamah', iqamahTimes && iqamahTimes.asr
+            ? iqamahTimes.asr
+            : formatTo12Hour(prayerData.asr, 'asr'));
 
-    // Asr
-    document.getElementById('asr-time').textContent = formatTo12Hour(prayerData.asr, 'asr');
-    document.getElementById('asr-iqamah').textContent = iqamahTimes && iqamahTimes.asr
-        ? iqamahTimes.asr
-        : formatTo12Hour(prayerData.asr, 'asr');
+        // Maghrib
+        setTextContent('maghrib-time', formatTo12Hour(prayerData.maghrib, 'maghrib'));
+        setTextContent('maghrib-iqamah', iqamahTimes && iqamahTimes.maghrib
+            ? iqamahTimes.maghrib
+            : formatTo12Hour(prayerData.maghrib, 'maghrib'));
 
-    // Maghrib
-    document.getElementById('maghrib-time').textContent = formatTo12Hour(prayerData.maghrib, 'maghrib');
-    document.getElementById('maghrib-iqamah').textContent = iqamahTimes && iqamahTimes.maghrib
-        ? iqamahTimes.maghrib
-        : formatTo12Hour(prayerData.maghrib, 'maghrib');
+        // Isha
+        setTextContent('isha-time', formatTo12Hour(prayerData.isha, 'isha'));
+        setTextContent('isha-iqamah', iqamahTimes && iqamahTimes.isha
+            ? iqamahTimes.isha
+            : formatTo12Hour(prayerData.isha, 'isha'));
 
-    // Isha
-    document.getElementById('isha-time').textContent = formatTo12Hour(prayerData.isha, 'isha');
-    document.getElementById('isha-iqamah').textContent = iqamahTimes && iqamahTimes.isha
-        ? iqamahTimes.isha
-        : formatTo12Hour(prayerData.isha, 'isha');
-
-    // For Jumuah, use API data if available, otherwise use defaults
-    document.getElementById('jumuah-time').textContent = "1:00 PM";
-    document.getElementById('jumuah-iqamah').textContent = iqamahTimes && iqamahTimes.jumuah
-        ? iqamahTimes.jumuah
-        : "1:30 PM";
+        // For Jumuah, use API data if available, otherwise use defaults
+        setTextContent('jumuah-time', "1:00 PM");
+        setTextContent('jumuah-iqamah', "1:00 PM");
+    } catch (error) {
+        console.error('Error updating prayer time UI elements:', error);
+    }
 
     // Determine which prayer is next and update UI
     updateNextPrayer(prayerData);
@@ -256,84 +289,100 @@ function updatePrayerTimesUI(prayerData) {
 
 // Function to determine the next prayer and update UI
 function updateNextPrayer(prayerData) {
-    const now = new Date(); // Use current date and time
-
-    // Convert 24h times to Date objects for comparison
-    const prayerTimes = [
-        { name: 'FAJR', time: createTimeDate(now, prayerData.fajr, 'fajr'), iqamahTime: createIqamahTimeDate(now, 'fajr') },
-        { name: 'DHUHR', time: createTimeDate(now, prayerData.dhuhr, 'dhuhr'), iqamahTime: createIqamahTimeDate(now, 'dhuhr') },
-        { name: 'ASR', time: createTimeDate(now, prayerData.asr, 'asr'), iqamahTime: createIqamahTimeDate(now, 'asr') },
-        { name: 'MAGHRIB', time: createTimeDate(now, prayerData.maghrib, 'maghrib'), iqamahTime: createIqamahTimeDate(now, 'maghrib') },
-        { name: 'ISHA', time: createTimeDate(now, prayerData.isha, 'isha'), iqamahTime: createIqamahTimeDate(now, 'isha') }
-    ];
-
-    // Variables to track next events
-    let nextPrayer = null;
-    let isIqamahCountdown = false;
-
-    // First check if we're between Adhan and Iqamah for any prayer
-    for (const prayer of prayerTimes) {
-        if (prayer.time <= now && prayer.iqamahTime > now) {
-            nextPrayer = prayer;
-            isIqamahCountdown = true;
-            break;
-        }
+    // Safety check for prayerData
+    if (!prayerData) {
+        console.error('Invalid prayer data provided to updateNextPrayer');
+        return;
     }
 
-    // If not between Adhan and Iqamah, find the next Adhan time
-    if (!nextPrayer) {
+    try {
+        const now = new Date(); // Use current date and time
+
+        // Convert 24h times to Date objects for comparison
+        const prayerTimes = [
+            { name: 'FAJR', time: createTimeDate(now, prayerData.fajr, 'fajr'), iqamahTime: createIqamahTimeDate(now, 'fajr') },
+            { name: 'DHUHR', time: createTimeDate(now, prayerData.dhuhr, 'dhuhr'), iqamahTime: createIqamahTimeDate(now, 'dhuhr') },
+            { name: 'ASR', time: createTimeDate(now, prayerData.asr, 'asr'), iqamahTime: createIqamahTimeDate(now, 'asr') },
+            { name: 'MAGHRIB', time: createTimeDate(now, prayerData.maghrib, 'maghrib'), iqamahTime: createIqamahTimeDate(now, 'maghrib') },
+            { name: 'ISHA', time: createTimeDate(now, prayerData.isha, 'isha'), iqamahTime: createIqamahTimeDate(now, 'isha') }
+        ];
+
+        // Variables to track next events
+        let nextPrayer = null;
+        let isIqamahCountdown = false;
+
+        // First check if we're between Adhan and Iqamah for any prayer
         for (const prayer of prayerTimes) {
-            if (prayer.time > now) {
+            if (prayer.time <= now && prayer.iqamahTime > now) {
                 nextPrayer = prayer;
-                isIqamahCountdown = false;
+                isIqamahCountdown = true;
                 break;
             }
         }
-    }
 
-    // If no next prayer found, it means all prayers for today have passed
-    // So the next prayer is Fajr tomorrow
-    if (!nextPrayer) {
-        nextPrayer = {
-            name: 'FAJR',
-            time: prayerTimes[0].time,
-            iqamahTime: prayerTimes[0].iqamahTime
-        };
-        nextPrayer.time.setDate(nextPrayer.time.getDate() + 1);
-        nextPrayer.iqamahTime.setDate(nextPrayer.iqamahTime.getDate() + 1);
-        isIqamahCountdown = false;
-    }
-
-    // Update the UI with next prayer info
-    const nextPrayerNameElement = document.getElementById('next-prayer-name');
-    if (nextPrayerNameElement) {
-        nextPrayerNameElement.textContent = nextPrayer.name;
-    }
-
-    // Update countdown label based on whether we're counting down to Adhan or Iqamah
-    const countdownLabel = document.getElementById('countdown-label');
-    if (countdownLabel) {
-        if (isIqamahCountdown) {
-            countdownLabel.textContent = 'IQAMAH at MTWS IN:';
-        } else {
-            countdownLabel.textContent = 'The prayer of ' + nextPrayer.name + ' is in';
+        // If not between Adhan and Iqamah, find the next Adhan time
+        if (!nextPrayer) {
+            for (const prayer of prayerTimes) {
+                if (prayer.time > now) {
+                    nextPrayer = prayer;
+                    isIqamahCountdown = false;
+                    break;
+                }
+            }
         }
+
+        // If no next prayer found, it means all prayers for today have passed
+        // So the next prayer is Fajr tomorrow
+        if (!nextPrayer) {
+            nextPrayer = {
+                name: 'FAJR',
+                time: prayerTimes[0].time,
+                iqamahTime: prayerTimes[0].iqamahTime
+            };
+            nextPrayer.time.setDate(nextPrayer.time.getDate() + 1);
+            nextPrayer.iqamahTime.setDate(nextPrayer.iqamahTime.getDate() + 1);
+            isIqamahCountdown = false;
+        }
+
+        // Safely set element text content
+        const setTextContent = (id, text) => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = text;
+            } else {
+                console.warn(`Element with ID "${id}" not found in updateNextPrayer`);
+            }
+        };
+
+        // Update the UI with next prayer info
+        setTextContent('next-prayer-name', nextPrayer.name);
+
+        // Update countdown label based on whether we're counting down to Adhan or Iqamah
+        if (isIqamahCountdown) {
+            setTextContent('countdown-label', 'IQAMAH at MTWS IN:');
+        } else {
+            setTextContent('countdown-label', 'The prayer of ' + nextPrayer.name + ' is in');
+        }
+
+        // Reset all prayer card styles
+        resetPrayerCardStyles();
+
+        // Highlight the next prayer card
+        const nextPrayerCardId = `${nextPrayer.name.toLowerCase()}-card`;
+        const nextPrayerCard = document.getElementById(nextPrayerCardId);
+        if (nextPrayerCard) {
+            nextPrayerCard.classList.add('active');
+        }
+
+        // Calculate time until next event (either Adhan or Iqamah)
+        const targetTime = isIqamahCountdown ? nextPrayer.iqamahTime : nextPrayer.time;
+        const timeDiff = targetTime - now;
+        startCountdown(timeDiff, isIqamahCountdown);
+    } catch (error) {
+        console.error('Error in updateNextPrayer:', error);
+        // Try to display zeros in the countdown as a fallback
+        initializeCountdown();
     }
-
-    // Reset all prayer card styles
-    resetPrayerCardStyles();
-
-    // Highlight the next prayer card
-    const nextPrayerCardId = `${nextPrayer.name.toLowerCase()}-card`;
-    const nextPrayerCard = document.getElementById(nextPrayerCardId);
-    if (nextPrayerCard) {
-        nextPrayerCard.classList.add('active');
-    }
-
-    // Calculate time until next event (either Adhan or Iqamah)
-    const targetTime = isIqamahCountdown ? nextPrayer.iqamahTime : nextPrayer.time;
-    const timeDiff = targetTime - now;
-    startCountdown(timeDiff, isIqamahCountdown);
 }
 
 // Helper function to create a Date object from a 24h time string
