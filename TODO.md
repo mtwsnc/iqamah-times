@@ -18,7 +18,7 @@
 
 ## New Design Tasks (Based on Reference Design)
 - [x] Implement green color scheme with modern UI (Updated to use #558422, a darker variant of #72B02D)
-- [ ] Add both Gregorian and Hijri date display
+- [x] Add both Gregorian and Hijri date display
 - [x] Create card-based layout for each prayer time
 - [x] Highlight current/next prayer time in a different color
 - [x] Display countdown timer until next prayer
@@ -43,4 +43,4 @@
 - [x] Add functionality to calculate and display next prayer time
 - [x] Create countdown timer functionality with JavaScript
 - [x] Detect current prayer based on time and highlight it
-- [ ] Implement Hijri date conversion 
+- [x] Implement Hijri date conversion 

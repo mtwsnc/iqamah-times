@@ -14,6 +14,42 @@ const PRAYER_NAMES = {
   ISHA: 'Isha'
 };
 
+// Arabic month names
+const ARABIC_MONTHS = [
+  'محرم',
+  'صفر',
+  'ربيع الأول',
+  'ربيع الثاني',
+  'جمادى الأولى',
+  'جمادى الآخرة',
+  'رجب',
+  'شعبان',
+  'رمضان',
+  'شوال',
+  'ذو القعدة',
+  'ذو الحجة'
+];
+
+// Arabic day names
+const ARABIC_DAYS = [
+  'الأحد',
+  'الإثنين',
+  'الثلاثاء',
+  'الأربعاء',
+  'الخميس',
+  'الجمعة',
+  'السبت'
+];
+
+// Arabic numerals
+const ARABIC_NUMERALS = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+
+// Function to convert western numbers to Arabic numerals
+function toArabicNumerals(num) {
+  return num.toString().split('').map(digit => ARABIC_NUMERALS[parseInt(digit)] || digit).join('');
+}
+
+// Function to convert 24-hour time format to 12-hour format with AM/PM
 function convertTime24to12(time) {
   if (!time) return '';
 
@@ -28,6 +64,7 @@ function convertTime24to12(time) {
   return `${hours}:${minutes} ${meridiem}`;
 }
 
+// Function to convert 12-hour time format to 24-hour format
 function convertTime12to24(time12h) {
   if (!time12h) return '';
 
@@ -45,7 +82,7 @@ function convertTime12to24(time12h) {
   return `${hours}:${minutes}`;
 }
 
-// Function to fetch the data from the API
+// Function to fetch prayer times from the API
 async function fetchData() {
   try {
     const response = await fetch(apiUrl);
@@ -74,6 +111,36 @@ function getCurrentDay() {
   return days[today.getDay()];
 }
 
+// Function to convert Gregorian date to Hijri date
+function getHijriDate(date) {
+  try {
+    // Check if HijriConverter is available from the CDN
+    if (typeof HijriConverter === 'undefined') {
+      console.error('HijriConverter is not available');
+      return 'Loading Hijri date...';
+    }
+
+    // Get the date components
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+
+    // Convert to Hijri using the library
+    const hijriDate = HijriConverter.gregorianToHijri(year, month, day);
+
+    // Format the Hijri date in Arabic
+    const hijriDay = ARABIC_DAYS[date.getDay()];
+    const hijriDayNum = toArabicNumerals(hijriDate.hd);
+    const hijriMonth = ARABIC_MONTHS[hijriDate.hm - 1];
+    const hijriYear = toArabicNumerals(hijriDate.hy);
+
+    return `${hijriDay} ${hijriDayNum} ${hijriMonth} ${hijriYear}`;
+  } catch (error) {
+    console.error('Error converting to Hijri date:', error);
+    return 'Error loading Hijri date';
+  }
+}
+
 // Function to update the date displays
 function updateDateDisplays() {
   const today = new Date();
@@ -82,8 +149,8 @@ function updateDateDisplays() {
   const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
   document.getElementById('gregorian-date').textContent = today.toLocaleDateString('en-US', options);
 
-  // For now, we'll show a placeholder for Hijri date until we implement conversion
-  document.getElementById('hijri-date').textContent = 'Loading Hijri date...';
+  // Update Hijri date
+  document.getElementById('hijri-date').textContent = getHijriDate(today);
 }
 
 // Function to display prayer times in the cards
@@ -272,6 +339,9 @@ function startCountdown(prayerTime) {
 async function main() {
   // Update date displays
   updateDateDisplays();
+
+  // Set up an interval to update the date display every minute
+  setInterval(updateDateDisplays, 60000);
 
   // Fetch and display prayer times
   const data = await fetchData();
