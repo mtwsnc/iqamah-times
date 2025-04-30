@@ -49,7 +49,7 @@
 - [x] Make Iqamah times the primary display with larger typography (big numbers)
 - [x] Display Adhan times as smaller text above Iqamah times
 - [x] Add text under each salah saying "COMES IN AT: [time]" for Adhan times
-- [ ] Convert all times from 24-hour to 12-hour format with AM/PM
+- [x] Convert all times from 24-hour to 12-hour format with AM/PM
 - [ ] Pull Adhan prayer times from the MD table files (may.md and june.md)
 - [ ] Pull Iqamah times from the dataplicity API
 - [ ] Use the "sunrise" column from MD files for Shuruq times
