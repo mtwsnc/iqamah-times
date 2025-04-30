@@ -37,6 +37,12 @@ const CURRENT_DATE = new Date();
 // Store Iqamah times fetched from API
 let iqamahTimes = null;
 
+// Store prayer times loaded from markdown files
+let loadedPrayerTimes = {};
+
+// Cache to store loaded markdown content
+const markdownCache = {};
+
 // May and June prayer times from markdown files
 const MAY_PRAYER_TIMES = [
     { day: 1, hijri: "3/11", weekday: "Thu", fajr: "5:06", sunrise: "6:23", dhuhr: "1:13", asr: "4:59", maghrib: "8:03", isha: "9:21" },
@@ -118,20 +124,23 @@ const debugHooks = {
 
     // Set time to 5 minutes before a specific prayer
     setTimeBeforePrayer: function (prayerName, minutesBefore = 5) {
-        const prayerData = getPrayerTimesForDate(window.TESTING_DATE || CURRENT_DATE);
-        const lowerPrayerName = prayerName.toLowerCase();
+        // Use an async immediately-invoked function
+        (async function () {
+            const prayerData = await getPrayerTimesForDate(window.TESTING_DATE || CURRENT_DATE);
+            const lowerPrayerName = prayerName.toLowerCase();
 
-        if (!prayerData[lowerPrayerName]) {
-            console.error(`Debug: Invalid prayer name: ${prayerName}`);
-            return;
-        }
+            if (!prayerData[lowerPrayerName]) {
+                console.error(`Debug: Invalid prayer name: ${prayerName}`);
+                return;
+            }
 
-        const prayerDate = createTimeDate(window.TESTING_DATE || CURRENT_DATE, prayerData[lowerPrayerName], lowerPrayerName);
-        prayerDate.setMinutes(prayerDate.getMinutes() - minutesBefore);
-        window.TESTING_DATE = prayerDate;
-        console.log(`Debug: Set time to ${minutesBefore} minutes before ${prayerName}: ${prayerDate.toLocaleString()}`);
-        refreshWithCustomDate();
-        return prayerDate;
+            const prayerDate = createTimeDate(window.TESTING_DATE || CURRENT_DATE, prayerData[lowerPrayerName], lowerPrayerName);
+            prayerDate.setMinutes(prayerDate.getMinutes() - minutesBefore);
+            window.TESTING_DATE = prayerDate;
+            console.log(`Debug: Set time to ${minutesBefore} minutes before ${prayerName}: ${prayerDate.toLocaleString()}`);
+            refreshWithCustomDate();
+            return prayerDate;
+        })();
     },
 
     // Set custom prayer times for testing
@@ -180,14 +189,15 @@ const adminDocsHTML = `
         <h3 class="text-xl font-semibold mb-2">Updating Prayer Times</h3>
         <p class="mb-2">Prayer times are retrieved from two sources:</p>
         <ul class="list-disc pl-6 mb-4">
-            <li class="mb-1"><strong>Adhan times:</strong> Stored in month-specific markdown files (may.md, june.md)</li>
+            <li class="mb-1"><strong>Adhan times:</strong> Stored in month-specific markdown files (may.md, june.md, etc.)</li>
             <li class="mb-1"><strong>Iqamah times:</strong> Retrieved from the API at <code class="bg-gray-100 px-1 rounded">${apiUrl}</code></li>
         </ul>
         <p class="mb-2"><strong>To update Adhan times:</strong></p>
         <ol class="list-decimal pl-6 mb-4">
-            <li class="mb-1">Edit the markdown files (may.md, june.md, etc.) with the correct prayer times</li>
-            <li class="mb-1">Follow the same format as existing entries (day, hijri, weekday, times)</li>
-            <li class="mb-1">Create new month files as needed following the same structure</li>
+            <li class="mb-1">Create or edit markdown files named after each month (e.g., <code>january.md</code>, <code>february.md</code>)</li>
+            <li class="mb-1">Follow the table format: | Day | Hijri | Weekday | Fajr | Sunrise | Dhuhr | Asr | Maghrib | Isha |</li>
+            <li class="mb-1">The system will automatically load the appropriate month file based on the current date</li>
+            <li class="mb-1">Files are reloaded each time the page is refreshed</li>
         </ol>
         <p class="mb-2"><strong>To update Iqamah times:</strong></p>
         <ol class="list-decimal pl-6">
@@ -296,22 +306,163 @@ function hideAdminDocs() {
 function refreshWithCustomDate() {
     try {
         const date = window.TESTING_DATE || CURRENT_DATE;
-        let prayerData;
 
-        if (window.CUSTOM_PRAYER_TIMES) {
-            prayerData = window.CUSTOM_PRAYER_TIMES;
-        } else {
-            prayerData = getPrayerTimesForDate(date);
-        }
+        // Use an async function to handle the async getPrayerTimesForDate
+        (async function () {
+            let prayerData;
 
-        updatePrayerTimesUI(prayerData);
-        updateNextPrayer(prayerData);
+            if (window.CUSTOM_PRAYER_TIMES) {
+                prayerData = window.CUSTOM_PRAYER_TIMES;
+            } else {
+                prayerData = await getPrayerTimesForDate(date);
+            }
 
-        if (isDebugMode) {
-            showAdminNotice(`DEBUG MODE: Using date ${date.toLocaleString()}`);
-        }
+            updatePrayerTimesUI(prayerData);
+            updateNextPrayer(prayerData);
+
+            if (isDebugMode) {
+                showAdminNotice(`DEBUG MODE: Using date ${date.toLocaleString()}`);
+            }
+        })();
     } catch (error) {
         console.error('Error refreshing with custom date:', error);
+    }
+}
+
+// Function to parse markdown table into prayer times data
+async function parseMarkdownTable(markdown) {
+    if (!markdown) return [];
+
+    // Split the markdown by lines
+    const lines = markdown.split('\n');
+
+    // Skip the header rows (first two lines)
+    const dataLines = lines.slice(2);
+
+    const prayerTimes = [];
+
+    // Process each line
+    for (const line of dataLines) {
+        if (!line.trim() || !line.includes('|')) continue;
+
+        // Split the line by | and remove empty entries
+        const columns = line.split('|')
+            .map(col => col.trim())
+            .filter(col => col);
+
+        // Skip if we don't have enough columns
+        if (columns.length < 8) continue;
+
+        // Parse the values (removing ** markdown bold if present)
+        const day = parseInt(columns[0].replace(/\*\*/g, '').trim());
+        const hijri = columns[1].replace(/\*\*/g, '').trim();
+        const weekday = columns[2].replace(/\*\*/g, '').trim();
+        const fajr = columns[3].replace(/\*\*/g, '').trim();
+        const sunrise = columns[4].replace(/\*\*/g, '').trim();
+        const dhuhr = columns[5].replace(/\*\*/g, '').trim();
+        const asr = columns[6].replace(/\*\*/g, '').trim();
+        const maghrib = columns[7].replace(/\*\*/g, '').trim();
+        const isha = columns[8].replace(/\*\*/g, '').trim();
+
+        // Create a prayer times object
+        prayerTimes.push({
+            day,
+            hijri,
+            weekday,
+            fajr,
+            sunrise,
+            dhuhr,
+            asr,
+            maghrib,
+            isha
+        });
+    }
+
+    return prayerTimes;
+}
+
+// Function to fetch markdown file for a specific month
+async function fetchMonthData(month, year) {
+    // Get month name in lowercase
+    const monthNames = [
+        "january", "february", "march", "april", "may", "june",
+        "july", "august", "september", "october", "november", "december"
+    ];
+
+    const monthName = monthNames[month - 1];
+    const cacheKey = `${monthName}-${year}`;
+
+    // Check if we have this month cached
+    if (markdownCache[cacheKey]) {
+        return markdownCache[cacheKey];
+    }
+
+    try {
+        // Try to fetch the markdown file
+        const response = await fetch(`${monthName}.md`);
+
+        if (!response.ok) {
+            console.warn(`No markdown file found for ${monthName} ${year}`);
+            return null;
+        }
+
+        const markdownContent = await response.text();
+        const parsedData = await parseMarkdownTable(markdownContent);
+
+        // Cache the parsed data
+        markdownCache[cacheKey] = parsedData;
+        console.log(`Loaded prayer times for ${monthName} ${year}`);
+
+        return parsedData;
+    } catch (error) {
+        console.error(`Error loading ${monthName}.md:`, error);
+        return null;
+    }
+}
+
+// Load prayer times for a specific month
+async function loadPrayerTimesForMonth(month, year) {
+    const monthKey = `${year}-${month}`;
+
+    // Check if we already have loaded this month
+    if (loadedPrayerTimes[monthKey]) {
+        return loadedPrayerTimes[monthKey];
+    }
+
+    // Fetch the month data
+    const data = await fetchMonthData(month, year);
+
+    if (data) {
+        loadedPrayerTimes[monthKey] = data;
+        return data;
+    }
+
+    return null;
+}
+
+// Preload prayer times for current and next month
+async function preloadPrayerTimes() {
+    const currentMonth = CURRENT_DATE.getMonth() + 1; // JavaScript months are 0-indexed
+    const currentYear = CURRENT_DATE.getFullYear();
+
+    // Preload current month
+    await loadPrayerTimesForMonth(currentMonth, currentYear);
+
+    // Preload next month
+    let nextMonth = currentMonth + 1;
+    let nextYear = currentYear;
+    if (nextMonth > 12) {
+        nextMonth = 1;
+        nextYear += 1;
+    }
+
+    await loadPrayerTimesForMonth(nextMonth, nextYear);
+
+    // Check if current month is loaded
+    const currentMonthKey = `${currentYear}-${currentMonth}`;
+    if (!loadedPrayerTimes[currentMonthKey]) {
+        // Show admin notice if current month data is missing
+        showAdminNotice(`Prayer times for ${getMonthName(currentMonth)} ${currentYear} are not available. Please upload the data for this month.`);
     }
 }
 
@@ -360,33 +511,52 @@ async function fetchIqamahTimes() {
 }
 
 // Function to get day's prayer times based on date
-function getPrayerTimesForDate(date) {
+async function getPrayerTimesForDate(date) {
     const month = date.getMonth() + 1; // JavaScript months are 0-indexed
     const day = date.getDate();
+    const year = date.getFullYear();
 
-    // Get the right month's data
-    const monthData = month === 5 ? MAY_PRAYER_TIMES : month === 6 ? JUNE_PRAYER_TIMES : null;
+    // Try to use dynamically loaded data first
+    const monthKey = `${year}-${month}`;
+    let monthData = loadedPrayerTimes[monthKey];
 
+    // If month data doesn't exist yet, try to load it
     if (!monthData) {
-        console.warn(`Prayer data for month ${month} is not available`);
+        monthData = await loadPrayerTimesForMonth(month, year);
+    }
+
+    // If we still don't have data, show a notice and use fallback
+    if (!monthData) {
+        console.warn(`Prayer data for month ${month}/${year} is not available`);
 
         // Show admin notice on the page
-        showAdminNotice(`Prayer times for month ${getMonthName(month)} are not available. Please upload the data for the next month.`);
+        showAdminNotice(`Prayer times for ${getMonthName(month)} ${year} are not available. Please upload the data for this month.`);
 
-        // Use the current month if it's May or June, otherwise use May as a last resort
-        const currentMonth = new Date().getMonth() + 1;
-        const fallbackData = (currentMonth === 5 || currentMonth === 6) ?
-            (currentMonth === 5 ? MAY_PRAYER_TIMES[0] : JUNE_PRAYER_TIMES[0]) :
-            MAY_PRAYER_TIMES[0];
+        // Use fallback data: first try current month's first day if available
+        const currentMonthKey = `${CURRENT_DATE.getFullYear()}-${CURRENT_DATE.getMonth() + 1}`;
+        if (loadedPrayerTimes[currentMonthKey] && loadedPrayerTimes[currentMonthKey].length > 0) {
+            return loadedPrayerTimes[currentMonthKey][0];
+        }
 
-        return fallbackData;
+        // If no loaded data is available, use sample data
+        return {
+            day: day,
+            hijri: "N/A",
+            weekday: new Date().toLocaleDateString('en-US', { weekday: 'short' }),
+            fajr: "5:00",
+            sunrise: "6:30",
+            dhuhr: "1:15",
+            asr: "5:00",
+            maghrib: "8:00",
+            isha: "9:30"
+        };
     }
 
     // Find the day in the month data
     const dayData = monthData.find(entry => entry.day === day);
 
     if (!dayData) {
-        console.warn(`No data for day ${day} in month ${month}, using a default day`);
+        console.warn(`No data for day ${day} in month ${month}/${year}, using a default day`);
 
         // Default to the first available day
         return monthData[0];
@@ -841,9 +1011,12 @@ document.addEventListener('DOMContentLoaded', async function () {
     window.debug = debugHooks;
 
     try {
+        // Preload prayer times for current and next month
+        await preloadPrayerTimes();
+
         // Get prayer times for the current or test date
         const dateToUse = window.TESTING_DATE || CURRENT_DATE;
-        const prayerData = getPrayerTimesForDate(dateToUse);
+        const prayerData = await getPrayerTimesForDate(dateToUse);
 
         // Fetch Iqamah times from API
         iqamahTimes = await fetchIqamahTimes();
@@ -864,7 +1037,19 @@ document.addEventListener('DOMContentLoaded', async function () {
         console.error('Error initializing prayer times:', error);
 
         // Fallback in case of error - use sample data
-        updatePrayerTimesUI(MAY_PRAYER_TIMES[0]);
-        updateNextPrayer(MAY_PRAYER_TIMES[0]);
+        const fallbackData = {
+            day: CURRENT_DATE.getDate(),
+            hijri: "N/A",
+            weekday: CURRENT_DATE.toLocaleDateString('en-US', { weekday: 'short' }),
+            fajr: "5:00",
+            sunrise: "6:30",
+            dhuhr: "1:15",
+            asr: "5:00",
+            maghrib: "8:00",
+            isha: "9:30"
+        };
+
+        updatePrayerTimesUI(fallbackData);
+        updateNextPrayer(fallbackData);
     }
 }); 

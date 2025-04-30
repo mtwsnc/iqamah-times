@@ -45,13 +45,14 @@
 - [x] Create countdown timer functionality with JavaScript
 - [x] Detect current prayer based on time and highlight it
 - [x] Implement Hijri date conversion 
+- [x] Dynamically load prayer times from markdown files (month.md) instead of hardcoding
 
 ## Styling Fixes and Data Integration
 - [x] Make Iqamah times the primary display with larger typography (big numbers)
 - [x] Display Adhan times as smaller text above Iqamah times
 - [x] Add text under each salah saying "COMES IN AT: [time]" for Adhan times
 - [x] Convert all times from 24-hour to 12-hour format with AM/PM
-- [x] Pull Adhan prayer times from the MD table files (may.md and june.md)
+- [x] Pull Adhan prayer times from the MD table files (may.md, june.md)
 - [x] Pull Iqamah times from the dataplicity API (Implemented in index.js to fetch times from API based on current day of week)
 - [x] Use the "sunrise" column from MD files for Shuruq times
 - [x] Ensure correct styling for all prayer cards (active and inactive states)
