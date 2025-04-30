@@ -105,6 +105,58 @@
       font-weight: 500;
     }
 
+    /* Custom tooltip styling */
+    .tooltip {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .tooltip .tooltip-text {
+      visibility: hidden;
+      width: 140px;
+      background-color: #3A5C18;
+      color: white;
+      text-align: center;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 500;
+
+      /* Position the tooltip */
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      margin-left: -70px;
+
+      /* Fade in tooltip */
+      opacity: 0;
+      transition: opacity 0.3s;
+
+      /* Prevent line breaks */
+      white-space: nowrap;
+    }
+
+    /* Tooltip arrow */
+    .tooltip .tooltip-text::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: #3A5C18 transparent transparent transparent;
+    }
+
+    /* Show the tooltip when hovering over the tooltip container */
+    .tooltip:hover .tooltip-text {
+      visibility: visible;
+      opacity: 1;
+    }
+
     /* Mobile responsive adjustments */
     @media (max-width: 640px) {
       .prayer-time {
@@ -148,10 +200,13 @@
       <h1 class="text-xl mb-1 font-light">Prayer times</h1>
       <div class="flex items-center justify-center">
         <h2 class="text-3xl font-bold mb-1">Masjid Tawheed Was-Sunnah</h2>
-        <!-- Verification badge icon -->
-        <span class="ml-2 text-white bg-masjid-accent rounded-full p-1">
-          <i data-lucide="check" class="w-4 h-4"></i>
-        </span>
+        <!-- Verification badge icon with custom tooltip -->
+        <div class="ml-2 tooltip">
+          <span class="text-white bg-masjid-accent rounded-full p-1 flex items-center justify-center">
+            <i data-lucide="check" class="w-4 h-4"></i>
+          </span>
+          <span class="tooltip-text">Official Prayer Times Source</span>
+        </div>
       </div>
       <p class="text-sm opacity-90">3714 South Alston Avenue, Durham, NC, USA</p>
     </div>
