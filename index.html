@@ -32,81 +32,75 @@
       background-color: rgba(255, 255, 255, 0.9);
       border-radius: 0.5rem;
       transition: all 0.3s ease;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      border: 2px solid transparent;
       overflow: hidden;
-    }
-
-    .prayer-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      padding: 1rem;
+      /* Consistent padding for all cards */
     }
 
     .prayer-card.active {
       background-color: #8BC34A;
-      color: white;
-      transform: translateY(-5px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-      border: 2px solid #FFFFFF;
     }
 
-    .prayer-card.active .text-masjid-accent {
-      color: white;
+    /* Make prayer names always green */
+    .prayer-name {
+      color: #558422;
       font-weight: 700;
+      margin-bottom: 0.5rem;
     }
 
-    .prayer-card.active .text-masjid-dark {
+    .prayer-card.active .prayer-name {
       color: white;
-      font-weight: 700;
     }
 
-    .prayer-card.active .text-gray-600 {
+    /* Make the time display more prominent */
+    .prayer-time {
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      font-size: 2.5rem;
+      line-height: 1.1;
+      margin-bottom: 0.75rem;
+      color: #333;
+    }
+
+    .prayer-card.active .prayer-time {
+      color: white;
+    }
+
+    /* Adhan time styling */
+    .adhan-time {
+      font-size: 0.75rem;
+      color: #666;
+      margin-top: auto;
+      padding-top: 0.5rem;
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .prayer-card.active .adhan-time {
       color: rgba(255, 255, 255, 0.9);
-      font-weight: 500;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* Wavy divider */
+    .wavy-divider {
+      position: relative;
+      height: 40px;
+      margin-bottom: 20px;
+    }
+
+    .wavy-divider svg {
+      position: absolute;
+      width: 100%;
+      height: 100%;
     }
 
     .countdown-digit {
       font-variant-numeric: tabular-nums;
     }
 
-    .horizontal-line {
-      height: 2px;
-      background-color: rgba(255, 255, 255, 0.6);
-      margin: 2rem 0;
-    }
-
-    /* Add a subtle card header */
-    .prayer-header {
-      padding: 0.5rem 0;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-      margin-bottom: 0.5rem;
-    }
-
-    .prayer-card.active .prayer-header {
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    /* Make the time display more prominent */
-    .prayer-time {
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-
-    /* Improve adhan time display */
-    .adhan-time {
-      margin-top: 0.5rem;
-      padding-top: 0.5rem;
-      border-top: 1px solid rgba(0, 0, 0, 0.05);
-    }
-
-    .prayer-card.active .adhan-time {
-      border-top: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
     /* Mobile responsive adjustments */
     @media (max-width: 640px) {
       .prayer-time {
-        font-size: 1.5rem !important;
+        font-size: 1.75rem !important;
       }
 
       /* Remove the column layout for countdown */
@@ -143,7 +137,13 @@
     <!-- Masjid Info -->
     <div class="text-center text-white mb-6">
       <h1 class="text-xl mb-1 font-light">Prayer times</h1>
-      <h2 class="text-3xl font-bold mb-1">Masjid Tawheed Was-Sunnah</h2>
+      <div class="flex items-center justify-center">
+        <h2 class="text-3xl font-bold mb-1">Masjid Tawheed Was-Sunnah</h2>
+        <!-- Verification badge icon -->
+        <span class="ml-2 text-white bg-masjid-accent rounded-full p-1">
+          <i data-lucide="check" class="w-4 h-4"></i>
+        </span>
+      </div>
       <p class="text-sm opacity-90">3714 South Alston Avenue, Durham, NC, USA</p>
     </div>
 
@@ -164,82 +164,80 @@
       </div>
     </div>
 
-    <!-- Horizontal Line -->
-    <div class="horizontal-line"></div>
+    <!-- Wavy Divider -->
+    <div class="wavy-divider">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
+        <path fill="#FFFFFF" fill-opacity="0.3"
+          d="M0,224L48,208C96,192,192,160,288,160C384,160,480,192,576,197.3C672,203,768,181,864,186.7C960,192,1056,224,1152,224C1248,224,1344,192,1392,176L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z">
+        </path>
+      </svg>
+    </div>
 
-    <!-- Prayer Times Cards -->
+    <!-- Prayer Times Cards - 2x3 Grid Layout -->
     <div class="max-w-4xl mx-auto">
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
         <!-- Fajr -->
-        <div class="prayer-card p-4 text-center" id="fajr-card">
-          <div class="prayer-header text-masjid-accent font-bold">
+        <div class="prayer-card flex flex-col h-full" id="fajr-card">
+          <div class="prayer-name text-lg">
             FAJR
           </div>
-          <div class="prayer-time text-4xl sm:text-5xl font-bold text-masjid-dark" id="fajr-iqamah">4:49 AM</div>
-          <div class="adhan-time text-xs font-medium text-gray-600">COMES IN AT: <span id="fajr-time">4:49 AM</span>
-          </div>
+          <div class="prayer-time" id="fajr-iqamah">4:49 AM</div>
+          <div class="adhan-time">COMES IN AT: <span id="fajr-time">4:49 AM</span></div>
         </div>
 
         <!-- Sunrise -->
-        <div class="prayer-card p-4 text-center" id="sunrise-card">
-          <div class="prayer-header text-masjid-accent font-bold">
+        <div class="prayer-card flex flex-col h-full" id="sunrise-card">
+          <div class="prayer-name text-lg">
             SHURUQ
           </div>
-          <div class="prayer-time text-4xl sm:text-5xl font-bold text-masjid-dark" id="sunrise-time">6:10 AM</div>
-          <div class="adhan-time text-xs font-medium text-gray-600">&nbsp;</div>
+          <div class="prayer-time" id="sunrise-time">6:10 AM</div>
+          <div class="adhan-time">&nbsp;</div>
         </div>
 
         <!-- Dhuhr -->
-        <div class="prayer-card p-4 text-center" id="dhuhr-card">
-          <div class="prayer-header text-masjid-accent font-bold">
+        <div class="prayer-card flex flex-col h-full" id="dhuhr-card">
+          <div class="prayer-name text-lg">
             DHUHR
           </div>
-          <div class="prayer-time text-4xl sm:text-5xl font-bold text-masjid-dark" id="dhuhr-iqamah">1:12 PM</div>
-          <div class="adhan-time text-xs font-medium text-gray-600">COMES IN AT: <span id="dhuhr-time">1:12 PM</span>
-          </div>
+          <div class="prayer-time" id="dhuhr-iqamah">1:12 PM</div>
+          <div class="adhan-time">COMES IN AT: <span id="dhuhr-time">1:12 PM</span></div>
         </div>
-      </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         <!-- Asr -->
-        <div class="prayer-card p-4 text-center" id="asr-card">
-          <div class="prayer-header text-masjid-accent font-bold">
+        <div class="prayer-card flex flex-col h-full" id="asr-card">
+          <div class="prayer-name text-lg">
             ASR
           </div>
-          <div class="prayer-time text-4xl sm:text-5xl font-bold text-masjid-dark" id="asr-iqamah">5:00 PM</div>
-          <div class="adhan-time text-xs font-medium text-gray-600">COMES IN AT: <span id="asr-time">5:00 PM</span>
-          </div>
+          <div class="prayer-time" id="asr-iqamah">5:00 PM</div>
+          <div class="adhan-time">COMES IN AT: <span id="asr-time">5:00 PM</span></div>
         </div>
 
         <!-- Maghrib -->
-        <div class="prayer-card p-4 text-center" id="maghrib-card">
-          <div class="prayer-header text-masjid-accent font-bold">
+        <div class="prayer-card flex flex-col h-full" id="maghrib-card">
+          <div class="prayer-name text-lg">
             MAGHRIB
           </div>
-          <div class="prayer-time text-4xl sm:text-5xl font-bold text-masjid-dark" id="maghrib-iqamah">8:14 PM</div>
-          <div class="adhan-time text-xs font-medium text-gray-600">COMES IN AT: <span id="maghrib-time">8:14 PM</span>
-          </div>
+          <div class="prayer-time" id="maghrib-iqamah">8:14 PM</div>
+          <div class="adhan-time">COMES IN AT: <span id="maghrib-time">8:14 PM</span></div>
         </div>
 
         <!-- Isha -->
-        <div class="prayer-card p-4 text-center" id="isha-card">
-          <div class="prayer-header text-masjid-accent font-bold">
+        <div class="prayer-card flex flex-col h-full" id="isha-card">
+          <div class="prayer-name text-lg">
             ISHA
           </div>
-          <div class="prayer-time text-4xl sm:text-5xl font-bold text-masjid-dark" id="isha-iqamah">9:36 PM</div>
-          <div class="adhan-time text-xs font-medium text-gray-600">COMES IN AT: <span id="isha-time">9:36 PM</span>
-          </div>
+          <div class="prayer-time" id="isha-iqamah">9:36 PM</div>
+          <div class="adhan-time">COMES IN AT: <span id="isha-time">9:36 PM</span></div>
         </div>
       </div>
     </div>
 
-    <!-- Jumuah -->
+    <!-- Jumuah - Full width -->
     <div class="max-w-4xl mx-auto mt-4">
-      <div class="prayer-card p-4 flex flex-col items-center" id="jumuah-card">
-        <div class="prayer-header text-xl font-bold text-masjid-accent">JUMUAH</div>
-        <div class="prayer-time text-4xl font-bold text-masjid-dark" id="jumuah-iqamah">1:30 PM</div>
-        <div class="adhan-time text-xs font-medium text-gray-600">COMES IN AT: <span id="jumuah-time">1:00 PM</span>
-        </div>
+      <div class="prayer-card flex flex-col w-full" id="jumuah-card">
+        <div class="prayer-name text-lg">JUMUAH</div>
+        <div class="prayer-time" id="jumuah-iqamah">1:30 PM</div>
+        <div class="adhan-time">COMES IN AT: <span id="jumuah-time">1:00 PM</span></div>
       </div>
     </div>
 

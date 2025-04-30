@@ -57,24 +57,24 @@
 - [x] Fix mobile responsiveness issues
 
 ## Additional UI Improvements
-- [ ] Add wavy border divider between the header section and prayer cards section
-- [ ] Switch to a simpler, more minimal card design without shadows or hover effects
-- [ ] Reorganize prayer cards in a 2×3 grid layout (first row: Fajr, Shuruq, Dhuhr; second row: Asr, Maghrib, Isha)
-- [ ] Align prayer times and names to the left within cards (instead of center alignment)
-- [ ] Use green text for prayer names (instead of on white background)
-- [ ] Consider adding a verification badge next to the masjid name
-- [ ] Make Jumuah card span full width at the bottom
-- [ ] Use 12-hour time format (HH:MM) instead of 24-hour format
-- [ ] Add consistent padding and spacing between all elements
-- [ ] Use a consistent color for all prayer times (instead of highlighting current prayer)
-- [ ] Display times in larger, bolder font with clearer distinction between adhan and iqamah times 
+- [x] Add wavy border divider between the header section and prayer cards section
+- [x] Switch to a simpler, more minimal card design without shadows or hover effects
+- [x] Reorganize prayer cards in a 2×3 grid layout (first row: Fajr, Shuruq, Dhuhr; second row: Asr, Maghrib, Isha)
+- [x] Align prayer times and names to the left within cards (instead of center alignment)
+- [x] Use green text for prayer names (instead of on white background)
+- [x] Consider adding a verification badge next to the masjid name
+- [x] Make Jumuah card span full width at the bottom
+- [x] Use 12-hour time format (HH:MM) instead of 24-hour format
+- [x] Add consistent padding and spacing between all elements
+- [x] Use a consistent color for all prayer times (instead of highlighting current prayer)
+- [x] Display times in larger, bolder font with clearer distinction between adhan and iqamah times 
 
 ## Layout and Display Requirements
-- [ ] Make IQAMAH times the primary focus with large, bold typography
-- [ ] Move Adhan (prayer) times to the bottom of each card
-- [ ] Format Adhan times as "COMES IN AT: [time] AM/PM"
-- [ ] Keep prayer name at the top of each card in masjid-accent color
-- [ ] Ensure all cards follow the same layout pattern
-- [ ] Update the Jumuah card to show both prayer time and Iqamah time in the same format
-- [ ] Keep the current card-based grid layout but ensure consistent spacing
-- [ ] Maintain highlight for current/next prayer 
+- [x] Make IQAMAH times the primary focus with large, bold typography
+- [x] Move Adhan (prayer) times to the bottom of each card
+- [x] Format Adhan times as "COMES IN AT: [time] AM/PM"
+- [x] Keep prayer name at the top of each card in masjid-accent color
+- [x] Ensure all cards follow the same layout pattern
+- [x] Update the Jumuah card to show both prayer time and Iqamah time in the same format
+- [x] Keep the current card-based grid layout but ensure consistent spacing
+- [x] Maintain highlight for current/next prayer 
