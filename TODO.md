@@ -17,16 +17,16 @@
 - [x] Remove admin access and restore buttons
 
 ## New Design Tasks (Based on Reference Design)
-- [ ] Implement green color scheme with modern UI
+- [x] Implement green color scheme with modern UI (#102516)
 - [ ] Add both Gregorian and Hijri date display
-- [ ] Create card-based layout for each prayer time
-- [ ] Highlight current/next prayer time in a different color
-- [ ] Display countdown timer until next prayer
-- [ ] Show Iqamah times below prayer times
-- [ ] Add special styling for Jumuah (Friday) prayer
-- [ ] Implement large, clean typography for time displays
-- [ ] Add masjid address information
-- [ ] Create responsive design that works on digital signage and mobile
+- [x] Create card-based layout for each prayer time
+- [x] Highlight current/next prayer time in a different color
+- [x] Display countdown timer until next prayer
+- [x] Show Iqamah times below prayer times
+- [x] Add special styling for Jumuah (Friday) prayer
+- [x] Implement large, clean typography for time displays
+- [x] Add masjid address information
+- [x] Create responsive design that works on digital signage and mobile
 
 ## Features
 - [x] Integrate Lucide icons for better visual elements
@@ -40,7 +40,7 @@
 - [x] Implement proper error handling with user-friendly messages
 - [x] Ensure cross-browser compatibility
 - [x] Archive original files to the "/old" directory
-- [ ] Add functionality to calculate and display next prayer time
-- [ ] Create countdown timer functionality with JavaScript
-- [ ] Detect current prayer based on time and highlight it
+- [x] Add functionality to calculate and display next prayer time
+- [x] Create countdown timer functionality with JavaScript
+- [x] Detect current prayer based on time and highlight it
 - [ ] Implement Hijri date conversion 

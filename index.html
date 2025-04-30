@@ -6,123 +6,169 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MTWS Iqāmah Times</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'masjid-green': '#102516',
+            'masjid-light': '#f5f5f5',
+            'masjid-accent': '#4a9d3e',
+            'masjid-dark': '#102516',
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+
+    .prayer-card {
+      transition: all 0.3s ease;
+    }
+
+    .prayer-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .wavy-divider {
+      height: 15px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z' fill='white' opacity='1'%3E%3C/path%3E%3C/svg%3E");
+      background-size: cover;
+    }
+
+    .countdown-digit {
+      font-variant-numeric: tabular-nums;
+    }
+  </style>
   <link rel="stylesheet" type="text/css" href="./index.css" />
 </head>
 
-<body class="bg-gray-50 min-h-screen font-sans">
-  <!-- Header with MTWS logo -->
-  <header class="bg-white shadow-sm py-4">
-    <div class="container mx-auto px-4 flex items-center justify-between">
-      <div class="flex items-center space-x-2">
-        <img src="mtws-logo.png" alt="MTWS Logo" class="h-12 w-auto">
-        <div>
-          <h1 class="text-2xl font-bold text-gray-900">Iqāmah Times</h1>
-          <p class="text-sm text-gray-600">Masjid Tawheed Was-Sunnah</p>
-        </div>
+<body class="bg-masjid-green min-h-screen">
+  <!-- Header with Date -->
+  <header class="pt-4 pb-2 px-4 text-white">
+    <div class="container mx-auto flex justify-between items-center">
+      <div class="text-lg">
+        <span id="gregorian-date">Loading date...</span>
       </div>
-      <div>
-        <a href="https://mtws.one" target="_blank" class="text-blue-600 hover:text-blue-800 mr-4">mtws.one</a>
-        <a href="https://mtws.org" target="_blank" class="text-blue-600 hover:text-blue-800">mtws.org</a>
+      <div class="text-lg text-right" dir="rtl">
+        <span id="hijri-date">Loading date...</span>
       </div>
     </div>
   </header>
 
   <!-- Main content -->
-  <main class="container mx-auto px-4 py-8">
-    <div class="bg-white shadow rounded-lg overflow-hidden max-w-4xl mx-auto">
-      <!-- Prayer Times Display Table -->
-      <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
-            <tr>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Day
-              </th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Fajr</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Dhuhr</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Asr
-              </th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Maghrib</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Isha</th>
-            </tr>
-          </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
-            <!-- Monday -->
-            <tr>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Monday</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="monday-1-display"></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="monday-2-display"></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="monday-3-display"></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="monday-4-display"></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="monday-5-display"></td>
-            </tr>
-            <!-- Tuesday -->
-            <tr>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Tuesday</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="tuesday-1-display"></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="tuesday-2-display"></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="tuesday-3-display"></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="tuesday-4-display"></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="tuesday-5-display"></td>
-            </tr>
-            <!-- Wednesday -->
-            <tr>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Wednesday</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="wednesday-1-display"></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="wednesday-2-display"></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="wednesday-3-display"></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="wednesday-4-display"></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="wednesday-5-display"></td>
-            </tr>
-            <!-- Thursday -->
-            <tr>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Thursday</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="thursday-1-display"></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="thursday-2-display"></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="thursday-3-display"></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="thursday-4-display"></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="thursday-5-display"></td>
-            </tr>
-            <!-- Friday -->
-            <tr>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Friday</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="friday-1-display"></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="friday-2-display"></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="friday-3-display"></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="friday-4-display"></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="friday-5-display"></td>
-            </tr>
-            <!-- Saturday -->
-            <tr>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Saturday</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="saturday-1-display"></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="saturday-2-display"></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="saturday-3-display"></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="saturday-4-display"></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="saturday-5-display"></td>
-            </tr>
-            <!-- Sunday -->
-            <tr>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Sunday</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="sunday-1-display"></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="sunday-2-display"></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="sunday-3-display"></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="sunday-4-display"></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="sunday-5-display"></td>
-            </tr>
-          </tbody>
-        </table>
+  <main class="container mx-auto px-4 pb-8">
+    <!-- Masjid Info -->
+    <div class="text-center text-white mb-4">
+      <h1 class="text-xl mb-1">Prayer times</h1>
+      <h2 class="text-3xl font-bold mb-1">Masjid Tawheed Was-Sunnah</h2>
+      <p class="text-sm opacity-90">3714 South Alston Avenue, Durham, NC, USA</p>
+    </div>
+
+    <!-- Next Prayer Countdown -->
+    <div class="text-center text-white mb-6">
+      <p class="text-xl">The prayer of <span id="next-prayer-name">ISHA</span> is in</p>
+      <div class="flex justify-center gap-2 my-2">
+        <div class="text-7xl font-bold countdown-digit" id="countdown-hours">00</div>
+        <div class="text-7xl font-bold">:</div>
+        <div class="text-7xl font-bold countdown-digit" id="countdown-minutes">00</div>
+        <div class="text-7xl font-bold">:</div>
+        <div class="text-7xl font-bold countdown-digit" id="countdown-seconds">00</div>
       </div>
+      <div class="flex justify-center gap-2 text-sm">
+        <div class="w-20 text-center">Hours</div>
+        <div class="w-20 text-center">Minutes</div>
+        <div class="w-20 text-center">Seconds</div>
+      </div>
+    </div>
+
+    <!-- Wavy Divider -->
+    <div class="wavy-divider w-full"></div>
+
+    <!-- Prayer Times Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+      <!-- Fajr -->
+      <div class="prayer-card bg-white rounded-lg shadow-lg overflow-hidden" id="fajr-card">
+        <div class="bg-masjid-light p-3 text-center text-masjid-accent font-bold">
+          FAJR
+        </div>
+        <div class="p-6 text-center">
+          <div class="text-5xl font-bold text-masjid-dark" id="fajr-time"></div>
+          <div class="mt-2 text-sm text-gray-600" id="fajr-iqamah"></div>
+        </div>
+      </div>
+
+      <!-- Sunrise -->
+      <div class="prayer-card bg-white rounded-lg shadow-lg overflow-hidden" id="sunrise-card">
+        <div class="bg-masjid-light p-3 text-center text-masjid-accent font-bold">
+          SHURUQ
+        </div>
+        <div class="p-6 text-center">
+          <div class="text-5xl font-bold text-masjid-dark" id="sunrise-time"></div>
+          <div class="mt-2 text-sm text-gray-600">&nbsp;</div>
+        </div>
+      </div>
+
+      <!-- Dhuhr -->
+      <div class="prayer-card bg-white rounded-lg shadow-lg overflow-hidden" id="dhuhr-card">
+        <div class="bg-masjid-light p-3 text-center text-masjid-accent font-bold">
+          DHUHR
+        </div>
+        <div class="p-6 text-center">
+          <div class="text-5xl font-bold text-masjid-dark" id="dhuhr-time"></div>
+          <div class="mt-2 text-sm text-gray-600" id="dhuhr-iqamah"></div>
+        </div>
+      </div>
+
+      <!-- Asr -->
+      <div class="prayer-card bg-white rounded-lg shadow-lg overflow-hidden" id="asr-card">
+        <div class="bg-masjid-light p-3 text-center text-masjid-accent font-bold">
+          ASR
+        </div>
+        <div class="p-6 text-center">
+          <div class="text-5xl font-bold text-masjid-dark" id="asr-time"></div>
+          <div class="mt-2 text-sm text-gray-600" id="asr-iqamah"></div>
+        </div>
+      </div>
+
+      <!-- Maghrib -->
+      <div class="prayer-card bg-white rounded-lg shadow-lg overflow-hidden" id="maghrib-card">
+        <div class="bg-masjid-light p-3 text-center text-masjid-accent font-bold">
+          MAGHRIB
+        </div>
+        <div class="p-6 text-center">
+          <div class="text-5xl font-bold text-masjid-dark" id="maghrib-time"></div>
+          <div class="mt-2 text-sm text-gray-600" id="maghrib-iqamah"></div>
+        </div>
+      </div>
+
+      <!-- Isha -->
+      <div class="prayer-card bg-white rounded-lg shadow-lg overflow-hidden" id="isha-card">
+        <div class="bg-masjid-light p-3 text-center text-masjid-accent font-bold">
+          ISHA
+        </div>
+        <div class="p-6 text-center">
+          <div class="text-5xl font-bold text-masjid-dark" id="isha-time"></div>
+          <div class="mt-2 text-sm text-gray-600" id="isha-iqamah"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Jumuah -->
+    <div class="mt-6 bg-white rounded-lg shadow-lg p-4 flex justify-between items-center">
+      <div class="text-xl font-bold text-masjid-accent">JUMUAH</div>
+      <div class="text-xl font-bold" id="jumuah-time"></div>
+      <div class="text-xl" id="jumuah-iqamah"></div>
     </div>
 
     <!-- Mobile App Download Link -->
     <div class="mt-8 text-center">
       <a href="https://drive.google.com/file/d/1HqCLH1b7XIMuiZvGAFNiUqa_LrXHE6Nv/view?usp=drive_link"
-        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-masjid-accent hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-masjid-accent">
         <span class="mr-2">
           <i data-lucide="download" class="w-4 h-4"></i>
         </span>
@@ -132,7 +178,7 @@
   </main>
 
   <!-- Footer -->
-  <footer class="bg-gray-800 text-white py-6 mt-10">
+  <footer class="bg-opacity-30 bg-black text-white py-6 mt-10">
     <div class="container mx-auto px-4">
       <div class="flex flex-col md:flex-row justify-between items-center">
         <div class="mb-4 md:mb-0">
@@ -150,7 +196,9 @@
   <script>
     // Initialize Lucide icons
     document.addEventListener('DOMContentLoaded', function () {
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
     });
   </script>
   <script src="index.js"></script>

@@ -4,7 +4,19 @@ const apiUrl = 'https://northerly-robin-8705.dataplicity.io/mtws-iqaamah-times/a
 const API_URL = apiUrl
 let data = {};
 
+// Prayer names mapping
+const PRAYER_NAMES = {
+  FAJR: 'Fajr',
+  SUNRISE: 'Shuruq',
+  DHUHR: 'Dhuhr',
+  ASR: 'Asr',
+  MAGHRIB: 'Maghrib',
+  ISHA: 'Isha'
+};
+
 function convertTime24to12(time) {
+  if (!time) return '';
+
   const parts = time.split(':');
   let hours = parseInt(parts[0]);
   const minutes = parts[1];
@@ -17,6 +29,8 @@ function convertTime24to12(time) {
 }
 
 function convertTime12to24(time12h) {
+  if (!time12h) return '';
+
   const [time, modifier] = time12h.split(' ');
   let [hours, minutes] = time.split(':');
 
@@ -53,28 +67,215 @@ async function fetchData() {
   }
 }
 
-// Function to display the data in the HTML table
-function displayData(data) {
-  if (!data) return;
+// Function to get today's day name
+function getCurrentDay() {
+  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const today = new Date();
+  return days[today.getDay()];
+}
 
-  Object.keys(data).forEach((day) => {
-    for (let i = 1; i <= 5; i++) {
-      const time24 = data[day][i - 1];
-      const time12 = convertTime24to12(time24);
+// Function to update the date displays
+function updateDateDisplays() {
+  const today = new Date();
 
-      const displayElement = document.getElementById(`${day.toLowerCase()}-${i}-display`);
-      if (displayElement) {
-        displayElement.textContent = time12;
+  // Update Gregorian date
+  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  document.getElementById('gregorian-date').textContent = today.toLocaleDateString('en-US', options);
+
+  // For now, we'll show a placeholder for Hijri date until we implement conversion
+  document.getElementById('hijri-date').textContent = 'Loading Hijri date...';
+}
+
+// Function to display prayer times in the cards
+function displayPrayerTimes(prayerData) {
+  const today = getCurrentDay();
+
+  if (!prayerData || !prayerData[today]) {
+    console.error('No prayer data available for today');
+    return;
+  }
+
+  // Get today's prayer times
+  const times = prayerData[today];
+
+  // Display prayer times in the respective cards
+  // We're assuming the order is: Fajr, Dhuhr, Asr, Maghrib, Isha
+  document.getElementById('fajr-time').textContent = convertTime24to12(times[0]);
+  document.getElementById('dhuhr-time').textContent = convertTime24to12(times[1]);
+  document.getElementById('asr-time').textContent = convertTime24to12(times[2]);
+  document.getElementById('maghrib-time').textContent = convertTime24to12(times[3]);
+  document.getElementById('isha-time').textContent = convertTime24to12(times[4]);
+
+  // For now, we'll use placeholder values for Sunrise, Iqamah times, and Jumuah
+  document.getElementById('sunrise-time').textContent = '6:25 AM';
+
+  // Set Iqamah times (placeholders for now)
+  document.getElementById('fajr-iqamah').textContent = 'IQAMAH ' + convertTime24to12(times[0]);
+  document.getElementById('dhuhr-iqamah').textContent = 'IQAMAH ' + convertTime24to12(times[1]);
+  document.getElementById('asr-iqamah').textContent = 'IQAMAH ' + convertTime24to12(times[2]);
+  document.getElementById('maghrib-iqamah').textContent = 'IQAMAH ' + convertTime24to12(times[3]);
+  document.getElementById('isha-iqamah').textContent = 'IQAMAH ' + convertTime24to12(times[4]);
+
+  // Set Jumuah times (placeholder)
+  document.getElementById('jumuah-time').textContent = '1:00 PM';
+  document.getElementById('jumuah-iqamah').textContent = 'IQAMAH 1:30 PM';
+
+  // Update next prayer info and start countdown
+  updateNextPrayer(times);
+}
+
+// Function to determine the next prayer and update UI
+function updateNextPrayer(times) {
+  const now = new Date();
+  const currentHour = now.getHours();
+  const currentMinute = now.getMinutes();
+  const currentTimeString = `${currentHour}:${currentMinute.toString().padStart(2, '0')}`;
+
+  // Prayer times in 24-hour format
+  const prayerTimes = [
+    { name: 'FAJR', time: times[0] },
+    { name: 'DHUHR', time: times[1] },
+    { name: 'ASR', time: times[2] },
+    { name: 'MAGHRIB', time: times[3] },
+    { name: 'ISHA', time: times[4] }
+  ];
+
+  // Find the next prayer
+  let nextPrayer = null;
+  for (const prayer of prayerTimes) {
+    if (prayer.time > currentTimeString) {
+      nextPrayer = prayer;
+      break;
+    }
+  }
+
+  // If no next prayer found, it means all prayers for today have passed
+  // So the next prayer is Fajr tomorrow
+  if (!nextPrayer) {
+    nextPrayer = { name: 'FAJR', time: times[0] };
+    // Adjust for next day
+  }
+
+  // Update the UI with next prayer info
+  document.getElementById('next-prayer-name').textContent = nextPrayer.name;
+
+  // Highlight the next prayer card
+  resetPrayerCardStyles();
+  const nextPrayerCardId = `${nextPrayer.name.toLowerCase()}-card`;
+  const nextPrayerCard = document.getElementById(nextPrayerCardId);
+  if (nextPrayerCard) {
+    nextPrayerCard.classList.remove('bg-white');
+    nextPrayerCard.classList.add('bg-masjid-green');
+    // Update header text color
+    const header = nextPrayerCard.querySelector('div:first-child');
+    if (header) {
+      header.classList.remove('bg-masjid-light', 'text-masjid-accent');
+      header.classList.add('bg-white', 'text-masjid-accent');
+    }
+    // Update time text color
+    const timeElement = nextPrayerCard.querySelector('.text-masjid-dark');
+    if (timeElement) {
+      timeElement.classList.remove('text-masjid-dark');
+      timeElement.classList.add('text-white');
+    }
+    // Update iqamah text color
+    const iqamahElement = nextPrayerCard.querySelector('.text-gray-600');
+    if (iqamahElement) {
+      iqamahElement.classList.remove('text-gray-600');
+      iqamahElement.classList.add('text-white', 'opacity-80');
+    }
+  }
+
+  // Start countdown to the next prayer
+  startCountdown(nextPrayer.time);
+}
+
+// Function to reset all prayer card styles
+function resetPrayerCardStyles() {
+  const prayers = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
+
+  for (const prayer of prayers) {
+    const card = document.getElementById(`${prayer}-card`);
+    if (card) {
+      card.classList.remove('bg-masjid-green');
+      card.classList.add('bg-white');
+
+      // Reset header
+      const header = card.querySelector('div:first-child');
+      if (header) {
+        header.classList.remove('bg-white', 'text-masjid-green');
+        header.classList.add('bg-masjid-light', 'text-masjid-accent');
+      }
+
+      // Reset time
+      const timeElement = card.querySelector('.text-white');
+      if (timeElement) {
+        timeElement.classList.remove('text-white');
+        timeElement.classList.add('text-masjid-dark');
+      }
+
+      // Reset iqamah
+      const iqamahElement = card.querySelector('.opacity-80');
+      if (iqamahElement) {
+        iqamahElement.classList.remove('text-white', 'opacity-80');
+        iqamahElement.classList.add('text-gray-600');
       }
     }
-  });
+  }
+}
+
+// Function to start countdown to the next prayer
+function startCountdown(prayerTime) {
+  // Parse prayer time into hours and minutes
+  const [hours, minutes] = prayerTime.split(':').map(Number);
+
+  // Update the countdown every second
+  const countdownInterval = setInterval(() => {
+    const now = new Date();
+    const prayerDate = new Date();
+
+    prayerDate.setHours(hours, minutes, 0, 0);
+
+    // If prayer time is earlier than current time, it's for tomorrow
+    if (prayerDate < now) {
+      prayerDate.setDate(prayerDate.getDate() + 1);
+    }
+
+    // Calculate the time difference in milliseconds
+    const diff = prayerDate - now;
+
+    // If we've reached the prayer time
+    if (diff <= 0) {
+      clearInterval(countdownInterval);
+      // Refresh the page to update next prayer
+      setTimeout(() => location.reload(), 60000); // Reload after 1 minute
+      return;
+    }
+
+    // Convert milliseconds to hours, minutes, seconds
+    const totalSeconds = Math.floor(diff / 1000);
+    const totalMinutes = Math.floor(totalSeconds / 60);
+    const totalHours = Math.floor(totalMinutes / 60);
+
+    const displayHours = totalHours.toString().padStart(2, '0');
+    const displayMinutes = (totalMinutes % 60).toString().padStart(2, '0');
+    const displaySeconds = (totalSeconds % 60).toString().padStart(2, '0');
+
+    // Update the countdown display
+    document.getElementById('countdown-hours').textContent = displayHours;
+    document.getElementById('countdown-minutes').textContent = displayMinutes;
+    document.getElementById('countdown-seconds').textContent = displaySeconds;
+  }, 1000);
 }
 
 // Main function to initialize the page
 async function main() {
+  // Update date displays
+  updateDateDisplays();
+
   // Fetch and display prayer times
   const data = await fetchData();
-  displayData(data);
+  displayPrayerTimes(data);
 }
 
 // Initialize the application when the DOM is fully loaded
