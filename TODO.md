@@ -27,6 +27,7 @@
 - [x] Implement large, clean typography for time displays
 - [x] Add masjid address information
 - [x] Create responsive design that works on digital signage and mobile
+- [x] Create a fullscreen digital signage display version
 
 ## Features
 - [x] Integrate Lucide icons for better visual elements
