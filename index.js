@@ -376,7 +376,7 @@ function refreshWithCustomDate() {
     try {
         const date = window.TESTING_DATE || CURRENT_DATE;
 
-        // Use an async function to handle the async getPrayerTimesForDate
+        // Use an async function to handle the async operations
         (async function () {
             let prayerData;
 
@@ -386,8 +386,11 @@ function refreshWithCustomDate() {
                 prayerData = await getPrayerTimesForDate(date);
             }
 
-            updatePrayerTimesUI(prayerData);
+            // Update UI and next prayer
+            await updateUI(prayerData);
             updateNextPrayer(prayerData);
+
+
 
             if (isDebugMode) {
                 showAdminNotice(`DEBUG MODE: Using date ${date.toLocaleString()}`);
@@ -735,6 +738,42 @@ function calculateIqamahTime(prayerTime) {
 }
 
 // Function to update the UI with current prayer times
+async function updateHijriDate() {
+    try {
+        const date = window.TESTING_DATE || CURRENT_DATE;
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        const formattedDate = `${day}-${month}-${year}`;
+
+        const response = await fetch(`https://api.aladhan.com/v1/gToH/${formattedDate}?calendarMethod=UAQ`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const hijri = data.data.hijri;
+        const hijriDateStr = `${hijri.weekday.ar} ${hijri.day} ${hijri.month.ar} ${hijri.year}`;
+
+        const hijriElement = document.getElementById('hijri-date-arabic');
+        if (hijriElement) {
+            hijriElement.textContent = hijriDateStr;
+        }
+
+    } catch (error) {
+        console.error('Error fetching Hijri date:', error);
+        const hijriElement = document.getElementById('hijri-date-arabic');
+        if (hijriElement) {
+            hijriElement.textContent = 'Error loading Hijri date';
+        }
+    }
+}
+
+async function updateUI(prayerData) {
+    updatePrayerTimesUI(prayerData);
+    await updateHijriDate();
+}
+
 function updatePrayerTimesUI(prayerData) {
     // Safety check - ensure we have a valid prayerData object
     if (!prayerData) {
@@ -778,6 +817,8 @@ function updatePrayerTimesUI(prayerData) {
 
     // Update the hidden Hijri date for compatibility
     setTextContent('hijri-date', `${prayerData.weekday} ${prayerData.hijri}`);
+
+
 
     // Update prayer times with proper format handling
     try {
@@ -1090,8 +1131,8 @@ document.addEventListener('DOMContentLoaded', async function () {
         // Fetch Iqamah times from API
         iqamahTimes = await fetchIqamahTimes();
 
-        // Update UI with prayer times and Iqamah times
-        updatePrayerTimesUI(prayerData);
+        // Update UI with prayer times, Iqamah times, and Hijri date
+        await updateUI(prayerData);
 
         // Make sure the countdown starts properly by calling updateNextPrayer explicitly
         if (prayerData) {
