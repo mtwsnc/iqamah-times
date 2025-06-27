@@ -585,27 +585,27 @@ async function getPrayerTimesForDate(date) {
     const day = date.getDate();
     const year = date.getFullYear();
 
-    // Try to use dynamically loaded data first
-    const monthKey = `${year}-${month}`;
-    let monthData = loadedPrayerTimes[monthKey];
+    // Define a mapping from month number to the prayer times array
+    const PRAYER_TIMES_MAP = {
+        5: MAY_PRAYER_TIMES,    // May
+        6: JUNE_PRAYER_TIMES,   // June
+        7: JULY_PRAYER_TIMES,   // July
+        8: AUGUST_PRAYER_TIMES  // August
+    };
 
-    // If month data doesn't exist yet, try to load it
-    if (!monthData) {
-        monthData = await loadPrayerTimesForMonth(month, year);
-    }
+    // Try to get the prayer times for the given month
+    const monthData = PRAYER_TIMES_MAP[month];
 
     // If we still don't have data, show a notice and use fallback
     if (!monthData) {
         console.warn(`Prayer data for month ${month}/${year} is not available`);
 
         // Show admin notice on the page
-        showAdminNotice(`Prayer times for ${getMonthName(month)} ${year} are not available. Please upload the data for this month.`);
+        showAdminNotice(`Prayer times for ${getMonthName(month)} ${year} are not available. Only May through August 2023 data is currently available.`);
 
-        // Use fallback data: first try current month's first day if available
-        const currentMonthKey = `${CURRENT_DATE.getFullYear()}-${CURRENT_DATE.getMonth() + 1}`;
-        if (loadedPrayerTimes[currentMonthKey] && loadedPrayerTimes[currentMonthKey].length > 0) {
-            return loadedPrayerTimes[currentMonthKey][0];
-        }
+        // Use fallback data from the nearest available month
+        const nearestMonth = month <= 5 ? 5 : 8;
+        return PRAYER_TIMES_MAP[nearestMonth][0];
 
         // If no loaded data is available, use sample data
         return {
