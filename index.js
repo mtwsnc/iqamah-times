@@ -111,6 +111,75 @@ const JUNE_PRAYER_TIMES = [
     { day: 30, hijri: "4/1", weekday: "Mon", fajr: "4:35", sunrise: "6:01", dhuhr: "1:20", asr: "5:09", maghrib: "8:37", isha: "10:04" }
 ];
 
+const JULY_PRAYER_TIMES = [
+    { day: 1, hijri: "6/1", weekday: "Tue", fajr: "4:36", sunrise: "6:02", dhuhr: "1:20", asr: "5:10", maghrib: "8:37", isha: "10:04" },
+    { day: 2, hijri: "7/1", weekday: "Wed", fajr: "4:36", sunrise: "6:02", dhuhr: "1:20", asr: "5:10", maghrib: "8:37", isha: "10:04" },
+    { day: 3, hijri: "8/1", weekday: "Thu", fajr: "4:37", sunrise: "6:03", dhuhr: "1:20", asr: "5:10", maghrib: "8:37", isha: "10:04" },
+    { day: 4, hijri: "9/1", weekday: "Fri", fajr: "4:37", sunrise: "6:03", dhuhr: "1:20", asr: "5:10", maghrib: "8:37", isha: "10:04" },
+    { day: 5, hijri: "10/1", weekday: "Sat", fajr: "4:38", sunrise: "6:04", dhuhr: "1:21", asr: "5:10", maghrib: "8:36", isha: "10:03" },
+    { day: 6, hijri: "11/1", weekday: "Sun", fajr: "4:39", sunrise: "6:04", dhuhr: "1:21", asr: "5:10", maghrib: "8:36", isha: "10:03" },
+    { day: 7, hijri: "12/1", weekday: "Mon", fajr: "4:39", sunrise: "6:05", dhuhr: "1:21", asr: "5:11", maghrib: "8:36", isha: "10:03" },
+    { day: 8, hijri: "13/1", weekday: "Tue", fajr: "4:40", sunrise: "6:05", dhuhr: "1:21", asr: "5:11", maghrib: "8:36", isha: "10:02" },
+    { day: 9, hijri: "14/1", weekday: "Wed", fajr: "4:41", sunrise: "6:06", dhuhr: "1:21", asr: "5:11", maghrib: "8:36", isha: "10:02" },
+    { day: 10, hijri: "15/1", weekday: "Thu", fajr: "4:42", sunrise: "6:06", dhuhr: "1:21", asr: "5:11", maghrib: "8:35", isha: "10:01" },
+    { day: 11, hijri: "16/1", weekday: "Fri", fajr: "4:43", sunrise: "6:07", dhuhr: "1:22", asr: "5:11", maghrib: "8:35", isha: "10:01" },
+    { day: 12, hijri: "17/1", weekday: "Sat", fajr: "4:43", sunrise: "6:08", dhuhr: "1:22", asr: "5:11", maghrib: "8:35", isha: "10:00" },
+    { day: 13, hijri: "18/1", weekday: "Sun", fajr: "4:44", sunrise: "6:08", dhuhr: "1:22", asr: "5:11", maghrib: "8:34", isha: "10:00" },
+    { day: 14, hijri: "19/1", weekday: "Mon", fajr: "4:45", sunrise: "6:09", dhuhr: "1:22", asr: "5:11", maghrib: "8:34", isha: "9:59" },
+    { day: 15, hijri: "20/1", weekday: "Tue", fajr: "4:46", sunrise: "6:10", dhuhr: "1:22", asr: "5:11", maghrib: "8:33", isha: "9:58" },
+    { day: 16, hijri: "21/1", weekday: "Wed", fajr: "4:47", sunrise: "6:10", dhuhr: "1:22", asr: "5:11", maghrib: "8:33", isha: "9:57" },
+    { day: 17, hijri: "22/1", weekday: "Thu", fajr: "4:48", sunrise: "6:11", dhuhr: "1:22", asr: "5:11", maghrib: "8:32", isha: "9:57" },
+    { day: 18, hijri: "23/1", weekday: "Fri", fajr: "4:49", sunrise: "6:12", dhuhr: "1:22", asr: "5:11", maghrib: "8:32", isha: "9:56" },
+    { day: 19, hijri: "24/1", weekday: "Sat", fajr: "4:50", sunrise: "6:12", dhuhr: "1:22", asr: "5:11", maghrib: "8:31", isha: "9:55" },
+    { day: 20, hijri: "25/1", weekday: "Sun", fajr: "4:51", sunrise: "6:13", dhuhr: "1:22", asr: "5:11", maghrib: "8:31", isha: "9:54" },
+    { day: 21, hijri: "26/1", weekday: "Mon", fajr: "4:52", sunrise: "6:14", dhuhr: "1:23", asr: "5:11", maghrib: "8:30", isha: "9:53" },
+    { day: 22, hijri: "27/1", weekday: "Tue", fajr: "4:53", sunrise: "6:14", dhuhr: "1:23", asr: "5:11", maghrib: "8:29", isha: "9:53" },
+    { day: 23, hijri: "28/1", weekday: "Wed", fajr: "4:54", sunrise: "6:15", dhuhr: "1:23", asr: "5:11", maghrib: "8:29", isha: "9:52" },
+    { day: 24, hijri: "29/1", weekday: "Thu", fajr: "4:55", sunrise: "6:16", dhuhr: "1:23", asr: "5:11", maghrib: "8:28", isha: "9:51" },
+    { day: 25, hijri: "30/1", weekday: "Fri", fajr: "4:56", sunrise: "6:17", dhuhr: "1:23", asr: "5:11", maghrib: "8:27", isha: "9:50" },
+    { day: 26, hijri: "1/2", weekday: "Sat", fajr: "4:57", sunrise: "6:17", dhuhr: "1:23", asr: "5:11", maghrib: "8:27", isha: "9:49" },
+    { day: 27, hijri: "2/2", weekday: "Sun", fajr: "4:58", sunrise: "6:18", dhuhr: "1:23", asr: "5:11", maghrib: "8:26", isha: "9:48" },
+    { day: 28, hijri: "3/2", weekday: "Mon", fajr: "4:59", sunrise: "6:19", dhuhr: "1:23", asr: "5:11", maghrib: "8:25", isha: "9:47" },
+    { day: 29, hijri: "4/2", weekday: "Tue", fajr: "5:00", sunrise: "6:20", dhuhr: "1:23", asr: "5:10", maghrib: "8:24", isha: "9:45" },
+    { day: 30, hijri: "5/2", weekday: "Wed", fajr: "5:01", sunrise: "6:20", dhuhr: "1:23", asr: "5:10", maghrib: "8:23", isha: "9:44" },
+    { day: 31, hijri: "6/2", weekday: "Thu", fajr: "5:02", sunrise: "6:21", dhuhr: "1:23", asr: "5:10", maghrib: "8:22", isha: "9:43" }
+];
+
+const AUGUST_PRAYER_TIMES = [
+    { day: 1, hijri: "7/2", weekday: "Fri", fajr: "5:03", sunrise: "6:22", dhuhr: "1:23", asr: "5:10", maghrib: "8:21", isha: "9:42" },
+    { day: 2, hijri: "8/2", weekday: "Sat", fajr: "5:04", sunrise: "6:23", dhuhr: "1:22", asr: "5:10", maghrib: "8:20", isha: "9:41" },
+    { day: 3, hijri: "9/2", weekday: "Sun", fajr: "5:05", sunrise: "6:24", dhuhr: "1:22", asr: "5:09", maghrib: "8:19", isha: "9:40" },
+    { day: 4, hijri: "10/2", weekday: "Mon", fajr: "5:06", sunrise: "6:24", dhuhr: "1:22", asr: "5:09", maghrib: "8:18", isha: "9:38" },
+    { day: 5, hijri: "11/2", weekday: "Tue", fajr: "5:07", sunrise: "6:25", dhuhr: "1:22", asr: "5:09", maghrib: "8:18", isha: "9:37" },
+    { day: 6, hijri: "12/2", weekday: "Wed", fajr: "5:08", sunrise: "6:26", dhuhr: "1:22", asr: "5:09", maghrib: "8:17", isha: "9:36" },
+    { day: 7, hijri: "13/2", weekday: "Thu", fajr: "5:09", sunrise: "6:27", dhuhr: "1:22", asr: "5:08", maghrib: "8:15", isha: "9:35" },
+    { day: 8, hijri: "14/2", weekday: "Fri", fajr: "5:11", sunrise: "6:28", dhuhr: "1:22", asr: "5:08", maghrib: "8:14", isha: "9:33" },
+    { day: 9, hijri: "15/2", weekday: "Sat", fajr: "5:12", sunrise: "6:28", dhuhr: "1:22", asr: "5:08", maghrib: "8:13", isha: "9:32" },
+    { day: 10, hijri: "16/2", weekday: "Sun", fajr: "5:13", sunrise: "6:29", dhuhr: "1:22", asr: "5:07", maghrib: "8:12", isha: "9:31" },
+    { day: 11, hijri: "17/2", weekday: "Mon", fajr: "5:14", sunrise: "6:30", dhuhr: "1:21", asr: "5:07", maghrib: "8:11", isha: "9:29" },
+    { day: 12, hijri: "18/2", weekday: "Tue", fajr: "5:15", sunrise: "6:31", dhuhr: "1:21", asr: "5:06", maghrib: "8:10", isha: "9:28" },
+    { day: 13, hijri: "19/2", weekday: "Wed", fajr: "5:16", sunrise: "6:31", dhuhr: "1:21", asr: "5:06", maghrib: "8:09", isha: "9:26" },
+    { day: 14, hijri: "20/2", weekday: "Thu", fajr: "5:17", sunrise: "6:32", dhuhr: "1:21", asr: "5:06", maghrib: "8:08", isha: "9:25" },
+    { day: 15, hijri: "21/2", weekday: "Fri", fajr: "5:18", sunrise: "6:33", dhuhr: "1:21", asr: "5:05", maghrib: "8:07", isha: "9:24" },
+    { day: 16, hijri: "22/2", weekday: "Sat", fajr: "5:19", sunrise: "6:34", dhuhr: "1:21", asr: "5:05", maghrib: "8:05", isha: "9:22" },
+    { day: 17, hijri: "23/2", weekday: "Sun", fajr: "5:20", sunrise: "6:35", dhuhr: "1:20", asr: "5:04", maghrib: "8:04", isha: "9:21" },
+    { day: 18, hijri: "24/2", weekday: "Mon", fajr: "5:21", sunrise: "6:35", dhuhr: "1:20", asr: "5:04", maghrib: "8:03", isha: "9:19" },
+    { day: 19, hijri: "25/2", weekday: "Tue", fajr: "5:22", sunrise: "6:36", dhuhr: "1:20", asr: "5:03", maghrib: "8:02", isha: "9:18" },
+    { day: 20, hijri: "26/2", weekday: "Wed", fajr: "5:23", sunrise: "6:37", dhuhr: "1:20", asr: "5:03", maghrib: "8:00", isha: "9:16" },
+    { day: 21, hijri: "27/2", weekday: "Thu", fajr: "5:24", sunrise: "6:38", dhuhr: "1:19", asr: "5:02", maghrib: "7:59", isha: "9:15" },
+    { day: 22, hijri: "28/2", weekday: "Fri", fajr: "5:25", sunrise: "6:39", dhuhr: "1:19", asr: "5:01", maghrib: "7:58", isha: "9:13" },
+    { day: 23, hijri: "29/2", weekday: "Sat", fajr: "5:26", sunrise: "6:39", dhuhr: "1:19", asr: "5:01", maghrib: "7:57", isha: "9:12" },
+    { day: 24, hijri: "30/2", weekday: "Sun", fajr: "5:27", sunrise: "6:40", dhuhr: "1:19", asr: "5:00", maghrib: "7:55", isha: "9:10" },
+    { day: 25, hijri: "1/3", weekday: "Mon", fajr: "5:28", sunrise: "6:41", dhuhr: "1:18", asr: "5:00", maghrib: "7:54", isha: "9:09" },
+    { day: 26, hijri: "2/3", weekday: "Tue", fajr: "5:29", sunrise: "6:42", dhuhr: "1:18", asr: "4:59", maghrib: "7:53", isha: "9:07" },
+    { day: 27, hijri: "3/3", weekday: "Wed", fajr: "5:30", sunrise: "6:43", dhuhr: "1:18", asr: "4:58", maghrib: "7:51", isha: "9:05" },
+    { day: 28, hijri: "4/3", weekday: "Thu", fajr: "5:31", sunrise: "6:43", dhuhr: "1:18", asr: "4:58", maghrib: "7:50", isha: "9:04" },
+    { day: 29, hijri: "5/3", weekday: "Fri", fajr: "5:32", sunrise: "6:44", dhuhr: "1:17", asr: "4:57", maghrib: "7:48", isha: "9:02" },
+    { day: 30, hijri: "6/3", weekday: "Sat", fajr: "5:33", sunrise: "6:45", dhuhr: "1:17", asr: "4:56", maghrib: "7:47", isha: "9:01" },
+    { day: 31, hijri: "7/3", weekday: "Sun", fajr: "5:34", sunrise: "6:46", dhuhr: "1:17", asr: "4:55", maghrib: "7:46", isha: "8:59" }
+];
+
+
 // Debug hooks for testing
 const debugHooks = {
     // Set custom date for testing
@@ -184,7 +253,7 @@ const debugHooks = {
 const adminDocsHTML = `
 <div id="admin-documentation" class="bg-white text-black p-6 my-4 rounded-lg shadow-lg max-w-4xl mx-auto">
     <h2 class="text-2xl font-bold text-masjid-accent mb-4">Admin Documentation</h2>
-    
+
     <div class="mb-6">
         <h3 class="text-xl font-semibold mb-2">Updating Prayer Times</h3>
         <p class="mb-2">Prayer times are retrieved from two sources:</p>
@@ -206,7 +275,7 @@ const adminDocsHTML = `
             <li class="mb-1">The format should be an array of times: [Fajr, Dhuhr, Asr, Maghrib, Isha]</li>
         </ol>
     </div>
-    
+
     <div class="mb-6">
         <h3 class="text-xl font-semibold mb-2">How the System Works</h3>
         <p class="mb-2">The application follows this workflow:</p>
@@ -219,7 +288,7 @@ const adminDocsHTML = `
             <li class="mb-1">Automatically refreshes when the next prayer time is reached</li>
         </ol>
     </div>
-    
+
     <div class="mb-6">
         <h3 class="text-xl font-semibold mb-2">Fullscreen Mode</h3>
         <p class="mb-2">To use fullscreen mode:</p>
@@ -230,7 +299,7 @@ const adminDocsHTML = `
             <li class="mb-1">Ideal for displaying on mosque screens or digital signage</li>
         </ol>
     </div>
-    
+
     <div class="mb-6">
         <h3 class="text-xl font-semibold mb-2">Debug Hooks (Console)</h3>
         <p class="mb-2">Use these JavaScript console commands for testing:</p>
@@ -242,7 +311,7 @@ const adminDocsHTML = `
             <div><span class="text-blue-600">window</span>.debug.reset(); <span class="text-gray-500">// Reset to normal operation</span></div>
         </div>
     </div>
-    
+
     <button onclick="hideAdminDocs()" class="bg-masjid-accent text-white py-2 px-4 rounded hover:bg-opacity-90 focus:outline-none">
         Close Documentation
     </button>
@@ -270,7 +339,7 @@ function checkUrlParams() {
     }
 }
 
-// Show admin documentation 
+// Show admin documentation
 function showAdminDocs() {
     // Create container for admin docs if it doesn't exist
     let adminDocsContainer = document.getElementById('admin-documentation-container');
@@ -1052,4 +1121,4 @@ document.addEventListener('DOMContentLoaded', async function () {
         updatePrayerTimesUI(fallbackData);
         updateNextPrayer(fallbackData);
     }
-}); 
+});
