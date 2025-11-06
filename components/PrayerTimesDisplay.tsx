@@ -232,11 +232,11 @@ export default function PrayerTimesDisplay({ prayerData, iqamahTimes }: Props) {
         <main className="container mx-auto px-4 pb-8">
           <div className="text-center text-white mb-6">
             <h1 className="text-xl mb-1 font-light">Prayer times</h1>
-            <div className="flex items-center justify-center">
+            <div className="flex items-center justify-center gap-2">
               <h2 className="text-3xl font-bold mb-1">Masjid Tawheed Was-Sunnah</h2>
-              <div className="ml-2 tooltip">
-                <span className="text-white bg-masjid-accent rounded-full p-1 flex items-center justify-center">
-                  <Check className="w-4 h-4" />
+              <div className="tooltip mb-1">
+                <span className="text-white bg-masjid-accent rounded-full p-1.5 flex items-center justify-center cursor-help">
+                  <Check className="w-4 h-4" strokeWidth={3} />
                 </span>
                 <span className="tooltip-text">Official Prayer Times Source</span>
               </div>
