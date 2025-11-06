@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { fetchHijriDate } from '@/lib/prayerTimes';
+import { fetchHijriDate } from '@/lib/prayerTimesUtils';
 
 export async function GET(request: Request) {
   try {

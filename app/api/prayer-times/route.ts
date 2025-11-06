@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getPrayerTimesForDate } from '@/lib/prayerTimes';
+import { getPrayerTimesForDate } from '@/lib/prayerTimesUtils';
 
 export async function GET(request: Request) {
   try {

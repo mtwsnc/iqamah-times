@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import PrayerTimesDisplay from '@/components/PrayerTimesDisplay';
-import { getPrayerTimesForDate, fetchIqamahTimes } from '@/lib/prayerTimes';
+import { getPrayerTimesForDate, fetchIqamahTimes } from '@/lib/prayerTimesUtils';
 import type { PrayerData, IqamahTimes } from '@/types/prayer';
 
 export default function Home() {

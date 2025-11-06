@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { fetchIqamahTimes } from '@/lib/prayerTimes';
+import { fetchIqamahTimes } from '@/lib/prayerTimesUtils';
 
 export async function GET() {
   try {

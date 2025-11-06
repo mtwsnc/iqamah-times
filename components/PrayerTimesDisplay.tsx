@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Check, Download, Maximize, CalendarClock, X } from 'lucide-react';
-import { formatTo12Hour, createTimeDate, fetchHijriDate } from '@/lib/prayerTimes';
+import { formatTo12Hour, createTimeDate, fetchHijriDate } from '@/lib/prayerTimesUtils';
 import type { PrayerData, IqamahTimes, PrayerTime } from '@/types/prayer';
 
 interface Props {
