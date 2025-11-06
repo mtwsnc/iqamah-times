@@ -17,6 +17,7 @@ export default function PrayerTimesDisplay({ prayerData, iqamahTimes }: Props) {
   const [isIqamahCountdown, setIsIqamahCountdown] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
   const [showAdminNotice, setShowAdminNotice] = useState(false);
+  const [showMonthDetails, setShowMonthDetails] = useState(false);
 
   useEffect(() => {
     async function loadHijriDate() {
@@ -167,16 +168,85 @@ export default function PrayerTimesDisplay({ prayerData, iqamahTimes }: Props) {
       )}
 
       {showAdminNotice && (
-        <div className="bg-yellow-500 text-black px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <AlertCircle className="w-5 h-5" />
-            <span className="font-medium">
-              Adhan times for this month are not yet available. Displaying approximate times. Please contact the masjid administration for accurate times.
-            </span>
+        <div className="bg-yellow-500 text-black px-4 py-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 flex-1">
+              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+              <div className="flex-1">
+                <span className="font-medium">
+                  Adhan times for this month are not yet available. Displaying approximate times.
+                </span>
+                <button 
+                  onClick={() => setShowMonthDetails(!showMonthDetails)}
+                  className="ml-2 underline hover:no-underline font-semibold"
+                >
+                  Learn More
+                </button>
+              </div>
+            </div>
+            <button onClick={() => setShowAdminNotice(false)} className="text-black hover:text-gray-700 ml-2">
+              <X className="w-5 h-5" />
+            </button>
           </div>
-          <button onClick={() => setShowAdminNotice(false)} className="text-black hover:text-gray-700">
-            <X className="w-5 h-5" />
-          </button>
+          
+          {showMonthDetails && (
+            <div className="mt-3 pt-3 border-t border-yellow-600">
+              <h3 className="font-bold mb-2">Adhan Times Data Availability:</h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 text-sm">
+                <div className="flex items-center gap-1">
+                  <Check className="w-4 h-4 text-green-700" />
+                  <span>January</span>
+                </div>
+                <div className="flex items-center gap-1 opacity-60">
+                  <X className="w-4 h-4" />
+                  <span>February</span>
+                </div>
+                <div className="flex items-center gap-1 opacity-60">
+                  <X className="w-4 h-4" />
+                  <span>March</span>
+                </div>
+                <div className="flex items-center gap-1 opacity-60">
+                  <X className="w-4 h-4" />
+                  <span>April</span>
+                </div>
+                <div className="flex items-center gap-1 opacity-60">
+                  <X className="w-4 h-4" />
+                  <span>May</span>
+                </div>
+                <div className="flex items-center gap-1 opacity-60">
+                  <X className="w-4 h-4" />
+                  <span>June</span>
+                </div>
+                <div className="flex items-center gap-1 opacity-60">
+                  <X className="w-4 h-4" />
+                  <span>July</span>
+                </div>
+                <div className="flex items-center gap-1 opacity-60">
+                  <X className="w-4 h-4" />
+                  <span>August</span>
+                </div>
+                <div className="flex items-center gap-1 opacity-60">
+                  <X className="w-4 h-4" />
+                  <span>September</span>
+                </div>
+                <div className="flex items-center gap-1 opacity-60">
+                  <X className="w-4 h-4" />
+                  <span>October</span>
+                </div>
+                <div className="flex items-center gap-1 opacity-60">
+                  <X className="w-4 h-4" />
+                  <span>November</span>
+                </div>
+                <div className="flex items-center gap-1 opacity-60">
+                  <X className="w-4 h-4" />
+                  <span>December</span>
+                </div>
+              </div>
+              <p className="mt-3 text-sm">
+                Please contact the masjid administration to add missing months' data.
+              </p>
+            </div>
+          )}
         </div>
       )}
 
