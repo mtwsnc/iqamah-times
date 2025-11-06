@@ -347,6 +347,7 @@ export default function PrayerTimesDisplay({ prayerData, iqamahTimes }: Props) {
             <img src="/mtws-logo.png" alt="MTWS Logo" className="h-6 w-auto" />
             <a href="https://mtws.one" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white">mtws.one</a>
             <a href="https://mtws.org" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white">mtws.org</a>
+            <a href="mailto:tech@mtws.org" className="text-gray-300 hover:text-white">tech@mtws.org</a>
           </div>
         </div>
       </footer>
