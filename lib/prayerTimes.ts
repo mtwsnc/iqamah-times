@@ -1,5 +1,5 @@
 import type { PrayerData, IqamahTimes } from '@/types/prayer';
-import { PRAYER_TIMES_DATA } from './prayerTimesData';
+import { ADHAN_TIMES_DATA } from './prayerTimesData';
 
 const API_URL = process.env.NEXT_PUBLIC_IQAMAH_API_URL || '';
 
@@ -42,7 +42,7 @@ export async function getPrayerTimesForDate(date: Date): Promise<PrayerData> {
   const month = date.getMonth() + 1;
   const day = date.getDate();
 
-  const monthData = PRAYER_TIMES_DATA[month];
+  const monthData = ADHAN_TIMES_DATA[month];
 
   if (!monthData) {
     console.warn(`Prayer data for month ${month} is not available`);
