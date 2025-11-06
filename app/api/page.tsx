@@ -22,7 +22,7 @@ GET /api/all
 Get all prayer times for the day
 
 Example Request:
-  /api/all
+  https://iqamah.mtws.org/api/all
 
 Example Response:
   {
@@ -54,7 +54,7 @@ GET /api/fajr
 Fajr prayer times
 
 Example Request:
-  /api/fajr
+  https://iqamah.mtws.org/api/fajr
 
 Example Response:
   {
@@ -70,7 +70,7 @@ GET /api/shurooq
 Shurooq (Sunrise) time - ADHAN ONLY, NO IQAMAH
 
 Example Request:
-  /api/shurooq
+  https://iqamah.mtws.org/api/shurooq
 
 Example Response:
   {
@@ -85,7 +85,7 @@ GET /api/dhuhr
 Dhuhr prayer times
 
 Example Request:
-  /api/dhuhr
+  https://iqamah.mtws.org/api/dhuhr
 
 Example Response:
   {
@@ -101,7 +101,7 @@ GET /api/asr
 Asr prayer times
 
 Example Request:
-  /api/asr
+  https://iqamah.mtws.org/api/asr
 
 Example Response:
   {
@@ -117,7 +117,7 @@ GET /api/maghrib
 Maghrib prayer times
 
 Example Request:
-  /api/maghrib
+  https://iqamah.mtws.org/api/maghrib
 
 Example Response:
   {
@@ -133,7 +133,7 @@ GET /api/isha
 Isha prayer times
 
 Example Request:
-  /api/isha
+  https://iqamah.mtws.org/api/isha
 
 Example Response:
   {
@@ -152,7 +152,7 @@ date (optional)
   If not provided, returns times for today
   
   Example:
-    /api/fajr?date=2025-11-15
+    https://iqamah.mtws.org/api/fajr?date=2025-11-15
 
 
 IMPORTANT NOTES
