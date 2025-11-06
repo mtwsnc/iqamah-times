@@ -1,12 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Check, Download, Maximize, CalendarClock, X } from 'lucide-react';
+import { Check, Download, Maximize, CalendarClock, X, AlertCircle } from 'lucide-react';
 import { formatTo12Hour, createTimeDate, fetchHijriDate } from '@/lib/prayerTimesUtils';
 import type { PrayerData, IqamahTimes, PrayerTime } from '@/types/prayer';
 
 interface Props {
-  prayerData: PrayerData | null;
+  prayerData: (PrayerData & { isApproximate?: boolean }) | null;
   iqamahTimes: IqamahTimes | null;
 }
 
@@ -16,6 +16,7 @@ export default function PrayerTimesDisplay({ prayerData, iqamahTimes }: Props) {
   const [countdown, setCountdown] = useState({ hours: 0, minutes: 0, seconds: 0 });
   const [isIqamahCountdown, setIsIqamahCountdown] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
+  const [showAdminNotice, setShowAdminNotice] = useState(false);
 
   useEffect(() => {
     async function loadHijriDate() {
@@ -24,6 +25,13 @@ export default function PrayerTimesDisplay({ prayerData, iqamahTimes }: Props) {
     }
     loadHijriDate();
   }, []);
+
+  useEffect(() => {
+    // Check if we're using approximate/fallback data
+    if (prayerData?.isApproximate) {
+      setShowAdminNotice(true);
+    }
+  }, [prayerData]);
 
   useEffect(() => {
     if (!prayerData) return;
@@ -155,6 +163,20 @@ export default function PrayerTimesDisplay({ prayerData, iqamahTimes }: Props) {
           <div className="app-banner-close" onClick={handleCloseBanner}>
             <X className="w-4 h-4" />
           </div>
+        </div>
+      )}
+
+      {showAdminNotice && (
+        <div className="bg-yellow-500 text-black px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <AlertCircle className="w-5 h-5" />
+            <span className="font-medium">
+              Adhan times for this month are not yet available. Displaying approximate times. Please contact the masjid administration for accurate times.
+            </span>
+          </div>
+          <button onClick={() => setShowAdminNotice(false)} className="text-black hover:text-gray-700">
+            <X className="w-5 h-5" />
+          </button>
         </div>
       )}
 

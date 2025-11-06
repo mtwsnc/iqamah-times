@@ -38,15 +38,15 @@ export async function fetchIqamahTimes(): Promise<IqamahTimes | null> {
   }
 }
 
-export async function getPrayerTimesForDate(date: Date): Promise<PrayerData> {
+export async function getPrayerTimesForDate(date: Date): Promise<PrayerData & { isApproximate?: boolean }> {
   const month = date.getMonth() + 1;
   const day = date.getDate();
 
   const monthData = ADHAN_TIMES_DATA[month];
 
   if (!monthData) {
-    console.warn(`Prayer data for month ${month} is not available`);
-    // Use fallback data
+    console.warn(`Adhan times for month ${month} are not available - using fallback data`);
+    // Use fallback data and mark as approximate
     return {
       day: day,
       hijri: "N/A",
@@ -56,7 +56,8 @@ export async function getPrayerTimesForDate(date: Date): Promise<PrayerData> {
       dhuhr: "1:15",
       asr: "5:00",
       maghrib: "8:00",
-      isha: "9:30"
+      isha: "9:30",
+      isApproximate: true
     };
   }
 
@@ -64,7 +65,7 @@ export async function getPrayerTimesForDate(date: Date): Promise<PrayerData> {
 
   if (!dayData) {
     console.warn(`No data for day ${day} in month ${month}, using first available day`);
-    return monthData[0];
+    return { ...monthData[0], isApproximate: true };
   }
 
   return dayData;
