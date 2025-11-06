@@ -1,14 +1,7 @@
-export default function ApiDocumentation() {
-  return (
-    <pre style={{ 
-      fontFamily: 'monospace', 
-      padding: '2rem', 
-      maxWidth: '900px', 
-      margin: '0 auto',
-      whiteSpace: 'pre-wrap',
-      lineHeight: '1.6'
-    }}>
-{`PRAYER TIMES API DOCUMENTATION
+import { NextResponse } from 'next/server';
+
+export async function GET() {
+  const content = `PRAYER TIMES API DOCUMENTATION
 ================================
 
 Access prayer times (Adhan and Iqamah) for MTWS through our REST API endpoints.
@@ -163,7 +156,11 @@ IMPORTANT NOTES
 • Times are based on MTWS (Muslim Theological and Welfare Society) schedule
 • All responses include ISO 8601 formatted date
 • All endpoints return JSON format
-`}
-    </pre>
-  );
+`;
+
+  return new NextResponse(content, {
+    headers: {
+      'Content-Type': 'text/plain; charset=utf-8',
+    },
+  });
 }
