@@ -232,62 +232,105 @@ export default function FullscreenPage() {
         </div>
       )}
 
-      <div className="text-center text-white mb-12">
-        <h1 className="text-5xl font-bold mb-4">Masjid Tawheed Was-Sunnah</h1>
-        <p className="text-2xl opacity-90 mb-2">{gregorianDate}</p>
-        <p className="text-2xl hijri-date-arabic opacity-90">{hijriDate}</p>
+      <div className="text-center text-white mb-4">
+        <h1 className="text-2xl mb-1 font-light">Prayer times</h1>
+        <h2 className="text-3xl font-bold mb-2">Masjid Tawheed Was-Sunnah</h2>
+        <p className="text-sm opacity-90 mb-1">{gregorianDate}</p>
+        <p className="text-sm hijri-date-arabic opacity-90">{hijriDate}</p>
       </div>
 
-      <div className="text-center text-white mb-16">
-        <p className="text-3xl font-light mb-4">
+      <div className="text-center text-white mb-6">
+        <p className="text-lg font-light mb-2">
           {isIqamahCountdown ? 'IQAMAH at MTWS IN:' : `The prayer of ${nextPrayer?.name} is in`}
         </p>
-        <div className="flex justify-center items-center gap-8">
-          <div className="text-center">
-            <div className="text-7xl font-bold">{String(countdown.hours).padStart(2, '0')}</div>
-            <div className="text-2xl opacity-75 mt-2">Hours</div>
-          </div>
-          <div className="text-7xl font-bold">:</div>
-          <div className="text-center">
-            <div className="text-7xl font-bold">{String(countdown.minutes).padStart(2, '0')}</div>
-            <div className="text-2xl opacity-75 mt-2">Minutes</div>
-          </div>
-          <div className="text-7xl font-bold">:</div>
-          <div className="text-center">
-            <div className="text-7xl font-bold">{String(countdown.seconds).padStart(2, '0')}</div>
-            <div className="text-2xl opacity-75 mt-2">Seconds</div>
-          </div>
+        <div className="flex justify-center gap-2">
+          <div className="text-4xl font-bold">{String(countdown.hours).padStart(2, '0')}</div>
+          <div className="text-4xl font-bold">:</div>
+          <div className="text-4xl font-bold">{String(countdown.minutes).padStart(2, '0')}</div>
+          <div className="text-4xl font-bold">:</div>
+          <div className="text-4xl font-bold">{String(countdown.seconds).padStart(2, '0')}</div>
+        </div>
+        <div className="flex justify-center gap-2 text-xs font-light mt-1">
+          <div className="w-12 text-center">Hours</div>
+          <div className="w-12 text-center">Minutes</div>
+          <div className="w-12 text-center">Seconds</div>
         </div>
       </div>
 
-      <div className="grid grid-cols-5 gap-6 max-w-7xl mx-auto">
-        {[
-          { name: 'FAJR', adhan: prayerData.fajr, iqamah: iqamahTimes?.fajr },
-          { name: 'DHUHR', adhan: prayerData.dhuhr, iqamah: iqamahTimes?.dhuhr },
-          { name: 'ASR', adhan: prayerData.asr, iqamah: iqamahTimes?.asr },
-          { name: 'MAGHRIB', adhan: prayerData.maghrib, iqamah: iqamahTimes?.maghrib },
-          { name: 'ISHA', adhan: prayerData.isha, iqamah: iqamahTimes?.isha }
-        ].map((prayer) => (
-          <div
-            key={prayer.name}
-            className={`prayer-card ${nextPrayer?.name === prayer.name ? 'active' : ''} p-8`}
-          >
-            <h3 className="prayer-name text-3xl font-bold mb-6">{prayer.name}</h3>
-            <div className="space-y-4">
-              <div>
-                <div className="text-sm opacity-75 mb-1">ADHAN</div>
-                <div className="text-4xl font-bold">{formatTo12Hour(prayer.adhan, prayer.name.toLowerCase())}</div>
-              </div>
-              <div>
-                <div className="text-sm opacity-75 mb-1">IQAMAH</div>
-                <div className="text-4xl font-bold">
-                  {prayer.iqamah ? formatTo12Hour(prayer.iqamah, prayer.name.toLowerCase()) : formatTo12Hour(prayer.adhan, prayer.name.toLowerCase())}
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
+      <div className="wavy-divider mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
+          <path fill="#FFFFFF" fillOpacity="0.3"
+            d="M0,224L48,208C96,192,192,160,288,160C384,160,480,192,576,197.3C672,203,768,181,864,186.7C960,192,1056,224,1152,224C1248,224,1344,192,1392,176L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z">
+          </path>
+        </svg>
       </div>
+
+      <div className="max-w-5xl mx-auto px-4">
+        <div className="grid grid-cols-3 gap-3 mb-3">
+          <PrayerCard 
+            name="FAJR" 
+            iqamahTime={iqamahTimes?.fajr ? formatTo12Hour(iqamahTimes.fajr, 'fajr') : formatTo12Hour(prayerData.fajr, 'fajr')}
+            adhanTime={formatTo12Hour(prayerData.fajr, 'fajr')}
+            isActive={nextPrayer?.name === 'FAJR'}
+          />
+          <PrayerCard 
+            name="SHURUQ" 
+            iqamahTime={formatTo12Hour(prayerData.sunrise, 'sunrise')}
+            adhanTime=""
+            isActive={false}
+            isSunrise
+          />
+          <PrayerCard 
+            name="DHUHR" 
+            iqamahTime={iqamahTimes?.dhuhr ? formatTo12Hour(iqamahTimes.dhuhr, 'dhuhr') : formatTo12Hour(prayerData.dhuhr, 'dhuhr')}
+            adhanTime={formatTo12Hour(prayerData.dhuhr, 'dhuhr')}
+            isActive={nextPrayer?.name === 'DHUHR'}
+          />
+          <PrayerCard 
+            name="ASR" 
+            iqamahTime={iqamahTimes?.asr ? formatTo12Hour(iqamahTimes.asr, 'asr') : formatTo12Hour(prayerData.asr, 'asr')}
+            adhanTime={formatTo12Hour(prayerData.asr, 'asr')}
+            isActive={nextPrayer?.name === 'ASR'}
+          />
+          <PrayerCard 
+            name="MAGHRIB" 
+            iqamahTime={iqamahTimes?.maghrib ? formatTo12Hour(iqamahTimes.maghrib, 'maghrib') : formatTo12Hour(prayerData.maghrib, 'maghrib')}
+            adhanTime={formatTo12Hour(prayerData.maghrib, 'maghrib')}
+            isActive={nextPrayer?.name === 'MAGHRIB'}
+          />
+          <PrayerCard 
+            name="ISHA" 
+            iqamahTime={iqamahTimes?.isha ? formatTo12Hour(iqamahTimes.isha, 'isha') : formatTo12Hour(prayerData.isha, 'isha')}
+            adhanTime={formatTo12Hour(prayerData.isha, 'isha')}
+            isActive={nextPrayer?.name === 'ISHA'}
+          />
+        </div>
+        
+        <div className="prayer-card flex flex-col w-full">
+          <div className="prayer-name text-base">JUMUAH</div>
+          <div className="prayer-time text-2xl">1:00 PM</div>
+          <div className="adhan-time">&nbsp;</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+interface PrayerCardProps {
+  name: string;
+  iqamahTime: string;
+  adhanTime: string;
+  isActive: boolean;
+  isSunrise?: boolean;
+}
+
+function PrayerCard({ name, iqamahTime, adhanTime, isActive, isSunrise }: PrayerCardProps) {
+  return (
+    <div className={`prayer-card flex flex-col ${isActive ? 'active' : ''}`}>
+      <div className="prayer-name text-base">{name}</div>
+      <div className="prayer-time text-2xl">{iqamahTime}</div>
+      {!isSunrise && <div className="adhan-time text-xs">{adhanTime}</div>}
+      {isSunrise && <div className="adhan-time">&nbsp;</div>}
     </div>
   );
 }
