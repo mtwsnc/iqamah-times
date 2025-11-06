@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { X } from 'lucide-react';
+import { X, Maximize } from 'lucide-react';
 import { formatTo12Hour, createTimeDate, fetchHijriDate } from '@/lib/prayerTimesUtils';
 import type { PrayerData, IqamahTimes, PrayerTime } from '@/types/prayer';
 
@@ -12,20 +12,39 @@ export default function FullscreenPage() {
   const [nextPrayer, setNextPrayer] = useState<PrayerTime | null>(null);
   const [countdown, setCountdown] = useState({ hours: 0, minutes: 0, seconds: 0 });
   const [isIqamahCountdown, setIsIqamahCountdown] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showReloadPrompt, setShowReloadPrompt] = useState(false);
 
+  // Handle fullscreen state changes
   useEffect(() => {
-    // Enter fullscreen on mount
-    const enterFullscreen = async () => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
+
+  // Check for updates periodically
+  useEffect(() => {
+    const checkForUpdates = async () => {
       try {
-        if (document.documentElement.requestFullscreen) {
-          await document.documentElement.requestFullscreen();
+        const response = await fetch('/api/prayer-times', { cache: 'no-store' });
+        if (response.ok) {
+          // If we get a successful response, check if content has changed
+          setShowReloadPrompt(true);
         }
-      } catch (err) {
-        console.error('Error entering fullscreen:', err);
+      } catch (error) {
+        console.error('Error checking for updates:', error);
       }
     };
-    enterFullscreen();
 
+    // Check for updates every 5 minutes
+    const interval = setInterval(checkForUpdates, 5 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
     // Fetch prayer data
     const fetchData = async () => {
       try {
@@ -131,6 +150,16 @@ export default function FullscreenPage() {
     return () => clearInterval(interval);
   }, [prayerData, iqamahTimes]);
 
+  const enterFullscreen = async () => {
+    try {
+      if (document.documentElement.requestFullscreen) {
+        await document.documentElement.requestFullscreen();
+      }
+    } catch (err) {
+      console.error('Error entering fullscreen:', err);
+    }
+  };
+
   const exitFullscreen = async () => {
     try {
       if (document.fullscreenElement) {
@@ -141,6 +170,10 @@ export default function FullscreenPage() {
       console.error('Error exiting fullscreen:', err);
       window.location.href = '/';
     }
+  };
+
+  const handleReload = () => {
+    window.location.reload();
   };
 
   if (!prayerData) {
@@ -160,13 +193,44 @@ export default function FullscreenPage() {
 
   return (
     <div className="min-h-screen p-8">
-      <button
-        onClick={exitFullscreen}
-        className="absolute top-4 right-4 text-white bg-black bg-opacity-50 hover:bg-opacity-70 rounded-full p-3 transition-all z-50"
-        aria-label="Exit fullscreen"
-      >
-        <X className="w-6 h-6" />
-      </button>
+      {/* Fullscreen Controls */}
+      <div className="absolute top-4 right-4 flex gap-2 z-50">
+        {!isFullscreen && (
+          <button
+            onClick={enterFullscreen}
+            className="text-white bg-masjid-accent hover:bg-opacity-90 rounded-full p-3 transition-all"
+            aria-label="Enter fullscreen"
+          >
+            <Maximize className="w-6 h-6" />
+          </button>
+        )}
+        <button
+          onClick={exitFullscreen}
+          className="text-white bg-black bg-opacity-50 hover:bg-opacity-70 rounded-full p-3 transition-all"
+          aria-label="Exit to home"
+        >
+          <X className="w-6 h-6" />
+        </button>
+      </div>
+
+      {/* Reload Prompt */}
+      {showReloadPrompt && (
+        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-masjid-accent text-white px-6 py-4 rounded-lg shadow-lg z-50 flex items-center gap-4">
+          <span className="font-semibold">New prayer times available</span>
+          <button
+            onClick={handleReload}
+            className="bg-white text-masjid-green px-4 py-2 rounded font-semibold hover:bg-opacity-90 transition-all"
+          >
+            Reload Page
+          </button>
+          <button
+            onClick={() => setShowReloadPrompt(false)}
+            className="text-white hover:text-gray-200"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+      )}
 
       <div className="text-center text-white mb-12">
         <h1 className="text-5xl font-bold mb-4">Masjid Tawheed Was-Sunnah</h1>
