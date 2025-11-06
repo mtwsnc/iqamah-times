@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Check, Download, Maximize, CalendarClock, X, AlertCircle } from 'lucide-react';
 import { formatTo12Hour, createTimeDate, fetchHijriDate } from '@/lib/prayerTimesUtils';
+import { ADHAN_TIMES_DATA } from '@/lib/adhanTimesData';
 import type { PrayerData, IqamahTimes, PrayerTime } from '@/types/prayer';
 
 interface Props {
@@ -193,54 +194,20 @@ export default function PrayerTimesDisplay({ prayerData, iqamahTimes }: Props) {
             <div className="mt-3 pt-3 border-t border-yellow-600">
               <h3 className="font-bold mb-2">Adhan Times Data Availability:</h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 text-sm">
-                <div className="flex items-center gap-1">
-                  <Check className="w-4 h-4 text-green-700" />
-                  <span>January</span>
-                </div>
-                <div className="flex items-center gap-1 opacity-60">
-                  <X className="w-4 h-4" />
-                  <span>February</span>
-                </div>
-                <div className="flex items-center gap-1 opacity-60">
-                  <X className="w-4 h-4" />
-                  <span>March</span>
-                </div>
-                <div className="flex items-center gap-1 opacity-60">
-                  <X className="w-4 h-4" />
-                  <span>April</span>
-                </div>
-                <div className="flex items-center gap-1 opacity-60">
-                  <X className="w-4 h-4" />
-                  <span>May</span>
-                </div>
-                <div className="flex items-center gap-1 opacity-60">
-                  <X className="w-4 h-4" />
-                  <span>June</span>
-                </div>
-                <div className="flex items-center gap-1 opacity-60">
-                  <X className="w-4 h-4" />
-                  <span>July</span>
-                </div>
-                <div className="flex items-center gap-1 opacity-60">
-                  <X className="w-4 h-4" />
-                  <span>August</span>
-                </div>
-                <div className="flex items-center gap-1 opacity-60">
-                  <X className="w-4 h-4" />
-                  <span>September</span>
-                </div>
-                <div className="flex items-center gap-1 opacity-60">
-                  <X className="w-4 h-4" />
-                  <span>October</span>
-                </div>
-                <div className="flex items-center gap-1 opacity-60">
-                  <X className="w-4 h-4" />
-                  <span>November</span>
-                </div>
-                <div className="flex items-center gap-1 opacity-60">
-                  <X className="w-4 h-4" />
-                  <span>December</span>
-                </div>
+                {['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'].map((month, index) => {
+                  const monthNumber = index + 1;
+                  const hasData = !!ADHAN_TIMES_DATA[monthNumber];
+                  return (
+                    <div key={month} className={`flex items-center gap-1 ${!hasData ? 'opacity-60' : ''}`}>
+                      {hasData ? (
+                        <Check className="w-4 h-4 text-green-700" />
+                      ) : (
+                        <X className="w-4 h-4" />
+                      )}
+                      <span>{month}</span>
+                    </div>
+                  );
+                })}
               </div>
               <p className="mt-3 text-sm">
                 Please contact the masjid administration to add missing months' data.
