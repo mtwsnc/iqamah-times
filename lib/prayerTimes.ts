@@ -1,7 +1,7 @@
 import type { PrayerData, IqamahTimes } from '@/types/prayer';
 import { PRAYER_TIMES_DATA } from './prayerTimesData';
 
-const API_URL = 'https://northerly-robin-8705.dataplicity.io/mtws-iqaamah-times/all';
+const API_URL = process.env.IQAMAH_API_URL || '';
 
 export async function fetchIqamahTimes(): Promise<IqamahTimes | null> {
   try {
