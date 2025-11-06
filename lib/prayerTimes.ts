@@ -1,7 +1,7 @@
 import type { PrayerData, IqamahTimes } from '@/types/prayer';
 import { PRAYER_TIMES_DATA } from './prayerTimesData';
 
-const API_URL = process.env.IQAMAH_API_URL || '';
+const API_URL = process.env.NEXT_PUBLIC_IQAMAH_API_URL || '';
 
 export async function fetchIqamahTimes(): Promise<IqamahTimes | null> {
   try {
