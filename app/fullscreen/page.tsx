@@ -269,7 +269,7 @@ export default function FullscreenPage() {
         <div className="grid grid-cols-3 gap-3 mb-3">
           <PrayerCard 
             name="FAJR" 
-            iqamahTime={iqamahTimes?.fajr ? formatTo12Hour(iqamahTimes.fajr, 'fajr') : formatTo12Hour(prayerData.fajr, 'fajr')}
+            iqamahTime={iqamahTimes?.fajr || formatTo12Hour(prayerData.fajr, 'fajr')}
             adhanTime={formatTo12Hour(prayerData.fajr, 'fajr')}
             isActive={nextPrayer?.name === 'FAJR'}
           />
@@ -282,25 +282,25 @@ export default function FullscreenPage() {
           />
           <PrayerCard 
             name="DHUHR" 
-            iqamahTime={iqamahTimes?.dhuhr ? formatTo12Hour(iqamahTimes.dhuhr, 'dhuhr') : formatTo12Hour(prayerData.dhuhr, 'dhuhr')}
+            iqamahTime={iqamahTimes?.dhuhr || formatTo12Hour(prayerData.dhuhr, 'dhuhr')}
             adhanTime={formatTo12Hour(prayerData.dhuhr, 'dhuhr')}
             isActive={nextPrayer?.name === 'DHUHR'}
           />
           <PrayerCard 
             name="ASR" 
-            iqamahTime={iqamahTimes?.asr ? formatTo12Hour(iqamahTimes.asr, 'asr') : formatTo12Hour(prayerData.asr, 'asr')}
+            iqamahTime={iqamahTimes?.asr || formatTo12Hour(prayerData.asr, 'asr')}
             adhanTime={formatTo12Hour(prayerData.asr, 'asr')}
             isActive={nextPrayer?.name === 'ASR'}
           />
           <PrayerCard 
             name="MAGHRIB" 
-            iqamahTime={iqamahTimes?.maghrib ? formatTo12Hour(iqamahTimes.maghrib, 'maghrib') : formatTo12Hour(prayerData.maghrib, 'maghrib')}
+            iqamahTime={iqamahTimes?.maghrib || formatTo12Hour(prayerData.maghrib, 'maghrib')}
             adhanTime={formatTo12Hour(prayerData.maghrib, 'maghrib')}
             isActive={nextPrayer?.name === 'MAGHRIB'}
           />
           <PrayerCard 
             name="ISHA" 
-            iqamahTime={iqamahTimes?.isha ? formatTo12Hour(iqamahTimes.isha, 'isha') : formatTo12Hour(prayerData.isha, 'isha')}
+            iqamahTime={iqamahTimes?.isha || formatTo12Hour(prayerData.isha, 'isha')}
             adhanTime={formatTo12Hour(prayerData.isha, 'isha')}
             isActive={nextPrayer?.name === 'ISHA'}
           />
