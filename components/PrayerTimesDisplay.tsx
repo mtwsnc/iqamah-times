@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { Check, Download, Maximize, CalendarClock, X, AlertCircle } from 'lucide-react';
 import { formatTo12Hour, createTimeDate, fetchHijriDate } from '@/lib/prayerTimesUtils';
-import { ADHAN_TIMES_DATA } from '@/lib/adhanTimesData';
 import type { PrayerData, IqamahTimes, PrayerTime } from '@/types/prayer';
 
 interface Props {
@@ -18,7 +17,6 @@ export default function PrayerTimesDisplay({ prayerData, iqamahTimes }: Props) {
   const [isIqamahCountdown, setIsIqamahCountdown] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
   const [showAdminNotice, setShowAdminNotice] = useState(false);
-  const [showMonthDetails, setShowMonthDetails] = useState(false);
 
   useEffect(() => {
     async function loadHijriDate() {
@@ -173,47 +171,14 @@ export default function PrayerTimesDisplay({ prayerData, iqamahTimes }: Props) {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 flex-1">
               <AlertCircle className="w-5 h-5 flex-shrink-0" />
-              <div className="flex-1">
-                <span className="font-medium">
-                  Adhan times for this month are not yet available. Displaying approximate times.
-                </span>
-                <button 
-                  onClick={() => setShowMonthDetails(!showMonthDetails)}
-                  className="ml-2 underline hover:no-underline font-semibold"
-                >
-                  Learn More
-                </button>
-              </div>
+              <span className="font-medium">
+                Could not load live adhan times. Displaying approximate times.
+              </span>
             </div>
             <button onClick={() => setShowAdminNotice(false)} className="text-black hover:text-gray-700 ml-2">
               <X className="w-5 h-5" />
             </button>
           </div>
-          
-          {showMonthDetails && (
-            <div className="mt-3 pt-3 border-t border-yellow-600">
-              <h3 className="font-bold mb-2">Adhan Times Data Availability:</h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 text-sm">
-                {['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'].map((month, index) => {
-                  const monthNumber = index + 1;
-                  const hasData = !!ADHAN_TIMES_DATA[monthNumber];
-                  return (
-                    <div key={month} className={`flex items-center gap-1 ${!hasData ? 'opacity-60' : ''}`}>
-                      {hasData ? (
-                        <Check className="w-4 h-4 text-green-700" />
-                      ) : (
-                        <X className="w-4 h-4" />
-                      )}
-                      <span>{month}</span>
-                    </div>
-                  );
-                })}
-              </div>
-              <p className="mt-3 text-sm">
-                Please contact the masjid administration to add missing months' data.
-              </p>
-            </div>
-          )}
         </div>
       )}
 

@@ -1,7 +1,11 @@
 import type { PrayerData, IqamahTimes } from '@/types/prayer';
-import { ADHAN_TIMES_DATA } from './adhanTimesData';
 
 const API_URL = process.env.NEXT_PUBLIC_IQAMAH_API_URL || '';
+
+// Durham, NC - hardcoded coordinates, ISNA calculation method
+const DURHAM_LAT = 35.994
+const DURHAM_LON = -78.8986
+const ISNA_METHOD = 2
 
 export async function fetchIqamahTimes(): Promise<IqamahTimes | null> {
   try {
@@ -42,33 +46,53 @@ export async function getPrayerTimesForDate(date: Date): Promise<PrayerData & { 
   const month = date.getMonth() + 1;
   const day = date.getDate();
 
-  const monthData = ADHAN_TIMES_DATA[month];
+  try {
+    const timestamp = Math.floor(date.getTime() / 1000)
+    const url = `https://api.aladhan.com/v1/timings/${timestamp}?latitude=${DURHAM_LAT}&longitude=${DURHAM_LON}&method=${ISNA_METHOD}`
+    const response = await fetch(url, { next: { revalidate: 3600 } })
 
-  if (!monthData) {
-    console.warn(`Adhan times for month ${month} are not available - using fallback data`);
-    // Use fallback data and mark as approximate
+    if (!response.ok) {
+      throw new Error(`aladhan API error: ${response.status}`)
+    }
+
+    const json = await response.json()
+    const timings = json?.data?.timings
+    const hijriData = json?.data?.date?.hijri
+
+    if (!timings) {
+      throw new Error("Unexpected aladhan response shape")
+    }
+
+    const hijri = hijriData
+      ? `${hijriData.day} ${hijriData.month.en} ${hijriData.year}`
+      : "N/A"
+
     return {
-      day: day,
+      day,
+      hijri,
+      weekday: date.toLocaleDateString("en-US", { weekday: "short" }),
+      fajr: timings.Fajr,
+      sunrise: timings.Sunrise,
+      dhuhr: timings.Dhuhr,
+      asr: timings.Asr,
+      maghrib: timings.Maghrib,
+      isha: timings.Isha,
+    }
+  } catch (error) {
+    console.error("Failed to fetch ISNA prayer times from aladhan:", error)
+    return {
+      day,
       hijri: "N/A",
-      weekday: date.toLocaleDateString('en-US', { weekday: 'short' }),
+      weekday: date.toLocaleDateString("en-US", { weekday: "short" }),
       fajr: "5:00",
       sunrise: "6:30",
       dhuhr: "1:15",
       asr: "5:00",
       maghrib: "8:00",
       isha: "9:30",
-      isApproximate: true
-    };
+      isApproximate: true,
+    }
   }
-
-  const dayData = monthData.find(entry => entry.day === day);
-
-  if (!dayData) {
-    console.warn(`No data for day ${day} in month ${month}, using first available day`);
-    return { ...monthData[0], isApproximate: true };
-  }
-
-  return dayData;
 }
 
 export function formatTo12Hour(time24h: string, prayerName?: string): string {
