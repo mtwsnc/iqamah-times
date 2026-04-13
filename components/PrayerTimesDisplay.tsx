@@ -247,7 +247,7 @@ export default function PrayerTimesDisplay({ prayerData, iqamahTimes }: Props) {
                 name="FAJR" 
                 iqamahTime={iqamahTimes?.fajr || formatTo12Hour(prayerData.fajr, 'fajr')}
                 adhanTime={formatTo12Hour(prayerData.fajr, 'fajr')}
-                isActive={nextPrayer?.name === 'FAJR'}
+                isActive={nextPrayer?.name === 'FAJR' && isIqamahCountdown}
               />
               <PrayerCard 
                 name="SHURUQ" 
@@ -260,25 +260,25 @@ export default function PrayerTimesDisplay({ prayerData, iqamahTimes }: Props) {
                 name="DHUHR" 
                 iqamahTime={iqamahTimes?.dhuhr || formatTo12Hour(prayerData.dhuhr, 'dhuhr')}
                 adhanTime={formatTo12Hour(prayerData.dhuhr, 'dhuhr')}
-                isActive={nextPrayer?.name === 'DHUHR'}
+                isActive={nextPrayer?.name === 'DHUHR' && isIqamahCountdown}
               />
               <PrayerCard 
                 name="ASR" 
                 iqamahTime={iqamahTimes?.asr || formatTo12Hour(prayerData.asr, 'asr')}
                 adhanTime={formatTo12Hour(prayerData.asr, 'asr')}
-                isActive={nextPrayer?.name === 'ASR'}
+                isActive={nextPrayer?.name === 'ASR' && isIqamahCountdown}
               />
               <PrayerCard 
                 name="MAGHRIB" 
                 iqamahTime={iqamahTimes?.maghrib || formatTo12Hour(prayerData.maghrib, 'maghrib')}
                 adhanTime={formatTo12Hour(prayerData.maghrib, 'maghrib')}
-                isActive={nextPrayer?.name === 'MAGHRIB'}
+                isActive={nextPrayer?.name === 'MAGHRIB' && isIqamahCountdown}
               />
               <PrayerCard 
                 name="ISHA" 
                 iqamahTime={iqamahTimes?.isha || formatTo12Hour(prayerData.isha, 'isha')}
                 adhanTime={formatTo12Hour(prayerData.isha, 'isha')}
-                isActive={nextPrayer?.name === 'ISHA'}
+                isActive={nextPrayer?.name === 'ISHA' && isIqamahCountdown}
               />
             </div>
           </div>
