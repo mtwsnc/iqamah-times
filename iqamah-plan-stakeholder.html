@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Iqamah Times — Automated System Plan</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-deep:    #132a1a;
+      --green-primary: #407550;
+      --green-olive:   #82894d;
+      --gold:          #e7d296;
+      --gold-dark:     #c4af6a;
+      --bg:            #fdfbf5;
+      --text:          #1a1a1a;
+      --muted:         #5a5a4a;
+      --border:        #e2ddc8;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--green-deep);
+      color: white;
+      padding: 64px 32px 56px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 280px; height: 280px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.03);
+    }
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: -50px; left: -50px;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      background: rgba(231,210,150,0.06);
+    }
+    .arabic {
+      font-family: "Traditional Arabic", "Scheherazade New", serif;
+      font-size: 1.7rem;
+      color: var(--gold);
+      opacity: 0.8;
+      margin-bottom: 20px;
+      direction: rtl;
+      letter-spacing: 0.04em;
+    }
+    .eyebrow {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+    header h1 {
+      font-size: clamp(28px, 5vw, 50px);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+    header h1 span { color: var(--gold); }
+    header p {
+      font-size: 17px;
+      color: rgba(255,255,255,0.7);
+      max-width: 540px;
+      margin: 0 auto 28px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(231,210,150,0.15);
+      border: 1px solid rgba(231,210,150,0.35);
+      color: var(--gold);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 6px 18px;
+      border-radius: 100px;
+    }
+
+    /* ── LAYOUT ── */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    section {
+      padding: 72px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    section:last-of-type { border-bottom: none; }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--green-primary);
+      margin-bottom: 10px;
+    }
+    h2 {
+      font-size: clamp(22px, 3.5vw, 32px);
+      font-weight: 700;
+      color: var(--green-deep);
+      margin-bottom: 14px;
+      line-height: 1.2;
+    }
+    .lead {
+      font-size: 17px;
+      color: var(--muted);
+      max-width: 640px;
+      margin-bottom: 40px;
+    }
+
+    /* ── SUMMARY BANNER ── */
+    .summary-banner {
+      background: var(--green-deep);
+      border-radius: 20px;
+      padding: 40px 48px;
+      color: white;
+      margin-top: 16px;
+    }
+    .summary-banner p {
+      font-size: 18px;
+      line-height: 1.75;
+      color: rgba(255,255,255,0.82);
+    }
+    .summary-banner strong { color: var(--gold); }
+
+    /* ── VERTICAL FLOW ── */
+    .flow {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .flow-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      position: relative;
+    }
+    .flow-step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 21px;
+      top: 52px;
+      width: 2px;
+      height: calc(100% - 30px);
+      background: var(--border);
+    }
+    .flow-dot {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: white;
+      border: 2px solid var(--green-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 4px;
+      z-index: 1;
+    }
+    .flow-dot i {
+      font-size: 18px;
+      color: var(--green-primary);
+    }
+    .flow-body {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 24px;
+      flex: 1;
+      margin-bottom: 16px;
+    }
+    .flow-body h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--green-deep);
+      margin-bottom: 6px;
+    }
+    .flow-body p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    /* ── FEATURE GRID ── */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .feature-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      transition: box-shadow 0.2s;
+    }
+    .feature-card:hover { box-shadow: 0 8px 32px rgba(19,42,26,0.08); }
+    .feature-card .icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: var(--green-deep);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+    .feature-card .icon i { font-size: 20px; color: var(--gold); }
+    .feature-card h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--green-deep);
+      margin-bottom: 8px;
+    }
+    .feature-card p { font-size: 14px; color: var(--muted); }
+
+    /* ── SERVICES ── */
+    .services-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .service-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+    }
+    .service-row .svc-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: var(--green-deep);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .service-row .svc-icon i { font-size: 20px; color: var(--gold); }
+    .service-name {
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--green-deep);
+      margin-bottom: 4px;
+    }
+    .service-desc { font-size: 14px; color: var(--muted); line-height: 1.5; }
+
+    /* ── CALLOUT ── */
+    .callout {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      background: rgba(231,210,150,0.15);
+      border-left: 3px solid var(--gold-dark);
+      border-radius: 0 12px 12px 0;
+      padding: 16px 20px;
+      margin-top: 24px;
+    }
+    .callout i { font-size: 18px; color: var(--gold-dark); flex-shrink: 0; margin-top: 1px; }
+    .callout p { font-size: 14px; color: #5a4a10; line-height: 1.55; }
+
+    /* ── SETTINGS TABLE ── */
+    .settings-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin-top: 24px;
+    }
+    .settings-table th {
+      background: var(--green-deep);
+      color: white;
+      padding: 12px 20px;
+      text-align: left;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+    }
+    .settings-table td {
+      padding: 13px 20px;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .settings-table tr:last-child td { border-bottom: none; }
+    .settings-table td:first-child { font-weight: 600; color: var(--text); }
+
+    /* ── COST CARDS ── */
+    .cost-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 640px) { .cost-grid { grid-template-columns: 1fr; } }
+    .cost-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+    }
+    .cost-card .amount {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--green-primary);
+      margin-bottom: 4px;
+    }
+    .cost-card .label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .cost-card .note { font-size: 13px; color: var(--muted); }
+    .cost-summary {
+      background: var(--green-primary);
+      color: white;
+      border-radius: 14px;
+      padding: 28px 32px;
+      text-align: center;
+    }
+    .cost-summary .total-label { font-size: 14px; opacity: 0.8; margin-bottom: 4px; }
+    .cost-summary .total-amount { font-size: 40px; font-weight: 700; color: var(--gold); }
+    .cost-summary .total-note { font-size: 14px; opacity: 0.7; margin-top: 6px; }
+
+    /* ── CHECKLIST ── */
+    .checklist {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .checklist li {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 20px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .checklist li i { font-size: 18px; color: var(--border); flex-shrink: 0; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--green-deep);
+      color: rgba(255,255,255,0.5);
+      text-align: center;
+      padding: 40px 24px;
+      font-size: 13px;
+    }
+    footer strong { color: var(--gold); }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="arabic">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم</div>
+  <div class="eyebrow">Internal Plan · April 2026</div>
+  <h1>Iqamah Times —<br><span>Automated System</span></h1>
+  <p>No more manual entry. The website updates itself every week, automatically.</p>
+  <span class="badge"><i class="ti ti-file-description"></i> Internal Document</span>
+</header>
+
+<!-- SUMMARY -->
+<section>
+  <div class="container">
+    <div class="summary-banner">
+      <p>
+        Right now, iqamah times are entered manually each week — which takes time and risks mistakes.
+        This plan describes a fully automated system: when the weekly email arrives with the prayer
+        schedule PDF, the website updates <strong>automatically</strong>, with no one needing to
+        do anything. The system costs <strong>nothing extra per month</strong> on top of what we already pay.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- MAILING LIST -->
+<section>
+  <div class="container">
+    <div class="section-label">Step One</div>
+    <h2>Mailing List — Google Groups</h2>
+    <p class="lead">
+      Since we already have <strong>Google Workspace for Nonprofits</strong>, we can set up the mailing list at no extra cost using Google Groups — one address, one authorized sender, everyone else just receives.
+    </p>
+
+    <div class="flow">
+
+      <div class="flow-step">
+        <div class="flow-dot"><i class="ti ti-mail-plus"></i></div>
+        <div class="flow-body">
+          <h3>One shared group address</h3>
+          <p>A Google Group is created (e.g. <em>iqamah-times@mtws.org</em>). The secretary sends one email to this address and it delivers to every subscriber automatically.</p>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="flow-dot"><i class="ti ti-lock"></i></div>
+        <div class="flow-body">
+          <h3>Announcement-only — no replies, no outside senders</h3>
+          <p>Only the secretary's email can send to the group. Subscribers receive the email but cannot reply to it, and no one outside can send to it. This prevents accidental reply-alls and spam.</p>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="flow-dot"><i class="ti ti-robot"></i></div>
+        <div class="flow-body">
+          <h3>System email is also a subscriber</h3>
+          <p>Our automation address is added as a subscriber. When the secretary sends the weekly PDF, both the congregation and our system receive it simultaneously — no extra steps needed.</p>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="flow-dot"><i class="ti ti-users"></i></div>
+        <div class="flow-body">
+          <h3>Managing subscribers</h3>
+          <p>Adding or removing people is done through the Google Groups admin panel — no technical knowledge required. New members can also be allowed to subscribe via a link.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="callout">
+      <i class="ti ti-info-circle"></i>
+      <p>Google Groups is included with Google Workspace for Nonprofits at <strong>no additional cost</strong>. No new tools or subscriptions are needed.</p>
+    </div>
+
+    <table class="settings-table">
+      <thead>
+        <tr><th>Setting</th><th>Value</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Group type</td><td>Announcement-only</td></tr>
+        <tr><td>Who can post</td><td>Managers &amp; owners only (secretary's email)</td></tr>
+        <tr><td>Who can view members</td><td>Managers only</td></tr>
+        <tr><td>Reply-to</td><td>Author only — not the group</td></tr>
+        <tr><td>External senders</td><td>Blocked</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section>
+  <div class="container">
+    <div class="section-label">How It Works</div>
+    <h2>From email to website — automatically</h2>
+    <p class="lead">The secretary's process doesn't change at all. Everything else happens on its own within seconds of the email being sent.</p>
+
+    <div class="flow">
+
+      <div class="flow-step">
+        <div class="flow-dot"><i class="ti ti-mail"></i></div>
+        <div class="flow-body">
+          <h3>1. Weekly email arrives</h3>
+          <p>The secretary sends the weekly schedule to the mailing list as usual. The email includes a PDF with the iqamah times for the coming week.</p>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="flow-dot"><i class="ti ti-cloud"></i></div>
+        <div class="flow-body">
+          <h3>2. Cloudflare receives the email</h3>
+          <p>Cloudflare already manages our website's domain. It can also receive emails. When the iqamah email arrives, Cloudflare opens it and extracts the PDF — all within seconds.</p>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="flow-dot"><i class="ti ti-file-search"></i></div>
+        <div class="flow-body">
+          <h3>3. PDF is read and decoded</h3>
+          <p>Our system reads the text inside the PDF and finds every prayer name and time — whether times vary by day, or whether it's a special Daylight Saving Time schedule.</p>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="flow-dot"><i class="ti ti-database"></i></div>
+        <div class="flow-body">
+          <h3>4. Times are saved to the database</h3>
+          <p>The parsed times are stored in Supabase — one entry per week. Each day gets its own set of prayer times, so any variation (like a different Maghrib on Friday) is stored precisely.</p>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="flow-dot"><i class="ti ti-world"></i></div>
+        <div class="flow-body">
+          <h3>5. Website shows the correct times</h3>
+          <p>The iqamah website automatically reads from the database and always displays today's correct times. No login required, no manual entry needed.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- WHAT IT HANDLES -->
+<section style="background: #f5f2e8;">
+  <div class="container">
+    <div class="section-label">Built-In Reliability</div>
+    <h2>What the system handles automatically</h2>
+    <p class="lead">Every edge case we've seen in the weekly PDFs is accounted for.</p>
+
+    <div class="feature-grid">
+
+      <div class="feature-card">
+        <div class="icon"><i class="ti ti-calendar-event"></i></div>
+        <h3>Split Maghrib times</h3>
+        <p>When Maghrib is different on Monday–Thursday vs. Friday–Sunday, the system handles it correctly for each individual day.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="icon"><i class="ti ti-clock-hour-4"></i></div>
+        <h3>Daylight Saving Time weeks</h3>
+        <p>Some weeks the PDF has two full columns. The system detects this and saves the correct time for each day without any manual intervention.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="icon"><i class="ti ti-mail-forward"></i></div>
+        <h3>Late or duplicate emails</h3>
+        <p>If the email arrives late, the previous week's times remain visible. Duplicate emails are safely ignored — no double updates.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="icon"><i class="ti ti-alert-triangle"></i></div>
+        <h3>Unreadable PDFs</h3>
+        <p>If a PDF can't be parsed, the system logs it for review and keeps the previous times displayed — the website never goes blank.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section>
+  <div class="container">
+    <div class="section-label">Infrastructure</div>
+    <h2>Services we use</h2>
+    <p class="lead">All three services are either already in use or have a permanently free tier for our usage level. No new contracts or accounts required.</p>
+
+    <div class="services-list">
+
+      <div class="service-row">
+        <div class="svc-icon"><i class="ti ti-cloud-lock"></i></div>
+        <div>
+          <div class="service-name">Cloudflare</div>
+          <div class="service-desc">Already manages our domain. Will be configured to receive the weekly email and extract the PDF attachment — all automatically.</div>
+        </div>
+      </div>
+
+      <div class="service-row">
+        <div class="svc-icon"><i class="ti ti-database"></i></div>
+        <div>
+          <div class="service-name">Supabase</div>
+          <div class="service-desc">Our existing database. Will store the weekly iqamah schedule so the website can always look up the correct times for today.</div>
+        </div>
+      </div>
+
+      <div class="service-row">
+        <div class="svc-icon"><i class="ti ti-rocket"></i></div>
+        <div>
+          <div class="service-name">Vercel</div>
+          <div class="service-desc">Already hosts the iqamah times website. Will run the PDF-reading logic and serve the updated times to visitors.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="callout">
+      <i class="ti ti-info-circle"></i>
+      <p>We are expanding our use of infrastructure already in place — no new vendors, no new contracts.</p>
+    </div>
+  </div>
+</section>
+
+<!-- COST -->
+<section>
+  <div class="container">
+    <div class="section-label">Investment</div>
+    <h2>Monthly cost</h2>
+    <p class="lead">Every service used in this system is free at our scale.</p>
+
+    <div class="cost-grid">
+      <div class="cost-card">
+        <div class="amount">$0</div>
+        <div class="label">Cloudflare</div>
+        <div class="note">Free email routing — included in the plan we already use for domain management.</div>
+      </div>
+      <div class="cost-card">
+        <div class="amount">$0</div>
+        <div class="label">Supabase</div>
+        <div class="note">Free tier covers our database needs comfortably. Already in use.</div>
+      </div>
+      <div class="cost-card">
+        <div class="amount">$0</div>
+        <div class="label">Vercel</div>
+        <div class="note">Free tier hosts the website and runs the PDF logic. Already in use.</div>
+      </div>
+    </div>
+
+    <div class="cost-summary">
+      <div class="total-label">Total additional monthly cost</div>
+      <div class="total-amount">$0 / month</div>
+      <div class="total-note">No new services, no new subscriptions</div>
+    </div>
+  </div>
+</section>
+
+<!-- CHECKLIST -->
+<section>
+  <div class="container">
+    <div class="section-label">Implementation</div>
+    <h2>What needs to be done</h2>
+    <p class="lead">Once approved, here is the complete list of steps to go live.</p>
+
+    <ul class="checklist">
+      <li><i class="ti ti-circle"></i> Create the Google Group (iqamah-times@mtws.org) with announcement-only settings</li>
+      <li><i class="ti ti-circle"></i> Add the secretary's email as the sole authorized sender; add congregation members as subscribers</li>
+      <li><i class="ti ti-circle"></i> Add the system email address as a subscriber so it receives the weekly PDF alongside members</li>
+      <li><i class="ti ti-circle"></i> Set up the iqamah times table in our existing Supabase database</li>
+      <li><i class="ti ti-circle"></i> Configure Cloudflare email routing to listen on the correct address</li>
+      <li><i class="ti ti-circle"></i> Build the PDF-reading logic on Vercel — turns the PDF into structured data</li>
+      <li><i class="ti ti-circle"></i> Update the website to read times from the database instead of a static list</li>
+      <li><i class="ti ti-circle"></i> Test with all known PDF formats: regular, split Maghrib, and Daylight Saving Time</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <p><strong>Masjid Tawheed Was-Sunnah</strong> &nbsp;·&nbsp; Durham, NC &nbsp;·&nbsp; mtws.org</p>
+  <p style="margin-top: 8px;">Internal planning document — not for public distribution</p>
+</footer>
+
+</body>
+</html>
