@@ -11,22 +11,33 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
+
     async function loadPrayerTimes() {
       try {
         const currentDate = new Date();
-        const data = await getPrayerTimesForDate(currentDate);
-        const iqamah = await fetchIqamahTimes();
         
-        setPrayerData(data);
-        setIqamahTimes(iqamah);
+        // Fetch in parallel for better performance
+        const [data, iqamah] = await Promise.all([
+          getPrayerTimesForDate(currentDate),
+          fetchIqamahTimes()
+        ]);
+        
+        if (isMounted) {
+          setPrayerData(data);
+          setIqamahTimes(iqamah);
+        }
       } catch (error) {
         console.error('Error loading prayer times:', error);
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     }
 
     loadPrayerTimes();
+    return () => { isMounted = false; };
   }, []);
 
   if (loading) {

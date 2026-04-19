@@ -8,8 +8,13 @@ const DURHAM_LON = -78.8986
 const ISNA_METHOD = 2
 
 export async function fetchIqamahTimes(): Promise<IqamahTimes | null> {
+  if (!API_URL) {
+    console.warn('NEXT_PUBLIC_IQAMAH_API_URL is not set');
+    return null;
+  }
+
   try {
-    const response = await fetch(API_URL);
+    const response = await fetch(API_URL, { signal: AbortSignal.timeout(5000) });
 
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
@@ -49,7 +54,10 @@ export async function getPrayerTimesForDate(date: Date): Promise<PrayerData & { 
   try {
     const timestamp = Math.floor(date.getTime() / 1000)
     const url = `https://api.aladhan.com/v1/timings/${timestamp}?latitude=${DURHAM_LAT}&longitude=${DURHAM_LON}&method=${ISNA_METHOD}`
-    const response = await fetch(url, { next: { revalidate: 3600 } })
+    const response = await fetch(url, { 
+      next: { revalidate: 3600 },
+      signal: AbortSignal.timeout(5000)
+    })
 
     if (!response.ok) {
       throw new Error(`aladhan API error: ${response.status}`)
