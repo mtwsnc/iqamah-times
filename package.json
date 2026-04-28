@@ -6,7 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "check": "biome check .",
+    "check:fix": "biome check --write .",
+    "lint": "biome lint .",
+    "lint:fix": "biome lint --write .",
+    "format": "biome format --write .",
+    "format:check": "biome format --check .",
+    "ci": "biome ci ."
   },
   "dependencies": {
     "lucide-react": "^1.8.0",
@@ -15,14 +21,13 @@
     "react-dom": "^19.2.5"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.4.13",
     "@tailwindcss/postcss": "^4.2.2",
     "@types/bun": "latest",
     "@types/node": "^25",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "autoprefixer": "^10.5.0",
-    "eslint": "^10",
-    "eslint-config-next": "^16.2.4",
     "postcss": "^8",
     "tailwindcss": "^4.2.2",
     "typescript": "^6"
