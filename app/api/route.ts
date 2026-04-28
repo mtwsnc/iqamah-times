@@ -4,7 +4,10 @@ export async function GET() {
   const content = `PRAYER TIMES API DOCUMENTATION
 ================================
 
-Access prayer times (Adhan and Iqamah) for MTWS through our REST API endpoints.
+Access adhan and iqamah times for MTWS (Durham, NC) through our REST API.
+
+Adhan times are calculated using the ISNA method via the AlAdhan API.
+Iqamah times are fetched live from the MTWS schedule.
 
 
 ENDPOINTS
@@ -12,20 +15,24 @@ ENDPOINTS
 
 GET /api/all
 ------------
-Get all prayer times for the day
+All adhan and iqamah times for the day, plus Hijri date metadata.
 
-Example Request:
+Query parameters:
+  date (optional) — ISO date string (YYYY-MM-DD). Defaults to today.
+
+Example request:
   https://iqamah.mtws.org/api/all
+  https://iqamah.mtws.org/api/all?date=2025-11-15
 
-Example Response:
+Example response:
   {
     "adhan": {
-      "fajr": "5:30",
-      "shurooq": "6:45",
-      "dhuhr": "1:15",
-      "asr": "4:30",
-      "maghrib": "7:45",
-      "isha": "9:00"
+      "fajr": "05:30",
+      "shurooq": "06:45",
+      "dhuhr": "13:15",
+      "asr": "16:30",
+      "maghrib": "19:45",
+      "isha": "21:00"
     },
     "iqamah": {
       "fajr": "6:00 AM",
@@ -35,127 +42,125 @@ Example Response:
       "isha": "9:15 PM"
     },
     "metadata": {
-      "date": "2025-11-06T14:00:00.000Z",
-      "hijri": "الأربعاء 4 جمادى الأولى 1447",
-      "weekday": "Wed"
+      "date": "2025-11-06T00:00:00.000Z",
+      "hijri": "4 Jumada al-Ula 1447",
+      "weekday": "Thu"
     }
+  }
+
+Note: "iqamah" is null if the MTWS schedule is unavailable.
+
+
+GET /api/prayer-times
+---------------------
+Full adhan timing object for a given date (all prayers).
+
+Query parameters:
+  date (optional) — ISO date string (YYYY-MM-DD). Defaults to today.
+
+Example response:
+  {
+    "day": 6,
+    "hijri": "4 Jumada al-Ula 1447",
+    "weekday": "Thu",
+    "fajr": "05:30",
+    "sunrise": "06:45",
+    "dhuhr": "13:15",
+    "asr": "16:30",
+    "maghrib": "19:45",
+    "isha": "21:00",
+    "isApproximate": false
+  }
+
+Note: "isApproximate" is true only when the upstream AlAdhan API is unreachable
+and fallback times are returned.
+
+
+GET /api/iqamah-times
+---------------------
+MTWS iqamah schedule for today (fetched live from the MTWS API).
+No query parameters.
+
+Example response:
+  {
+    "fajr": "6:00 AM",
+    "dhuhr": "1:30 PM",
+    "asr": "5:00 PM",
+    "maghrib": "7:50 PM",
+    "isha": "9:15 PM",
+    "jumuah": "1:30 PM"
+  }
+
+Returns HTTP 503 if the upstream MTWS schedule is unavailable.
+
+
+GET /api/hijri-date
+-------------------
+Hijri (Islamic) date for a given Gregorian date, using the UAQ calendar method.
+
+Query parameters:
+  date (optional) — ISO date string (YYYY-MM-DD). Defaults to today.
+
+Example response:
+  {
+    "hijriDate": "الخميس 4 جمادى الأولى 1447"
   }
 
 
 GET /api/fajr
--------------
-Fajr prayer times
+GET /api/dhuhr
+GET /api/asr
+GET /api/maghrib
+GET /api/isha
+---------------------
+Adhan and iqamah times for a single prayer.
 
-Example Request:
-  https://iqamah.mtws.org/api/fajr
+Query parameters:
+  date (optional) — ISO date string (YYYY-MM-DD). Defaults to today.
 
-Example Response:
+Example response (fajr):
   {
     "prayer": "fajr",
-    "adhan": "5:30",
+    "adhan": "05:30",
     "iqamah": "6:00 AM",
-    "date": "2025-11-06T14:00:00.000Z"
+    "date": "2025-11-06T00:00:00.000Z"
   }
+
+Note: "iqamah" is null if the MTWS schedule is unavailable.
 
 
 GET /api/shurooq
 ----------------
-Shurooq (Sunrise) time - ADHAN ONLY, NO IQAMAH
+Sunrise time only — no iqamah.
 
-Example Request:
-  https://iqamah.mtws.org/api/shurooq
+Query parameters:
+  date (optional) — ISO date string (YYYY-MM-DD). Defaults to today.
 
-Example Response:
+Example response:
   {
     "prayer": "shurooq",
-    "adhan": "6:45",
-    "date": "2025-11-06T14:00:00.000Z"
+    "adhan": "06:45",
+    "date": "2025-11-06T00:00:00.000Z"
   }
 
 
-GET /api/dhuhr
---------------
-Dhuhr prayer times
+ERRORS
+======
 
-Example Request:
-  https://iqamah.mtws.org/api/dhuhr
+All endpoints return JSON error objects on failure:
 
-Example Response:
-  {
-    "prayer": "dhuhr",
-    "adhan": "1:15",
-    "iqamah": "1:30 PM",
-    "date": "2025-11-06T14:00:00.000Z"
-  }
+  HTTP 500 — { "error": "Failed to fetch ..." }
+  HTTP 503 — { "error": "Failed to fetch iqamah times from external API" }
+             (only from /api/iqamah-times when upstream is down)
 
 
-GET /api/asr
-------------
-Asr prayer times
+NOTES
+=====
 
-Example Request:
-  https://iqamah.mtws.org/api/asr
-
-Example Response:
-  {
-    "prayer": "asr",
-    "adhan": "4:30",
-    "iqamah": "5:00 PM",
-    "date": "2025-11-06T14:00:00.000Z"
-  }
-
-
-GET /api/maghrib
-----------------
-Maghrib prayer times
-
-Example Request:
-  https://iqamah.mtws.org/api/maghrib
-
-Example Response:
-  {
-    "prayer": "maghrib",
-    "adhan": "7:45",
-    "iqamah": "7:50 PM",
-    "date": "2025-11-06T14:00:00.000Z"
-  }
-
-
-GET /api/isha
--------------
-Isha prayer times
-
-Example Request:
-  https://iqamah.mtws.org/api/isha
-
-Example Response:
-  {
-    "prayer": "isha",
-    "adhan": "9:00",
-    "iqamah": "9:15 PM",
-    "date": "2025-11-06T14:00:00.000Z"
-  }
-
-
-QUERY PARAMETERS
-================
-
-date (optional)
-  Specify a date in ISO format (YYYY-MM-DD)
-  If not provided, returns times for today
-  
-  Example:
-    https://iqamah.mtws.org/api/fajr?date=2025-11-15
-
-
-IMPORTANT NOTES
-===============
-
-• Shurooq endpoint only returns Adhan time (no Iqamah)
-• All other prayer endpoints return both Adhan and Iqamah times
-• Times are based on MTWS (Muslim Theological and Welfare Society) schedule
-• All responses include ISO 8601 formatted date
-• All endpoints return JSON format
+• Adhan times are in 24-hour format (HH:MM) from AlAdhan.
+• Iqamah times are in 12-hour format (h:MM AM/PM) from the MTWS schedule.
+• Location: Durham, NC (35.994, -78.8986), ISNA calculation method.
+• All timestamps in responses are ISO 8601 UTC.
 `;
 
   return new NextResponse(content, {
