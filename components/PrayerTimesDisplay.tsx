@@ -283,13 +283,15 @@ export default function PrayerTimesDisplay({ prayerData, iqamahTimes }: Props) {
             </div>
           </div>
 
-          <div className="max-w-4xl mx-auto mt-4">
-            <div className="prayer-card flex flex-col w-full">
-              <div className="prayer-name text-lg">JUMUAH</div>
-              <div className="prayer-time">1:00 PM</div>
-              <div className="adhan-time">&nbsp;</div>
+          {new Date().getDay() === 5 && (
+            <div className="max-w-4xl mx-auto mt-4">
+              <div className="prayer-card flex flex-col w-full">
+                <div className="prayer-name text-lg">JUMUAH</div>
+                <div className="prayer-time">{iqamahTimes?.jumuah ?? '1:00 PM'}</div>
+                <div className="adhan-time">&nbsp;</div>
+              </div>
             </div>
-          </div>
+          )}
 
           <div className="mt-8 text-center download-buttons flex flex-wrap justify-center gap-2">
             <a href="/MTWS%20Iqaamah%20Times.apk"

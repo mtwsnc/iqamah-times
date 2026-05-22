@@ -33,13 +33,15 @@ export async function fetchIqamahTimes(): Promise<IqamahTimes | null> {
       return null;
     }
 
+    const isFriday = new Date().getDay() === 5;
+
     return {
       fajr: todayTimes[0],
       dhuhr: todayTimes[1],
       asr: todayTimes[2],
       maghrib: todayTimes[3],
       isha: todayTimes[4],
-      jumuah: '1:30 PM'
+      ...(isFriday && { jumuah: '1:00 PM' }),
     };
   } catch (error) {
     console.error('Error fetching Iqamah times:', error);
